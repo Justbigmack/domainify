@@ -1,0 +1,8 @@
+const HOUR_IN_MS = 60 * 60 * 1000
+const MINUTE_IN_MS = 60 * 1000
+
+export const PENDING_WINDOW_MS = 72 * HOUR_IN_MS
+export const GRACE_WINDOW_MS = 72 * HOUR_IN_MS
+export const MANUAL_CHECK_COOLDOWN_MS = 5 * 1000
+export const STALE_CHECK_THRESHOLD_MS = 2 * MINUTE_IN_MS
+export const TOKEN_BYTE_LENGTH = 32
