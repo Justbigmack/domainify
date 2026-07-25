@@ -9,6 +9,7 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: 'pg' }),
   plugins: [
     magicLink({
+      storeToken: 'hashed',
       sendMagicLink: async ({ email, url }) => {
         await sendMagicLinkEmail({ recipientEmail: email, magicLinkUrl: url })
       },

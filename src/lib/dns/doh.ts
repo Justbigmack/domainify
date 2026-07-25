@@ -18,6 +18,7 @@ const dohResponseSchema = z.object({
       z.object({
         name: z.string(),
         type: z.number(),
+        TTL: z.number().optional(),
         data: z.string(),
       }),
     )
@@ -29,10 +30,14 @@ const DOH_REQUEST_CONFIG: Record<DohProvider, { endpoint: string; headers: Recor
   google: { endpoint: GOOGLE_DOH_ENDPOINT, headers: {} },
 }
 
+const QUOTED_SEGMENT_PATTERN = /"([^"]*)"/g
+
 export const parseDohTxtData = (data: string): string => {
-  const isQuoted = data.length >= 2 && data.startsWith('"') && data.endsWith('"')
-  const inner = isQuoted ? data.slice(1, -1) : data
-  return inner.split('""').join('')
+  if (!data.includes('"')) {
+    return data
+  }
+  const segments = [...data.matchAll(QUOTED_SEGMENT_PATTERN)].map((match) => match[1])
+  return segments.length > 0 ? segments.join('') : data
 }
 
 const toLookupErrorCode = (error: unknown): string =>
@@ -60,10 +65,20 @@ export const lookupTxtOverDoh = async (name: string, provider: DohProvider): Pro
     if (parsed.data.Status !== DNS_RCODE_SUCCESS) {
       return { kind: 'lookup_error', code: `RCODE_${parsed.data.Status}` }
     }
-    const values = (parsed.data.Answer ?? [])
-      .filter((answer) => answer.type === TXT_RECORD_TYPE)
-      .map((answer) => parseDohTxtData(answer.data))
-    return values.length > 0 ? { kind: 'records', values } : { kind: 'no_records' }
+    const txtAnswers = (parsed.data.Answer ?? []).filter(
+      (answer) => answer.type === TXT_RECORD_TYPE,
+    )
+    if (txtAnswers.length === 0) {
+      return { kind: 'no_records' }
+    }
+    const ttls = txtAnswers
+      .map((answer) => answer.TTL)
+      .filter((ttl): ttl is number => typeof ttl === 'number')
+    return {
+      kind: 'records',
+      values: txtAnswers.map((answer) => parseDohTxtData(answer.data)),
+      minTtlSeconds: ttls.length > 0 ? Math.min(...ttls) : null,
+    }
   } catch (error) {
     return { kind: 'lookup_error', code: toLookupErrorCode(error) }
   }

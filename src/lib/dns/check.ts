@@ -3,7 +3,13 @@ import { lookupTxtOverDoh } from './doh'
 import type { NormalizedDomain } from './normalize'
 import { detectDnsProvider } from './providers'
 import type { DnsProvider } from './providers'
-import { lookupTxt, resolveAuthoritativeServers } from './resolver'
+import {
+  lookupTxt,
+  lookupTxtAuthoritative,
+  pickVerificationAddresses,
+  resolveAuthoritativeNameservers,
+} from './resolver'
+import type { AuthoritativeTxtResult } from './resolver'
 import type { CheckVerdict, TxtLookup } from './types'
 
 export type DomainCheckSources = {
@@ -18,6 +24,7 @@ export type DomainCheckResult = {
   sources: DomainCheckSources
   nameserverHostnames: string[]
   provider: DnsProvider | null
+  authoritativeQueriedName: string | null
 }
 
 export const buildExpectedRecordValue = (token: string): string =>
@@ -40,40 +47,67 @@ const collectRecordValues = (lookups: (TxtLookup | null)[]): string[] => {
   return [...new Set(values)]
 }
 
+export const isAuthoritativeAgreementReached = (
+  lookups: TxtLookup[],
+  expectedValue: string,
+): boolean => {
+  const usableLookups = lookups.filter((lookup) => lookup.kind !== 'lookup_error')
+  return (
+    usableLookups.length > 0 &&
+    usableLookups.every((lookup) => lookupMatches(lookup, expectedValue))
+  )
+}
+
+const mergeAuthoritativeLookups = (result: AuthoritativeTxtResult | null): TxtLookup | null => {
+  if (!result || result.lookups.length === 0) return null
+  const recordLookups = result.lookups.filter(
+    (lookup): lookup is Extract<TxtLookup, { kind: 'records' }> => lookup.kind === 'records',
+  )
+  if (recordLookups.length > 0) {
+    return {
+      kind: 'records',
+      values: [...new Set(recordLookups.flatMap((lookup) => lookup.values))],
+      minTtlSeconds: null,
+    }
+  }
+  return result.lookups[0]
+}
+
 export const checkDomainOwnership = async (
   domain: NormalizedDomain,
   token: string,
 ): Promise<DomainCheckResult> => {
   const expectedValue = buildExpectedRecordValue(token)
-  const nameservers = await resolveAuthoritativeServers(domain.registrableDomain)
-  const [authoritative, cloudflare, google] = await Promise.all([
+  const nameservers = await resolveAuthoritativeNameservers(domain.registrableDomain)
+  const [authoritativeResult, cloudflare, google] = await Promise.all([
     nameservers
-      ? lookupTxt(domain.challengeHost, nameservers.addresses)
-      : Promise.resolve<TxtLookup | null>(null),
+      ? lookupTxtAuthoritative(domain.challengeHost, nameservers)
+      : Promise.resolve<AuthoritativeTxtResult | null>(null),
     lookupTxtOverDoh(domain.challengeHost, 'cloudflare'),
     lookupTxtOverDoh(domain.challengeHost, 'google'),
   ])
-  const nameserverHostnames = nameservers?.hostnames ?? []
+  const authoritative = mergeAuthoritativeLookups(authoritativeResult)
+  const nameserverHostnames = nameservers?.map((nameserver) => nameserver.hostname) ?? []
   const base = {
     sources: { authoritative, cloudflare, google },
     nameserverHostnames,
     provider: detectDnsProvider(nameserverHostnames),
     foundValues: collectRecordValues([authoritative, cloudflare, google]),
+    authoritativeQueriedName: authoritativeResult?.queriedName ?? null,
   }
 
-  const authoritativeUsable = authoritative !== null && authoritative.kind !== 'lookup_error'
-  const verifiedViaAuthoritative = lookupMatches(authoritative, expectedValue)
+  const verifiedViaAuthoritative =
+    authoritativeResult !== null &&
+    isAuthoritativeAgreementReached(authoritativeResult.lookups, expectedValue)
   const verifiedViaResolverAgreement =
-    !authoritativeUsable &&
-    lookupMatches(cloudflare, expectedValue) &&
-    lookupMatches(google, expectedValue)
+    lookupMatches(cloudflare, expectedValue) && lookupMatches(google, expectedValue)
   if (verifiedViaAuthoritative || verifiedViaResolverAgreement) {
     return { verdict: 'verified', ...base }
   }
 
   const misplacedHost = `${domain.challengeHost}.${domain.hostname}`
   const misplacedLookup = nameservers
-    ? await lookupTxt(misplacedHost, nameservers.addresses)
+    ? await lookupTxt(misplacedHost, pickVerificationAddresses(nameservers).slice(0, 1))
     : await lookupTxtOverDoh(misplacedHost, 'cloudflare')
   if (lookupMatches(misplacedLookup, expectedValue)) {
     return { verdict: 'misplaced_record', ...base }

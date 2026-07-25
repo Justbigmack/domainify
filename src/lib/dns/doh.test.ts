@@ -8,11 +8,15 @@ describe('parseDohTxtData', () => {
     )
   })
 
-  it('joins chunked character-strings without separators', () => {
+  it('joins adjacent quoted chunks without separators', () => {
     expect(parseDohTxtData('"chunk-one""chunk-two"')).toBe('chunk-onechunk-two')
   })
 
-  it('passes through unquoted data', () => {
-    expect(parseDohTxtData('plain-value')).toBe('plain-value')
+  it('joins space-separated quoted chunks as Cloudflare returns them', () => {
+    expect(parseDohTxtData('"chunk-one" "chunk-two"')).toBe('chunk-onechunk-two')
+  })
+
+  it('passes through unquoted data as Google returns it', () => {
+    expect(parseDohTxtData('plain-concatenated-value')).toBe('plain-concatenated-value')
   })
 })

@@ -20,6 +20,9 @@ Domain lifecycle: `pending → verified`, with `temporary_failure` (grace period
 verified record disappears and `failed` after the 72-hour window expires — recoverable
 via an explicit restart.
 
+Every technical choice — and the alternatives it beat — is documented in
+[DECISIONS.md](./DECISIONS.md).
+
 ## Stack
 
 - Next.js (App Router) on Vercel
