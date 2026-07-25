@@ -23,15 +23,22 @@ Prior art for the underscore pattern: ACME's `_acme-challenge` ([RFC 8555 §8.4]
 ## 2. Resolver strategy: authoritative nameservers + two DoH resolvers
 
 **Chosen:** query the domain's authoritative nameservers directly (two distinct NS hosts,
-CNAME-chased), plus Cloudflare and Google DNS-over-HTTPS as independent corroborating
-views. Verified when the authoritative servers agree, or when both public resolvers agree.
+CNAME-chased), plus Cloudflare and Google DNS-over-HTTPS (DoH — a DNS query wrapped in an
+ordinary, TLS-authenticated HTTPS request) as independent corroborating views. Verified
+when the authoritative servers agree, or when both public resolvers agree.
+
+Terminology used below: *authoritative nameservers* are where a zone's records actually
+live (the source of truth, updated in seconds); *recursive resolvers* (8.8.8.8, 1.1.1.1)
+are the caching middlemen everyone queries in practice; DNSSEC is the optional
+signature layer that lets a validating resolver detect forged DNS data.
 
 **What industry leaders do** (from reading [Let's Encrypt Boulder's](https://github.com/letsencrypt/boulder)
 `bdns/` and `va/` packages, the only CA-scale verification backend that is open source):
 
-- Boulder queries its **own fleet of DNSSEC-validating Unbound recursive resolvers** over
-  DoH — never a shared public cache — per RFC 8555 §11.2. Fresh recursion through owned
-  resolvers is how they avoid stale/negative caches.
+- Boulder queries its **own fleet of DNSSEC-validating recursive resolvers** (running
+  Unbound, the open-source resolver software) — never a shared public cache — per
+  RFC 8555 §11.2. Fresh recursion through owned resolvers is how they avoid stale and
+  negative caches.
 - Since CA/Browser Forum [ballot SC-067](https://cabforum.org/2024/08/05/ballot-sc067v3-require-domain-validation-and-caa-checks-to-be-performed-from-multiple-network-perspectives-corroboration/),
   CAs must corroborate from **multiple network perspectives** (Let's Encrypt: 1 primary +
   4 remote vantage points with a quorum, ≥2 distinct internet registries) to defeat
@@ -43,14 +50,16 @@ views. Verified when the authoritative servers agree, or when both public resolv
 multi-region vantage points. The two closest substitutes, both implemented here:
 
 - **Authoritative-direct queries** are the only way to see a freshly created record
-  instantly without owning resolvers — public recursive caches serve negative answers for
-  the SOA-minimum TTL ([RFC 2308](https://datatracker.ietf.org/doc/html/rfc2308)), which
-  is why naive "click verify again" flows appear broken. Since plain UDP port 53 is the
-  least-authenticated path, an authoritative-only verdict requires **agreement from two
-  distinct nameservers**, and the challenge name is **CNAME-chased** (bounded at 8 hops)
-  because delegated verification (`_challenge` CNAME'd into another zone — the pattern
-  Cloudflare productizes as Delegated DCV) otherwise breaks: authoritative servers do not
-  follow CNAMEs; recursive ones do.
+  instantly without owning resolvers — public recursive caches also cache "this record
+  does not exist" (negative caching, [RFC 2308](https://datatracker.ietf.org/doc/html/rfc2308)),
+  for a duration set by the zone's SOA record, which is why naive "click verify again"
+  flows appear broken. Classic DNS travels over UDP — single connectionless packets with
+  no sender authentication, and therefore forgeable — making this the least-authenticated
+  of our three paths, so an authoritative-only verdict requires **agreement from two
+  distinct nameservers**. The challenge name is also **CNAME-chased** (bounded at 8 hops)
+  because delegated verification (`_challenge` aliased via CNAME into another zone — the
+  pattern Cloudflare productizes as Delegated DCV, Domain Control Validation) otherwise
+  breaks: authoritative servers do not follow CNAME aliases; recursive ones do.
 - **Cloudflare + Google DoH agreement** is a small-scale analog of multi-perspective
   corroboration: two independent anycast networks, TLS-authenticated transport (stronger
   against on-path attackers than our raw authoritative leg), and both are
