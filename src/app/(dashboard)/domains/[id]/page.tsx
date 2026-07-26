@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
+import { ApiViewPanel } from '@/components/api/api-view-panel'
 import { CheckTimeline } from '@/components/domains/check-timeline'
 import { DangerZone } from '@/components/domains/danger-zone'
 import { DiagnosisCard } from '@/components/domains/diagnosis-card'
@@ -64,16 +65,19 @@ const DomainDetailPage = async ({ params }: DomainDetailPageProps) => {
         >
           ← Domains
         </Link>
-        <div className="flex items-center gap-3">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-surface text-ink-muted">
-            <GlobeIcon className="size-5" />
-          </span>
-          <div className="min-w-0">
-            <p className="text-xs font-medium tracking-wide text-ink-subtle uppercase">Domain</p>
-            <h1 className="font-mono text-xl font-semibold tracking-tight break-all">
-              {domain.hostname}
-            </h1>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-surface text-ink-muted">
+              <GlobeIcon className="size-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-xs font-medium tracking-wide text-ink-subtle uppercase">Domain</p>
+              <h1 className="font-mono text-xl font-semibold tracking-tight break-all">
+                {domain.hostname}
+              </h1>
+            </div>
           </div>
+          <ApiViewPanel scope="domain" target={{ id: domain.id, hostname: domain.hostname }} />
         </div>
         <MetaRow domain={domain} />
       </header>

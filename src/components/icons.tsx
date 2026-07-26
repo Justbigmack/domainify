@@ -140,6 +140,13 @@ export const LoaderIcon = (props: IconProps) => (
   </svg>
 )
 
+export const CodeIcon = (props: IconProps) => (
+  <svg {...iconDefaults} {...props}>
+    <path d="m16 18 6-6-6-6" />
+    <path d="m8 6-6 6 6 6" />
+  </svg>
+)
+
 export const MinusIcon = (props: IconProps) => (
   <svg {...iconDefaults} {...props}>
     <path d="M5 12h14" />
