@@ -1,5 +1,6 @@
 import { index, jsonb, pgEnum, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 import { CHECK_TRIGGERS, CHECK_VERDICTS } from '../lib/dns/types'
+import type { CheckSourceSnapshot } from '../lib/dns/types'
 import { DOMAIN_STATUSES } from '../lib/domains/status'
 import { user } from './auth-schema'
 
@@ -27,6 +28,7 @@ export const domains = pgTable(
     graceExpiresAt: timestamp('grace_expires_at'),
     lastCheckedAt: timestamp('last_checked_at'),
     lastManualCheckAt: timestamp('last_manual_check_at'),
+    nextCheckAt: timestamp('next_check_at'),
     dnsProviderId: text('dns_provider_id'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
@@ -46,6 +48,7 @@ export const verificationChecks = pgTable(
     trigger: checkTriggerEnum('trigger').notNull(),
     verdict: checkVerdictEnum('verdict').notNull(),
     foundValues: jsonb('found_values').$type<string[]>().notNull().default([]),
+    sources: jsonb('sources').$type<CheckSourceSnapshot[]>().notNull().default([]),
     errorCode: text('error_code'),
   },
   (table) => [index('verification_checks_domain_checked_idx').on(table.domainId, table.checkedAt)],

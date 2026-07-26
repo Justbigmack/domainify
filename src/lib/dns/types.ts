@@ -12,3 +12,11 @@ export type CheckVerdict = (typeof CHECK_VERDICTS)[number]
 
 export const CHECK_TRIGGERS = ['manual', 'poll', 'cron', 'on_read'] as const
 export type CheckTrigger = (typeof CHECK_TRIGGERS)[number]
+
+export type CheckSourceSnapshot = {
+  source: TxtLookupSource
+  kind: TxtLookup['kind']
+  values: string[]
+  minTtlSeconds: number | null
+  errorCode: string | null
+}
