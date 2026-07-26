@@ -9,6 +9,7 @@ import {
   Section,
   Tailwind,
   Text,
+  pixelBasedPreset,
 } from 'react-email'
 
 type DomainVerifiedEmailProps = {
@@ -20,7 +21,7 @@ export const DomainVerifiedEmail = ({ hostname, dashboardUrl }: DomainVerifiedEm
   <Html>
     <Head />
     <Preview>{hostname} is now verified</Preview>
-    <Tailwind>
+    <Tailwind config={{ presets: [pixelBasedPreset] }}>
       <Body className="bg-white font-sans">
         <Container className="mx-auto max-w-md px-6 py-12">
           <Heading className="text-xl font-semibold text-neutral-900">

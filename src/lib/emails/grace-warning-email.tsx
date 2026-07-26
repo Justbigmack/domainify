@@ -9,6 +9,7 @@ import {
   Section,
   Tailwind,
   Text,
+  pixelBasedPreset,
 } from 'react-email'
 
 type GraceWarningEmailProps = {
@@ -25,7 +26,7 @@ export const GraceWarningEmail = ({
   <Html>
     <Head />
     <Preview>Action needed: verification record missing for {hostname}</Preview>
-    <Tailwind>
+    <Tailwind config={{ presets: [pixelBasedPreset] }}>
       <Body className="bg-white font-sans">
         <Container className="mx-auto max-w-md px-6 py-12">
           <Heading className="text-xl font-semibold text-neutral-900">
