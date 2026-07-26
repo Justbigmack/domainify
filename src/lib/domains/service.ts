@@ -61,6 +61,9 @@ const getOwnedDomain = async (userId: string, domainId: string): Promise<DomainR
   return domain
 }
 
+export const getDomainForUser = (userId: string, domainId: string): Promise<DomainRow> =>
+  getOwnedDomain(userId, domainId)
+
 export const listDomains = async (userId: string): Promise<DomainRow[]> =>
   db.select().from(domains).where(eq(domains.userId, userId)).orderBy(desc(domains.createdAt))
 
