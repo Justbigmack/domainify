@@ -19,12 +19,12 @@ import {
   DomainStateError,
   DuplicateDomainError,
   VerifyCooldownError,
+  isUniqueViolation,
 } from './errors'
 import { generateVerificationToken } from './token'
 
 const RECENT_CHECKS_LIMIT = 20
 const CRON_BATCH_SIZE = 25
-const UNIQUE_VIOLATION_CODE = '23505'
 const CHECKABLE_STATUSES = ['pending', 'verified', 'temporary_failure'] as const
 
 export type RecordInstructions = {
@@ -44,9 +44,6 @@ export const buildRecordInstructions = (domain: DomainRow): RecordInstructions =
   host: domain.challengeHost,
   value: buildExpectedRecordValue(domain.verificationToken),
 })
-
-const isUniqueViolation = (error: unknown): boolean =>
-  error instanceof Error && 'code' in error && error.code === UNIQUE_VIOLATION_CODE
 
 const applyDetectedProvider = async (domain: DomainRow): Promise<void> => {
   const nameservers = await resolveAuthoritativeNameservers(domain.registrableDomain)

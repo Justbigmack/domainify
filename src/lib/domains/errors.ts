@@ -31,3 +31,11 @@ export class VerifyCooldownError extends Error {
 }
 
 export class DomainStateError extends Error {}
+
+const UNIQUE_VIOLATION_CODE = '23505'
+
+export const isUniqueViolation = (error: unknown): boolean => {
+  if (!(error instanceof Error)) return false
+  if ('code' in error && error.code === UNIQUE_VIOLATION_CODE) return true
+  return isUniqueViolation(error.cause)
+}
