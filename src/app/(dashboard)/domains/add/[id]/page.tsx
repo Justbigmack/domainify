@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
-import { DiagnosisCard } from '@/components/domains/diagnosis-card'
-import { RecordCard } from '@/components/domains/record-card'
-import { Stepper, StepperStep } from '@/components/domains/stepper'
-import { VerifySteps } from '@/components/domains/verify-steps'
-import { BreadcrumbLink } from '@/components/shell/breadcrumb-link'
+import { DiagnosisCard } from '@/components/domains/DiagnosisCard'
+import { RecordCard } from '@/components/domains/RecordCard'
+import { Stepper, StepperStep } from '@/components/domains/Stepper'
+import { VerifySteps } from '@/components/domains/VerifySteps'
+import { BreadcrumbLink } from '@/components/shell/BreadcrumbLink'
 import { getSessionUser } from '@/lib/api/session'
 import { challengeRecordName } from '@/lib/dns/normalize'
-import { loadDomainPageData } from '@/lib/domains/page-data'
+import { loadDomainPageData } from '@/lib/domains/pageData'
 
 export const metadata: Metadata = {
   title: 'Add domain',

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { SettingsRow, SettingsSection } from '@/components/settings/settings-section'
-import { ThemeSelect } from '@/components/settings/theme-select'
+import { SettingsRow, SettingsSection } from '@/components/settings/SettingsSection'
+import { ThemeSelect } from '@/components/settings/ThemeSelect'
 
 export const metadata: Metadata = {
   title: 'General · Settings',

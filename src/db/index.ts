@@ -1,6 +1,6 @@
 import { neon } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
-import * as authSchema from './auth-schema'
+import * as authSchema from './authSchema'
 import * as appSchema from './schema'
 
 const databaseUrl = process.env.DATABASE_URL

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { BackToAppLink } from '@/components/auth/back-to-app-link'
-import { MagicLinkCard } from '@/components/auth/magic-link-card'
+import { BackToAppLink } from '@/components/auth/BackToAppLink'
+import { MagicLinkCard } from '@/components/auth/MagicLinkCard'
 import { getSessionUser } from '@/lib/api/session'
 
 export const metadata: Metadata = {

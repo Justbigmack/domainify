@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { AddDomainForm } from '@/components/domains/add-domain-form'
-import { Stepper, StepperStep } from '@/components/domains/stepper'
-import { BreadcrumbLink } from '@/components/shell/breadcrumb-link'
+import { AddDomainForm } from '@/components/domains/AddDomainForm'
+import { Stepper, StepperStep } from '@/components/domains/Stepper'
+import { BreadcrumbLink } from '@/components/shell/BreadcrumbLink'
 
 export const metadata: Metadata = {
   title: 'Add domain',

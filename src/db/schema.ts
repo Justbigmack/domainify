@@ -2,7 +2,7 @@ import { index, jsonb, pgEnum, pgTable, text, timestamp, uniqueIndex } from 'dri
 import { CHECK_TRIGGERS, CHECK_VERDICTS } from '../lib/dns/types'
 import type { CheckSourceSnapshot } from '../lib/dns/types'
 import { DOMAIN_STATUSES } from '../lib/domains/status'
-import { user } from './auth-schema'
+import { user } from './authSchema'
 
 export const domainStatusEnum = pgEnum('domain_status', DOMAIN_STATUSES)
 export const checkVerdictEnum = pgEnum('check_verdict', CHECK_VERDICTS)

@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { CodeBlock } from '@/components/docs/code-block'
-import { DocsArticle, DocsSection, DocsSubheading } from '@/components/docs/docs-article'
-import { DocsTable } from '@/components/docs/docs-table'
-import { EndpointSnippets } from '@/components/docs/endpoint-snippets'
-import { MethodBadge } from '@/components/docs/method-label'
-import { ParamList } from '@/components/docs/param-list'
-import { DocsCode, DocsP } from '@/components/docs/prose'
-import { ENDPOINT_DOCS, findEndpointDoc } from '@/lib/docs/api-reference'
+import { CodeBlock } from '@/components/docs/CodeBlock'
+import { DocsArticle, DocsSection, DocsSubheading } from '@/components/docs/DocsArticle'
+import { DocsTable } from '@/components/docs/DocsTable'
+import { EndpointSnippets } from '@/components/docs/EndpointSnippets'
+import { MethodBadge } from '@/components/docs/MethodLabel'
+import { ParamList } from '@/components/docs/ParamList'
+import { DocsCode, DocsP } from '@/components/docs/Prose'
+import { ENDPOINT_DOCS, findEndpointDoc } from '@/lib/docs/apiReference'
 
 type EndpointPageParams = {
   params: Promise<{ slug: string }>

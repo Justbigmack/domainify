@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
-import { ApiKeysCard } from '@/components/settings/api-keys-card'
-import type { ApiKeyListItem } from '@/components/settings/api-keys-card'
+import { ApiKeysCard } from '@/components/settings/ApiKeysCard'
+import type { ApiKeyListItem } from '@/components/settings/ApiKeysCard'
 import { auth } from '@/lib/auth'
 
 export const metadata: Metadata = {

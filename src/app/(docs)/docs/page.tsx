@@ -1,6 +1,6 @@
-import { DocsArticle, DocsSection } from '@/components/docs/docs-article'
-import { DocsCards } from '@/components/docs/docs-cards'
-import { DocsCode, DocsLink, DocsOl, DocsP, DocsStrong } from '@/components/docs/prose'
+import { DocsArticle, DocsSection } from '@/components/docs/DocsArticle'
+import { DocsCards } from '@/components/docs/DocsCards'
+import { DocsCode, DocsLink, DocsOl, DocsP, DocsStrong } from '@/components/docs/Prose'
 
 const TOC = [
   { id: 'what-domainify-does', title: 'What Domainify does' },

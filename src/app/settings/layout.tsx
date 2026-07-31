@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 import { redirect } from 'next/navigation'
-import { SettingsBackLink, SettingsSidebar } from '@/components/settings/settings-sidebar'
+import { SettingsBackLink, SettingsSidebar } from '@/components/settings/SettingsSidebar'
 import { getSessionUser } from '@/lib/api/session'
 
 const SettingsLayout = async ({ children }: PropsWithChildren) => {

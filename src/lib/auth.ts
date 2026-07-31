@@ -9,9 +9,9 @@ import {
   API_KEY_PREFIX,
   PASSWORD_MIN_LENGTH,
   SESSION_COOKIE_CACHE_MAX_AGE_SECONDS,
-} from '@/lib/auth-policy'
-import { sendMagicLinkEmail } from '@/lib/emails/send-magic-link'
-import { sendResetPasswordEmail } from '@/lib/emails/send-reset-password'
+} from '@/lib/authPolicy'
+import { sendMagicLinkEmail } from '@/lib/emails/sendMagicLink'
+import { sendResetPasswordEmail } from '@/lib/emails/sendResetPassword'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: 'pg' }),

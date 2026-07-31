@@ -1,9 +1,9 @@
 import type { PropsWithChildren } from 'react'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { MobileNav } from '@/components/shell/mobile-nav'
-import { Sidebar } from '@/components/shell/sidebar'
-import { SIDEBAR_COLLAPSED_COOKIE } from '@/components/shell/sidebar-cookie'
+import { MobileNav } from '@/components/shell/MobileNav'
+import { Sidebar } from '@/components/shell/Sidebar'
+import { SIDEBAR_COLLAPSED_COOKIE } from '@/components/shell/sidebarCookie'
 import { getSessionUser } from '@/lib/api/session'
 
 const DashboardLayout = async ({ children }: PropsWithChildren) => {

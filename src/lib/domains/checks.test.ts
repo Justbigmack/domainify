@@ -46,7 +46,7 @@ vi.mock('@/lib/dns/check', () => ({
   checkDomainOwnership: vi.fn(),
 }))
 
-vi.mock('@/lib/emails/send-domain-email', () => ({
+vi.mock('@/lib/emails/sendDomainEmail', () => ({
   sendDomainVerifiedEmail: vi.fn(() => Promise.resolve()),
   sendGraceWarningEmail: vi.fn(() => Promise.resolve()),
 }))
@@ -55,7 +55,7 @@ import { checkDomainOwnership } from '@/lib/dns/check'
 import {
   sendDomainVerifiedEmail,
   sendGraceWarningEmail,
-} from '@/lib/emails/send-domain-email'
+} from '@/lib/emails/sendDomainEmail'
 import { runCheck } from './checks'
 
 const HOUR_MS = 60 * 60 * 1000

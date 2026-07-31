@@ -2,9 +2,9 @@ import { cache } from 'react'
 import { headers } from 'next/headers'
 import { eq } from 'drizzle-orm'
 import { db } from '@/db'
-import { user } from '@/db/auth-schema'
+import { user } from '@/db/authSchema'
 import { auth } from '@/lib/auth'
-import { API_KEY_PREFIX } from '@/lib/auth-policy'
+import { API_KEY_PREFIX } from '@/lib/authPolicy'
 
 export type SessionUser = {
   id: string
