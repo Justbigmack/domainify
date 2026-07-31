@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { CheckIcon, TriangleAlertIcon, XIcon } from 'lucide-react'
+import { Text } from '@/components/brand/Text'
 import { cn } from '@/lib/utils'
 import { formatRelativeTime } from '@/lib/formatTime'
 import type { DomainEvent, DomainEventKey } from '@/lib/domains/insights'
@@ -40,7 +41,7 @@ export const DomainEvents = ({ status, events }: DomainEventsProps) => {
   const banner = BANNER_CONFIG[status]
   return (
     <section className="flex flex-col gap-4">
-      <p className={cn('rounded-xl px-5 py-3 text-sm', banner.className)}>{banner.message}</p>
+      <Text className={cn('rounded-xl px-5 py-3', banner.className)}>{banner.message}</Text>
       <ol className="flex flex-wrap items-start gap-y-4 rounded-xl bg-card px-5 py-5 shadow-xs ring-1 ring-foreground/10">
         {events.map((event, index) => {
           const isReached = event.at !== null
@@ -71,16 +72,16 @@ export const DomainEvents = ({ status, events }: DomainEventsProps) => {
                   {isReached && isNegative && <TriangleAlertIcon className="size-3.5" />}
                   {!isReached && <XIcon className="size-3 opacity-0" />}
                 </span>
-                <span
-                  className={cn('text-xs font-medium whitespace-nowrap', {
-                    'text-muted-foreground': !isReached,
-                  })}
+                <Text
+                  as="span"
+                  variant="caption"
+                  className={cn('font-medium whitespace-nowrap', { 'text-foreground': isReached })}
                 >
                   {event.label}
-                </span>
-                <span className="text-xs text-muted-foreground tabular-nums" suppressHydrationWarning>
+                </Text>
+                <Text as="span" variant="caption" className="tabular-nums" suppressHydrationWarning>
                   {event.at ? formatRelativeTime(event.at, nowMs) : '—'}
-                </span>
+                </Text>
               </div>
             </li>
           )

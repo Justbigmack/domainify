@@ -10,9 +10,10 @@ import {
   OTHER_PROVIDER_ID,
   ProviderSelect,
   findDnsProvider,
-} from '@/components/domains/ProviderSelect'
-import { TerminalCheck } from '@/components/domains/TerminalCheck'
+} from '@/app/(dashboard)/domains/_components/ProviderSelect'
+import { TerminalCheck } from '@/app/(dashboard)/domains/_components/TerminalCheck'
 import { CopyButton } from '@/components/brand/CopyButton'
+import { Text } from '@/components/brand/Text'
 import { Spinner } from '@/components/ui/spinner'
 import { pollDomainAction, verifyDomainAction } from '@/lib/domains/actions'
 import { cn } from '@/lib/utils'
@@ -57,8 +58,12 @@ const Step = ({ number, title, description, isLast = false, isActive = false, ch
       {number}
     </span>
     <div className="flex min-w-0 flex-col gap-1 pt-0.5">
-      <span className="text-sm font-medium">{title}</span>
-      <span className="text-[0.8125rem] leading-5 text-muted-foreground">{description}</span>
+      <Text as="span" className="font-medium">
+        {title}
+      </Text>
+      <Text as="span" variant="secondary" className="leading-5">
+        {description}
+      </Text>
       {children}
     </div>
   </li>
@@ -80,9 +85,9 @@ const MiddleTruncate = ({ value }: { value: string }) => {
 
 const RecordLine = ({ label, value }: { label: string; value: string }) => (
   <div className="grid grid-cols-[5rem_1fr] items-center gap-2">
-    <span className="text-[0.6875rem] font-medium tracking-wider text-muted-foreground/80 uppercase">
+    <Text as="span" variant="micro" className="font-medium tracking-wider text-muted-foreground/80 uppercase">
       {label}
-    </span>
+    </Text>
     <span className="flex min-w-0 items-center gap-1">
       <span className="flex min-w-0 font-mono text-[0.8125rem]">
         <MiddleTruncate value={value} />
@@ -161,9 +166,10 @@ export const VerifySteps = ({
     <div className="flex flex-col gap-3">
       <Settings.Content>
         <Settings.Toolbar>
-          <span
+          <Text
+            as="span"
             aria-live="polite"
-            className="flex min-h-8 items-center gap-2 text-sm text-muted-foreground tabular-nums"
+            className="flex min-h-8 items-center gap-2 text-muted-foreground tabular-nums"
           >
             {isChecking ? (
               <>
@@ -173,7 +179,7 @@ export const VerifySteps = ({
             ) : (
               `Next check in ${countdownSeconds}s`
             )}
-          </span>
+          </Text>
           <GhostButton
             icon={RefreshCwIcon}
             onClick={handleVerify}

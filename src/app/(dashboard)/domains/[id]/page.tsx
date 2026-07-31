@@ -2,13 +2,14 @@ import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { TriangleAlertIcon } from 'lucide-react'
 import { Settings } from '@/components/brand/Settings'
-import { DangerZone } from '@/components/domains/DangerZone'
-import { DiagnosisCard } from '@/components/domains/DiagnosisCard'
-import { DomainEvents } from '@/components/domains/DomainEvents'
-import { DomainHeader } from '@/components/domains/DomainHeader'
-import { RecordCard } from '@/components/domains/RecordCard'
-import { RestartButton } from '@/components/domains/RestartButton'
-import { VerifySteps } from '@/components/domains/VerifySteps'
+import { Text } from '@/components/brand/Text'
+import { DangerZone } from '@/app/(dashboard)/domains/_components/DangerZone'
+import { DiagnosisCard } from '@/app/(dashboard)/domains/_components/DiagnosisCard'
+import { DomainEvents } from '@/app/(dashboard)/domains/_components/DomainEvents'
+import { DomainHeader } from '@/app/(dashboard)/domains/_components/DomainHeader'
+import { RecordCard } from '@/app/(dashboard)/domains/_components/RecordCard'
+import { RestartButton } from '@/app/(dashboard)/domains/_components/RestartButton'
+import { VerifySteps } from '@/app/(dashboard)/domains/_components/VerifySteps'
 import { getSessionUser } from '@/lib/api/session'
 import { challengeRecordName } from '@/lib/dns/normalize'
 import { deriveDomainEvents } from '@/lib/domains/insights'
@@ -64,12 +65,12 @@ const DomainDetailPage = async ({ params }: DomainDetailPageProps) => {
           icon={TriangleAlertIcon}
           action={<RestartButton domainId={domain.id} />}
         >
-          <p className="font-medium">
+          <Text className="font-medium text-inherit">
             We couldn&apos;t find the record within the 72-hour window.
-          </p>
-          <p className="text-destructive/80">
+          </Text>
+          <Text className="text-destructive/80">
             Restarting mints a fresh token and opens a new 72-hour window.
-          </p>
+          </Text>
         </Settings.Alert>
       )}
       <Settings.Root>

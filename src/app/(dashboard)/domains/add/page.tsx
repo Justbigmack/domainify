@@ -1,6 +1,14 @@
 import type { Metadata } from 'next'
-import { AddDomainForm } from '@/components/domains/AddDomainForm'
-import { Stepper, StepperStep } from '@/components/domains/Stepper'
+import { AddDomainForm } from '@/app/(dashboard)/domains/_components/AddDomainForm'
+import {
+  Stepper,
+  StepperContent,
+  StepperHeader,
+  StepperStep,
+  StepperTitle,
+} from '@/app/(dashboard)/domains/_components/Stepper'
+import { Heading } from '@/components/brand/Heading'
+import { Text } from '@/components/brand/Text'
 import { BreadcrumbLink } from '@/components/shell/BreadcrumbLink'
 
 export const metadata: Metadata = {
@@ -13,19 +21,29 @@ const AddDomainPage = () => (
       <div>
         <BreadcrumbLink href="/domains" label="Domains" />
       </div>
-      <h1 className="font-heading text-xl font-semibold tracking-tight">Add domain</h1>
-      <p className="text-sm leading-6 text-muted-foreground">
+      <Heading as="h1">Add domain</Heading>
+      <Text className="leading-6 text-muted-foreground">
         Prove you own a domain by placing one TXT record in its DNS.
-      </p>
+      </Text>
     </header>
     <Stepper>
-      <StepperStep index={1} title="Domain" state="active">
-        <AddDomainForm />
+      <StepperStep index={1} state="active">
+        <StepperHeader>
+          <StepperTitle>Domain</StepperTitle>
+        </StepperHeader>
+        <StepperContent>
+          <AddDomainForm />
+        </StepperContent>
       </StepperStep>
-      <StepperStep index={2} title="DNS record" state="upcoming" isLast>
-        <p className="px-5 text-sm leading-6 text-muted-foreground">
-          Add your domain first and we&apos;ll generate a unique TXT record for it.
-        </p>
+      <StepperStep index={2} state="upcoming">
+        <StepperHeader>
+          <StepperTitle>DNS record</StepperTitle>
+        </StepperHeader>
+        <StepperContent>
+          <Text className="px-5 leading-6 text-muted-foreground">
+            Add your domain first and we&apos;ll generate a unique TXT record for it.
+          </Text>
+        </StepperContent>
       </StepperStep>
     </Stepper>
   </div>

@@ -4,11 +4,12 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Accordion } from '@base-ui/react/accordion'
 import { ArrowUpRightIcon, ChevronDownIcon, Trash2Icon } from 'lucide-react'
-import { RemoveDomainDialog } from '@/components/domains/RemoveDomainDialog'
+import { RemoveDomainDialog } from '@/app/(dashboard)/domains/_components/RemoveDomainDialog'
 import { StatusTag } from '@/components/brand/StatusTag'
+import { Text } from '@/components/brand/Text'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import type { DomainListItem } from '@/components/domains/DomainsTable'
+import type { DomainListItem } from '@/app/(dashboard)/domains/_components/DomainsTable'
 import { formatRelativeTime, formatShortDate, formatTimeLeft } from '@/lib/formatTime'
 
 const PANEL_CLASS =
@@ -24,10 +25,12 @@ type MetaRowProps = {
 
 const MetaRow = ({ label, value }: MetaRowProps) => (
   <div className="flex items-baseline justify-between gap-4">
-    <span className="text-[0.8125rem] text-muted-foreground">{label}</span>
-    <span className="text-[0.8125rem]" suppressHydrationWarning>
+    <Text as="span" variant="secondary">
+      {label}
+    </Text>
+    <Text as="span" variant="secondary" className="text-foreground" suppressHydrationWarning>
       {value}
-    </span>
+    </Text>
   </div>
 )
 
@@ -54,7 +57,9 @@ const DomainMobileItem = ({ item, nowMs, isFirst }: DomainMobileItemProps) => {
           )}
         >
           <span className="flex min-w-0 flex-1 items-center gap-2.5">
-            <span className="truncate text-sm font-medium">{item.hostname}</span>
+            <Text as="span" className="truncate font-medium">
+              {item.hostname}
+            </Text>
             <StatusTag
               status={item.status}
               detail={
@@ -116,14 +121,15 @@ type DomainsMobileListProps = {
 export const DomainsMobileList = ({ items, nowMs, className }: DomainsMobileListProps) => {
   if (items.length === 0) {
     return (
-      <div
+      <Text
+        as="div"
         className={cn(
-          'rounded-xl border border-border/50 bg-card px-5 py-10 text-center text-sm text-muted-foreground',
+          'rounded-xl border border-border/50 bg-card px-5 py-10 text-center text-muted-foreground',
           className,
         )}
       >
         No domains match your filters.
-      </div>
+      </Text>
     )
   }
 

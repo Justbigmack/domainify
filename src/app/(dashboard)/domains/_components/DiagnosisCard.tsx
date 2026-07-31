@@ -1,4 +1,5 @@
 import { TriangleAlertIcon } from 'lucide-react'
+import { Text } from '@/components/brand/Text'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 import type { Diagnosis } from '@/lib/domains/insights'
@@ -18,7 +19,7 @@ export const DiagnosisCard = ({ diagnosis }: DiagnosisCardProps) => (
     <TriangleAlertIcon className="text-muted-foreground" />
     <AlertTitle className="break-words">{diagnosis.title}</AlertTitle>
     <AlertDescription>
-      <p>{diagnosis.body}</p>
+      <Text className="text-inherit">{diagnosis.body}</Text>
       {diagnosis.expectedTail && (
         <dl className="mt-1 flex flex-col gap-1 text-xs tabular-nums">
           <div className="flex gap-2">

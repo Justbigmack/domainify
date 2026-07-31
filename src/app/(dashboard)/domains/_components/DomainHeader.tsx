@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import { ApiViewPanel } from '@/components/api/ApiViewPanel'
+import { Heading } from '@/components/brand/Heading'
 import { StatusTag } from '@/components/brand/StatusTag'
+import { Text } from '@/components/brand/Text'
 import { BreadcrumbLink } from '@/components/shell/BreadcrumbLink'
 import { DNS_PROVIDERS } from '@/lib/dns/providers'
 import { formatRelativeTime, formatTimeLeft } from '@/lib/formatTime'
@@ -32,19 +34,26 @@ export const DomainHeader = ({ domain }: DomainHeaderProps) => {
         <div>
           <BreadcrumbLink href="/domains" label="Domains" />
         </div>
-        <h1 className="truncate text-2xl leading-9 font-medium">Edit domain</h1>
-        <p className="mt-1 text-sm">
-          <span className="font-semibold break-all">{domain.hostname}</span>
+        <Heading as="h1" className="truncate leading-9">
+          Edit domain
+        </Heading>
+        <Text className="mt-1">
+          <Text as="span" className="font-semibold break-all">
+            {domain.hostname}
+          </Text>
           <StatusTag status={domain.status} className="ml-2 align-middle" />
-        </p>
-        <p className="mt-0.5 text-sm text-muted-foreground" suppressHydrationWarning>
+        </Text>
+        <Text className="mt-0.5 text-muted-foreground" suppressHydrationWarning>
           Added {formatRelativeTime(domain.createdAt, nowMs)}
           {' · '}
           {provider?.displayName ?? 'No provider detected'}
           {deadline ? (
-            <span className="text-warning tabular-nums"> · {deadline} to verify</span>
+            <Text as="span" className="text-warning tabular-nums">
+              {' '}
+              · {deadline} to verify
+            </Text>
           ) : null}
-        </p>
+        </Text>
       </div>
       <div className="shrink-0">
         <ApiViewPanel scope="domain" target={{ id: domain.id, hostname: domain.hostname }} />

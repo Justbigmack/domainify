@@ -1,4 +1,4 @@
-import type { RecordStatus } from '@/components/domains/RecordCard'
+import type { RecordStatus } from '@/lib/domains/status'
 import { DomainNotFoundError } from './errors'
 import { deriveDiagnosis, deriveSourcePills } from './insights'
 import type { Diagnosis, SourcePillView } from './insights'

@@ -1,9 +1,17 @@
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
-import { DiagnosisCard } from '@/components/domains/DiagnosisCard'
-import { RecordCard } from '@/components/domains/RecordCard'
-import { Stepper, StepperStep } from '@/components/domains/Stepper'
-import { VerifySteps } from '@/components/domains/VerifySteps'
+import { DiagnosisCard } from '@/app/(dashboard)/domains/_components/DiagnosisCard'
+import { RecordCard } from '@/app/(dashboard)/domains/_components/RecordCard'
+import {
+  Stepper,
+  StepperContent,
+  StepperHeader,
+  StepperStep,
+  StepperTitle,
+} from '@/app/(dashboard)/domains/_components/Stepper'
+import { VerifySteps } from '@/app/(dashboard)/domains/_components/VerifySteps'
+import { Heading } from '@/components/brand/Heading'
+import { Text } from '@/components/brand/Text'
 import { BreadcrumbLink } from '@/components/shell/BreadcrumbLink'
 import { getSessionUser } from '@/lib/api/session'
 import { challengeRecordName } from '@/lib/dns/normalize'
@@ -35,46 +43,44 @@ const AddDomainRecordPage = async ({ params }: AddDomainRecordPageProps) => {
         <div>
           <BreadcrumbLink href="/domains" label="Domains" />
         </div>
-        <h1 className="font-heading text-xl font-semibold tracking-tight">Add domain</h1>
+        <Heading as="h1">Add domain</Heading>
       </header>
       <Stepper>
-        <StepperStep
-          index={1}
-          title="Domain"
-          state="done"
-          aside={
-            <span className="min-w-0 truncate text-sm text-muted-foreground">
+        <StepperStep index={1} state="done">
+          <StepperHeader>
+            <StepperTitle>Domain</StepperTitle>
+            <Text as="span" className="min-w-0 truncate text-muted-foreground">
               {domain.hostname}
-            </span>
-          }
-        />
-        <StepperStep
-          index={2}
-          title="Verify ownership"
-          state={isVerified ? 'done' : 'active'}
-          isLast
-        >
-          <div className="flex flex-col gap-4">
-            {isVerified ? (
-              <>
-                <p className="rounded-xl bg-success/10 px-5 py-3 text-sm font-medium text-success">
-                  {domain.hostname} is verified. Ownership is proven.
-                </p>
-                <RecordCard recordValue={record.value} recordName={recordName} recordStatus={recordStatus} />
-              </>
-            ) : (
-              <>
-                <VerifySteps
-                  domainId={domain.id}
-                  recordValue={record.value}
-                  recordName={recordName}
-                  challengeHost={domain.challengeHost}
-                  detectedProviderId={domain.dnsProviderId}
-                />
-                {diagnosis && <DiagnosisCard diagnosis={diagnosis} />}
-              </>
-            )}
-          </div>
+            </Text>
+          </StepperHeader>
+        </StepperStep>
+        <StepperStep index={2} state={isVerified ? 'done' : 'active'}>
+          <StepperHeader>
+            <StepperTitle>Verify ownership</StepperTitle>
+          </StepperHeader>
+          <StepperContent>
+            <div className="flex flex-col gap-4">
+              {isVerified ? (
+                <>
+                  <Text className="rounded-xl bg-success/10 px-5 py-3 font-medium text-success">
+                    {domain.hostname} is verified. Ownership is proven.
+                  </Text>
+                  <RecordCard recordValue={record.value} recordName={recordName} recordStatus={recordStatus} />
+                </>
+              ) : (
+                <>
+                  <VerifySteps
+                    domainId={domain.id}
+                    recordValue={record.value}
+                    recordName={recordName}
+                    challengeHost={domain.challengeHost}
+                    detectedProviderId={domain.dnsProviderId}
+                  />
+                  {diagnosis && <DiagnosisCard diagnosis={diagnosis} />}
+                </>
+              )}
+            </div>
+          </StepperContent>
         </StepperStep>
       </Stepper>
     </div>

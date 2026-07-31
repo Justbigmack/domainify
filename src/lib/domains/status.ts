@@ -3,6 +3,8 @@ import type { CheckVerdict } from '../dns/types'
 export const DOMAIN_STATUSES = ['pending', 'verified', 'temporary_failure', 'failed'] as const
 export type DomainStatus = (typeof DOMAIN_STATUSES)[number]
 
+export type RecordStatus = 'verified' | 'pending' | 'not_found'
+
 export type CheckSignal = 'found' | 'missing' | 'error'
 
 export type TransitionContext = {

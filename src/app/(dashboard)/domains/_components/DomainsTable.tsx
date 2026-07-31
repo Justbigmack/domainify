@@ -3,9 +3,9 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import type { ChangeEvent } from 'react'
-import { DomainRowActions } from '@/components/domains/DomainRowActions'
-import { DomainsMobileList } from '@/components/domains/DomainsMobileList'
-import { SortableHead } from '@/components/domains/SortableHead'
+import { DomainRowActions } from '@/app/(dashboard)/domains/_components/DomainRowActions'
+import { DomainsMobileList } from '@/app/(dashboard)/domains/_components/DomainsMobileList'
+import { SortableHead } from '@/app/(dashboard)/domains/_components/SortableHead'
 import { StatusTag } from '@/components/brand/StatusTag'
 import { Input } from '@/components/ui/input'
 import {

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { EllipsisIcon } from 'lucide-react'
-import { RemoveDomainDialog } from '@/components/domains/RemoveDomainDialog'
+import { RemoveDomainDialog } from '@/app/(dashboard)/domains/_components/RemoveDomainDialog'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,

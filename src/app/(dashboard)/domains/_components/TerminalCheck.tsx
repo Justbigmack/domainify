@@ -1,5 +1,6 @@
 import { ChevronDownIcon } from 'lucide-react'
 import { CopyButton } from '@/components/brand/CopyButton'
+import { Text } from '@/components/brand/Text'
 
 type TerminalCheckProps = {
   challengeHost: string
@@ -20,10 +21,10 @@ export const TerminalCheck = ({ challengeHost }: TerminalCheckProps) => {
           </code>
           <CopyButton value={digCommand} label="Copy dig command" className="text-muted-foreground" />
         </div>
-        <p className="text-xs leading-5 text-muted-foreground">
+        <Text variant="caption" className="leading-5">
           An empty answer means the record isn&apos;t live yet. Your terminal asks a cached
           resolver, so it can lag a minute behind what we see at your nameservers.
-        </p>
+        </Text>
       </div>
     </details>
   )

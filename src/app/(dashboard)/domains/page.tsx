@@ -3,9 +3,10 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { PlusIcon } from 'lucide-react'
 import { ApiViewPanel } from '@/components/api/ApiViewPanel'
-import { DomainsTable } from '@/components/domains/DomainsTable'
-import type { DomainListItem } from '@/components/domains/DomainsTable'
-import { EmptyState } from '@/components/domains/EmptyState'
+import { DomainsTable } from '@/app/(dashboard)/domains/_components/DomainsTable'
+import type { DomainListItem } from '@/app/(dashboard)/domains/_components/DomainsTable'
+import { EmptyState } from '@/app/(dashboard)/domains/_components/EmptyState'
+import { Heading } from '@/components/brand/Heading'
 import { Button } from '@/components/ui/button'
 import type { DomainRow } from '@/db/schema'
 import { getSessionUser } from '@/lib/api/session'
@@ -36,7 +37,7 @@ const DomainsPage = async () => {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8 lg:px-10">
       <header className="flex items-center justify-between gap-4 pl-5">
-        <h1 className="font-heading text-xl font-semibold tracking-tight">Domains</h1>
+        <Heading as="h1">Domains</Heading>
         <div className="flex items-center gap-2">
           <ApiViewPanel scope="collection" target={apiTarget} />
           {items.length > 0 && (

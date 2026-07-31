@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { RefreshCwIcon, Trash2Icon } from 'lucide-react'
 import { GhostButton } from '@/components/brand/GhostButton'
 import { Settings } from '@/components/brand/Settings'
+import { Text } from '@/components/brand/Text'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -112,7 +113,11 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove domain</AlertDialogTitle>
             <AlertDialogDescription>
-              Deletes <span className="font-medium text-foreground">{hostname}</span> and its full
+              Deletes{' '}
+              <Text as="span" className="font-medium">
+                {hostname}
+              </Text>{' '}
+              and its full
               check history. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>

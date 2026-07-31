@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from 'react'
 import type { ChangeEvent } from 'react'
+import { Text } from '@/components/brand/Text'
 import { Button } from '@/components/ui/button'
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -66,18 +67,18 @@ export const AddDomainForm = () => {
       </Field>
       {parsedDomain && (
         <div className="flex flex-col gap-2 rounded-xl border border-border/50 bg-card px-5 py-3 text-sm">
-          <p>
+          <Text>
             You&apos;re claiming <strong className="font-semibold">{parsedDomain.hostname}</strong>
             {!parsedDomain.isApex && (
-              <span className="text-muted-foreground">
+              <Text as="span" className="text-muted-foreground">
                 , a subdomain of {parsedDomain.registrableDomain}
-              </span>
+              </Text>
             )}
-          </p>
-          <p className="text-muted-foreground">
+          </Text>
+          <Text className="text-muted-foreground">
             We&apos;ll ask you to create a TXT record at{' '}
             <span className="break-all">{parsedDomain.challengeHost}</span>
-          </p>
+          </Text>
           {apexAlternative && (
             <Button
               type="button"
@@ -93,9 +94,9 @@ export const AddDomainForm = () => {
       )}
       <div className="flex flex-wrap items-center gap-3">
         {activeError && (
-          <p role="alert" className="min-w-0 px-5 text-sm leading-6 text-destructive">
+          <Text role="alert" className="min-w-0 px-5 leading-6 text-destructive">
             {activeError.message}
-          </p>
+          </Text>
         )}
         <Button type="submit" loading={isPending} className="ml-auto">
           Add domain

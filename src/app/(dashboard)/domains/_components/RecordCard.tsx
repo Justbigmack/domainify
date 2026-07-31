@@ -18,11 +18,10 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
+import type { RecordStatus } from '@/lib/domains/status'
 
 const VALUE_HEAD_LENGTH = 24
 const VALUE_TAIL_LENGTH = 8
-
-export type RecordStatus = 'verified' | 'pending' | 'not_found'
 
 const STATUS_LABELS: Record<RecordStatus, string> = {
   verified: 'Verified',

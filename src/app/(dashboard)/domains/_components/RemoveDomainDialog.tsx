@@ -11,6 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Text } from '@/components/brand/Text'
 import { deleteDomainAction } from '@/lib/domains/actions'
 
 type RemoveDomainDialogProps = {
@@ -40,7 +41,11 @@ export const RemoveDomainDialog = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Remove domain</AlertDialogTitle>
           <AlertDialogDescription>
-            Deletes <span className="font-medium text-foreground">{hostname}</span> and its full
+            Deletes{' '}
+            <Text as="span" className="font-medium">
+              {hostname}
+            </Text>{' '}
+            and its full
             check history. This cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
