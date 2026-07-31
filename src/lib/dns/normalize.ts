@@ -44,6 +44,13 @@ const extractHostname = (input: string): string | null => {
   }
 }
 
+export const challengeRecordName = (challengeHost: string, registrableDomain: string): string => {
+  const zoneSuffix = `.${registrableDomain}`
+  return challengeHost.endsWith(zoneSuffix)
+    ? challengeHost.slice(0, -zoneSuffix.length)
+    : challengeHost
+}
+
 export const normalizeDomainInput = (rawInput: string): NormalizationResult => {
   const trimmed = rawInput.trim().toLowerCase()
   if (!trimmed) {
@@ -60,23 +67,30 @@ export const normalizeDomainInput = (rawInput: string): NormalizationResult => {
   if (parsed.isIp) {
     return failure('ip_address', 'IP addresses cannot be claimed. Enter a domain name instead.')
   }
+  const labels = hostname.split('.')
+  if (!labels.every((label) => HOSTNAME_LABEL_PATTERN.test(label))) {
+    return failure(
+      'invalid_hostname',
+      `"${hostname}" is not a valid domain name. Labels can only contain letters, numbers, and hyphens.`,
+    )
+  }
   if (!parsed.domain || hostname === parsed.publicSuffix) {
-    return parsed.isPrivate
-      ? failure(
-          'platform_suffix',
-          `"${hostname}" belongs to a hosting platform, so its DNS is controlled by the platform operator.`,
-        )
-      : failure('public_suffix', `"${hostname}" is a public suffix, not a claimable domain.`)
+    if (parsed.isPrivate) {
+      return failure(
+        'platform_suffix',
+        `"${hostname}" belongs to a hosting platform, so its DNS is controlled by the platform operator.`,
+      )
+    }
+    if (hostname === parsed.publicSuffix) {
+      return failure('public_suffix', `"${hostname}" is a public suffix, not a claimable domain.`)
+    }
+    return failure('unparseable', `"${hostname}" does not look like a claimable domain name.`)
   }
   if (parsed.isPrivate) {
     return failure(
       'platform_suffix',
       `"${parsed.publicSuffix}" subdomains belong to the hosting platform, so their DNS cannot prove ownership.`,
     )
-  }
-  const labels = hostname.split('.')
-  if (!labels.every((label) => HOSTNAME_LABEL_PATTERN.test(label))) {
-    return failure('invalid_hostname', 'Domain labels can only contain letters, numbers, and hyphens.')
   }
   return {
     ok: true,

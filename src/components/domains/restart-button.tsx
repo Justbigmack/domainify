@@ -2,7 +2,8 @@
 
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+import { RotateCcwIcon } from 'lucide-react'
+import { Settings } from '@/components/brand/settings'
 import { restartVerificationAction } from '@/lib/domains/actions'
 
 type RestartButtonProps = {
@@ -21,8 +22,8 @@ export const RestartButton = ({ domainId }: RestartButtonProps) => {
   }
 
   return (
-    <Button onClick={handleRestart} disabled={isRestarting}>
-      {isRestarting ? 'Restarting…' : 'Restart verification'}
-    </Button>
+    <Settings.AlertAction icon={RotateCcwIcon} onClick={handleRestart} loading={isRestarting}>
+      Restart verification
+    </Settings.AlertAction>
   )
 }

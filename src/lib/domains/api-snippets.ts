@@ -17,11 +17,7 @@ export type ApiOperation = {
 
 const PLACEHOLDER_TARGET: ApiTarget = { id: '<domain-id>', hostname: 'example.com' }
 
-const SECURE_SESSION_COOKIE = '__Secure-better-auth.session_token'
-const SESSION_COOKIE = 'better-auth.session_token'
-
-export const sessionCookieName = (origin: string): string =>
-  origin.startsWith('https://') ? SECURE_SESSION_COOKIE : SESSION_COOKIE
+export const API_KEY_PLACEHOLDER = '<api-key>'
 
 type SnippetInput = {
   origin: string
@@ -34,8 +30,8 @@ const buildCurl = ({ origin, method, path, body }: SnippetInput): string => {
   const lines = [
     method === 'GET' ? `curl ${origin}${path} \\` : `curl -X ${method} ${origin}${path} \\`,
   ]
-  const cookieSuffix = body ? ' \\' : ''
-  lines.push(`  -b '${sessionCookieName(origin)}=<session-token>'${cookieSuffix}`)
+  const authSuffix = body ? ' \\' : ''
+  lines.push(`  -H 'Authorization: Bearer ${API_KEY_PLACEHOLDER}'${authSuffix}`)
   if (body) {
     lines.push(`  -H 'content-type: application/json' \\`)
     lines.push(`  -d '${JSON.stringify(body)}'`)
@@ -48,28 +44,40 @@ const toJsObjectLiteral = (body: Record<string, string>): string => {
   return `{ ${entries.join(', ')} }`
 }
 
-const buildFetch = ({ method, path, body }: SnippetInput): string => {
+const AUTH_HEADER_LITERAL = `authorization: 'Bearer ${API_KEY_PLACEHOLDER}'`
+
+const buildFetch = ({ origin, method, path, body }: SnippetInput): string => {
+  const url = `${origin}${path}`
   if (method === 'GET') {
-    return [`const response = await fetch('${path}')`, 'console.log(await response.json())'].join(
-      '\n',
-    )
+    return [
+      `const response = await fetch('${url}', {`,
+      `  headers: { ${AUTH_HEADER_LITERAL} },`,
+      '})',
+      'console.log(await response.json())',
+    ].join('\n')
   }
   if (method === 'DELETE') {
     return [
-      `const response = await fetch('${path}', { method: 'DELETE' })`,
+      `const response = await fetch('${url}', {`,
+      `  method: 'DELETE',`,
+      `  headers: { ${AUTH_HEADER_LITERAL} },`,
+      '})',
       'console.log(response.status)',
     ].join('\n')
   }
   if (!body) {
     return [
-      `const response = await fetch('${path}', { method: 'POST' })`,
+      `const response = await fetch('${url}', {`,
+      `  method: 'POST',`,
+      `  headers: { ${AUTH_HEADER_LITERAL} },`,
+      '})',
       'console.log(await response.json())',
     ].join('\n')
   }
   return [
-    `const response = await fetch('${path}', {`,
+    `const response = await fetch('${url}', {`,
     `  method: 'POST',`,
-    `  headers: { 'content-type': 'application/json' },`,
+    `  headers: { ${AUTH_HEADER_LITERAL}, 'content-type': 'application/json' },`,
     `  body: JSON.stringify(${toJsObjectLiteral(body)}),`,
     '})',
     'console.log(await response.json())',
@@ -107,7 +115,7 @@ const domainOperationInputs = (origin: string, target: ApiTarget): OperationInpu
     path: `/api/domains/${target.id}/verify`,
     origin,
     summary:
-      'Runs a live DNS check right now. One check per 5 seconds — beyond that you get a 429 with retryAfterMs.',
+      'Runs a live DNS check right now. One check per 5 seconds; beyond that you get a 429 with retryAfterMs.',
   },
   {
     key: 'restart',
@@ -154,7 +162,7 @@ export const buildCollectionOperations = (
       origin,
       body: { name: resolvedTarget.hostname },
       summary:
-        'Same normalization as the form — a full URL works, and validation errors come back as {error: {code, message}}.',
+        'Same normalization as the form: a full URL works, and validation errors come back as {error: {code, message}}.',
     },
     ...domainOperationInputs(origin, resolvedTarget),
   ]

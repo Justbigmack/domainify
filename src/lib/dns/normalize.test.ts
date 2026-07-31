@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { normalizeDomainInput } from './normalize'
+import { challengeRecordName, normalizeDomainInput } from './normalize'
 
 const expectError = (input: string, code: string) => {
   const result = normalizeDomainInput(input)
@@ -70,5 +70,29 @@ describe('normalizeDomainInput', () => {
 
   it('rejects labels with invalid characters', () => {
     expectError('exa_mple.com', 'invalid_hostname')
+  })
+
+  it('rejects punctuation-riddled input as invalid instead of calling it a public suffix', () => {
+    expectError('mycustomdomain.whateverdomain.,.,.com', 'invalid_hostname')
+  })
+})
+
+describe('challengeRecordName', () => {
+  it('returns the bare label for an apex domain', () => {
+    expect(challengeRecordName('_domainify-challenge.example.com', 'example.com')).toBe(
+      '_domainify-challenge',
+    )
+  })
+
+  it('keeps the subdomain labels for a non-apex domain', () => {
+    expect(challengeRecordName('_domainify-challenge.whatever.example.com', 'example.com')).toBe(
+      '_domainify-challenge.whatever',
+    )
+  })
+
+  it('keeps deep subdomain labels intact', () => {
+    expect(
+      challengeRecordName('_domainify-challenge.app.staging.example.co.uk', 'example.co.uk'),
+    ).toBe('_domainify-challenge.app.staging')
   })
 })

@@ -17,7 +17,7 @@ export const errorResponse = (status: number, code: string, message: string): Ne
   NextResponse.json({ error: { code, message } }, { status })
 
 export const unauthorizedResponse = (): NextResponse =>
-  errorResponse(HTTP_UNAUTHORIZED, 'unauthorized', 'Sign in to manage domains.')
+  errorResponse(HTTP_UNAUTHORIZED, 'unauthorized', 'Provide a valid API key or sign in.')
 
 export const invalidBodyResponse = (message: string): NextResponse =>
   errorResponse(HTTP_UNPROCESSABLE, 'invalid_body', message)

@@ -3,12 +3,37 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import type { ChangeEvent } from 'react'
-import { ChevronRightIcon, SearchIcon } from '@/components/icons'
+import { DomainRowActions } from '@/components/domains/domain-row-actions'
+import { DomainsMobileList } from '@/components/domains/domains-mobile-list'
+import { SortableHead } from '@/components/domains/sortable-head'
 import { StatusPill } from '@/components/domains/status-pill'
-import { cn } from '@/lib/cn'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import {
+  SETTINGS_TABLE_CELL_CLASS as TABLE_CELL_CLASS,
+  SETTINGS_TABLE_HEAD_CLASS as TABLE_HEAD_CLASS,
+} from '@/components/brand/settings'
+import { cn } from '@/lib/utils'
 import { DOMAIN_STATUSES } from '@/lib/domains/status'
 import type { DomainStatus } from '@/lib/domains/status'
-import { formatRelativeTime, formatTimeLeft } from '@/lib/format-time'
+import { INITIAL_SORT_DIRECTIONS, sortDomainItems } from '@/lib/domains/sort'
+import type { SortColumn, SortDirection } from '@/lib/domains/sort'
+import { formatRelativeTime, formatShortDate, formatTimeLeft } from '@/lib/format-time'
 
 export type DomainListItem = {
   id: string
@@ -36,6 +61,8 @@ type DomainsTableProps = {
 export const DomainsTable = ({ items }: DomainsTableProps) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [sortColumn, setSortColumn] = useState<SortColumn | null>(null)
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
   const [nowMs] = useState(() => Date.now())
 
   const normalizedQuery = searchQuery.trim().toLowerCase()
@@ -44,87 +71,116 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
       (statusFilter === 'all' || item.status === statusFilter) &&
       item.hostname.includes(normalizedQuery),
   )
+  const visibleItems = sortColumn
+    ? sortDomainItems(filteredItems, sortColumn, sortDirection)
+    : filteredItems
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value)
   }
 
-  const handleStatusFilterChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setStatusFilter(event.target.value as StatusFilter)
+  const handleStatusFilterChange = (value: StatusFilter | null) => {
+    if (value) setStatusFilter(value)
+  }
+
+  const handleSort = (column: SortColumn) => {
+    if (column === sortColumn) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+      return
+    }
+    setSortColumn(column)
+    setSortDirection(INITIAL_SORT_DIRECTIONS[column])
   }
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="relative min-w-0 flex-1 sm:max-w-xs">
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-ink-subtle" />
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            placeholder="Search domains…"
-            aria-label="Search domains"
-            className="h-10 w-full rounded-lg border border-border bg-surface pr-3 pl-9 text-base text-ink placeholder:text-ink-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:text-sm"
-          />
-        </div>
-        <select
-          value={statusFilter}
-          onChange={handleStatusFilterChange}
-          aria-label="Filter by status"
-          className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-        >
-          <option value="all">{FILTER_LABELS.all}</option>
-          {DOMAIN_STATUSES.map((status) => (
-            <option key={status} value={status}>
-              {FILTER_LABELS[status]}
-            </option>
-          ))}
-        </select>
+        <Input
+          type="search"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Search domains…"
+          aria-label="Search domains"
+          className="flex-1 bg-card px-5"
+        />
+        <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
+          <SelectTrigger
+            aria-label="Filter by status"
+            className="bg-card pr-4.5 text-muted-foreground"
+          >
+            <SelectValue>{FILTER_LABELS[statusFilter]}</SelectValue>
+          </SelectTrigger>
+          <SelectContent className="text-muted-foreground">
+            <SelectGroup>
+              <SelectItem value="all">{FILTER_LABELS.all}</SelectItem>
+              {DOMAIN_STATUSES.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {FILTER_LABELS[status]}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
-      <div className="overflow-x-auto rounded-xl border border-border bg-surface">
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b border-border text-xs tracking-wide text-ink-subtle uppercase">
-              <th scope="col" className="px-4 py-3 font-medium">
-                Domain
-              </th>
-              <th scope="col" className="px-4 py-3 font-medium">
-                Status
-              </th>
-              <th scope="col" className="px-4 py-3 font-medium">
-                Created
-              </th>
-              <th scope="col" className="px-4 py-3 font-medium">
-                Last checked
-              </th>
-              <th scope="col" className="w-10 px-4 py-3" aria-label="Open" />
-            </tr>
-          </thead>
-          <tbody>
-            {filteredItems.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-ink-muted">
+      <DomainsMobileList items={filteredItems} nowMs={nowMs} className="sm:hidden" />
+      <div className="hidden overflow-hidden rounded-xl border border-border/50 bg-card sm:block">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-border/40 hover:bg-transparent">
+              <SortableHead
+                label="Domain"
+                column="domain"
+                activeColumn={sortColumn}
+                direction={sortDirection}
+                onSort={handleSort}
+                className={TABLE_HEAD_CLASS}
+              />
+              <SortableHead
+                label="Status"
+                column="status"
+                activeColumn={sortColumn}
+                direction={sortDirection}
+                onSort={handleSort}
+                className={cn(TABLE_HEAD_CLASS, 'w-44')}
+              />
+              <SortableHead
+                label="Created"
+                column="created"
+                activeColumn={sortColumn}
+                direction={sortDirection}
+                onSort={handleSort}
+                className={cn(TABLE_HEAD_CLASS, 'w-36')}
+              />
+              <SortableHead
+                label="Last checked"
+                column="lastChecked"
+                activeColumn={sortColumn}
+                direction={sortDirection}
+                onSort={handleSort}
+                className={cn(TABLE_HEAD_CLASS, 'w-36')}
+              />
+              <TableHead className={cn(TABLE_HEAD_CLASS, 'w-24 text-right')}>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {visibleItems.length === 0 ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={5} className="px-5 py-10 text-center text-muted-foreground">
                   No domains match your filters.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
-              filteredItems.map((item) => (
-                <tr
-                  key={item.id}
-                  className={cn(
-                    'relative border-b border-border transition-colors last:border-b-0',
-                    'hover:bg-surface-muted/50',
-                  )}
-                >
-                  <td className="px-4 py-3.5">
+              visibleItems.map((item) => (
+                <TableRow key={item.id} className="relative border-border/40">
+                  <TableCell className={TABLE_CELL_CLASS}>
                     <Link
                       href={`/domains/${item.id}`}
-                      className="font-mono text-sm font-medium after:absolute after:inset-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                      className="font-medium outline-none after:absolute after:inset-0 focus-visible:ring-3 focus-visible:ring-ring/50"
                     >
                       {item.hostname}
                     </Link>
-                  </td>
-                  <td className="px-4 py-3.5">
+                  </TableCell>
+                  <TableCell className={TABLE_CELL_CLASS}>
                     <StatusPill
                       status={item.status}
                       detail={
@@ -133,21 +189,27 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
                           : null
                       }
                     />
-                  </td>
-                  <td className="px-4 py-3.5 text-ink-muted" suppressHydrationWarning>
-                    {formatRelativeTime(item.createdAt, nowMs)}
-                  </td>
-                  <td className="px-4 py-3.5 text-ink-muted" suppressHydrationWarning>
+                  </TableCell>
+                  <TableCell
+                    className={cn(TABLE_CELL_CLASS, 'text-[0.8125rem] text-muted-foreground')}
+                    suppressHydrationWarning
+                  >
+                    {formatShortDate(item.createdAt)}
+                  </TableCell>
+                  <TableCell
+                    className={cn(TABLE_CELL_CLASS, 'text-[0.8125rem] text-muted-foreground')}
+                    suppressHydrationWarning
+                  >
                     {item.lastCheckedAt ? formatRelativeTime(item.lastCheckedAt, nowMs) : '—'}
-                  </td>
-                  <td className="px-4 py-3.5 text-ink-subtle">
-                    <ChevronRightIcon className="size-4" />
-                  </td>
-                </tr>
+                  </TableCell>
+                  <TableCell className={cn(TABLE_CELL_CLASS, 'relative text-right')}>
+                    <DomainRowActions domainId={item.id} hostname={item.hostname} />
+                  </TableCell>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

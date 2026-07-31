@@ -1,0 +1,31 @@
+import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
+import { BackToAppLink } from '@/components/auth/back-to-app-link'
+import { LoginCard } from '@/components/auth/login-card'
+import { getSessionUser } from '@/lib/api/session'
+
+export const metadata: Metadata = {
+  title: 'Log in',
+}
+
+type LoginPageProps = {
+  searchParams: Promise<{ add?: string }>
+}
+
+const LoginPage = async ({ searchParams }: LoginPageProps) => {
+  const { add } = await searchParams
+  const sessionUser = await getSessionUser()
+  const isSignedIn = sessionUser !== null
+  const hasAddAccountParam = add !== undefined
+  const isAddingAccount = isSignedIn && hasAddAccountParam
+  if (isSignedIn && !isAddingAccount) redirect('/domains')
+
+  return (
+    <>
+      <LoginCard isAddingAccount={isAddingAccount} />
+      {isAddingAccount ? <BackToAppLink /> : null}
+    </>
+  )
+}
+
+export default LoginPage

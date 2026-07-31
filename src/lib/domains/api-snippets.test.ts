@@ -1,23 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import {
-  buildCollectionOperations,
-  buildDomainOperations,
-  sessionCookieName,
-} from './api-snippets'
+import { buildCollectionOperations, buildDomainOperations } from './api-snippets'
 
 const TARGET = { id: 'dom_123', hostname: 'andreikaras.com' }
 const HTTPS_ORIGIN = 'https://domainify.example'
 const HTTP_ORIGIN = 'http://localhost:3000'
-
-describe('sessionCookieName', () => {
-  it('uses the __Secure- prefix on https origins', () => {
-    expect(sessionCookieName(HTTPS_ORIGIN)).toBe('__Secure-better-auth.session_token')
-  })
-
-  it('uses the plain cookie name on http origins', () => {
-    expect(sessionCookieName(HTTP_ORIGIN)).toBe('better-auth.session_token')
-  })
-})
 
 describe('buildCollectionOperations', () => {
   it('covers every endpoint of the API surface', () => {
@@ -40,7 +26,7 @@ describe('buildCollectionOperations', () => {
     expect(create?.snippets.curl).toContain('{"name":"andreikaras.com"}')
     expect(create?.snippets.fetch).toContain("name: 'andreikaras.com'")
     expect(verify?.snippets.curl).toContain(`${HTTPS_ORIGIN}/api/domains/dom_123/verify`)
-    expect(verify?.snippets.fetch).toContain("'/api/domains/dom_123/verify'")
+    expect(verify?.snippets.fetch).toContain(`'${HTTPS_ORIGIN}/api/domains/dom_123/verify'`)
   })
 
   it('falls back to placeholders when the user has no domains', () => {
@@ -51,12 +37,20 @@ describe('buildCollectionOperations', () => {
     expect(get?.path).toBe('/api/domains/<domain-id>')
   })
 
-  it('includes the session cookie in every curl snippet', () => {
+  it('authenticates every snippet with a bearer API key', () => {
     const operations = buildCollectionOperations(HTTPS_ORIGIN, TARGET)
     for (const operation of operations) {
-      expect(operation.snippets.curl).toContain(
-        "-b '__Secure-better-auth.session_token=<session-token>'",
-      )
+      expect(operation.snippets.curl).toContain("-H 'Authorization: Bearer <api-key>'")
+      expect(operation.snippets.fetch).toContain("authorization: 'Bearer <api-key>'")
+    }
+  })
+
+  it('never mentions cookies or session internals', () => {
+    const operations = buildCollectionOperations(HTTPS_ORIGIN, TARGET)
+    for (const operation of operations) {
+      expect(operation.snippets.curl).not.toContain('cookie')
+      expect(operation.snippets.curl).not.toContain('better-auth')
+      expect(operation.snippets.fetch).not.toContain('better-auth')
     }
   })
 })

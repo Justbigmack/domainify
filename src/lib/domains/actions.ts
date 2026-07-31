@@ -31,7 +31,7 @@ export type CreateDomainState = { error: ActionError } | null
 
 const requireSessionUser = async () => {
   const sessionUser = await getSessionUser()
-  if (!sessionUser) redirect('/sign-in')
+  if (!sessionUser) redirect('/login')
   return sessionUser
 }
 

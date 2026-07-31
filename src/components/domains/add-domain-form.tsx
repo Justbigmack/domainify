@@ -3,6 +3,8 @@
 import { useActionState, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { Button } from '@/components/ui/button'
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
 import { normalizeDomainInput } from '@/lib/dns/normalize'
 import { createDomainAction } from '@/lib/domains/actions'
 
@@ -21,7 +23,7 @@ export const AddDomainForm = () => {
       ? parsedDomain.hostname.slice(WWW_PREFIX.length)
       : null
   const clientError = hasBlurred && hasInput && !normalized.ok ? normalized.error : null
-  const serverError = state?.error ?? null
+  const activeError = clientError ?? state?.error ?? null
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value)
@@ -37,12 +39,12 @@ export const AddDomainForm = () => {
   }
 
   return (
-    <form action={formAction} className="flex max-w-lg flex-col gap-4">
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="domain-name" className="text-sm font-medium">
+    <form action={formAction} className="flex flex-col gap-4">
+      <Field data-invalid={clientError !== null || undefined}>
+        <FieldLabel htmlFor="domain-name" className="px-5">
           Domain name
-        </label>
-        <input
+        </FieldLabel>
+        <Input
           id="domain-name"
           name="name"
           type="text"
@@ -55,48 +57,50 @@ export const AddDomainForm = () => {
           value={inputValue}
           onChange={handleInputChange}
           onBlur={handleInputBlur}
-          className="h-11 rounded-lg border border-border bg-surface px-3 font-mono text-base text-ink placeholder:font-sans placeholder:text-ink-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          aria-invalid={clientError !== null || undefined}
+          className="h-11 bg-card px-5"
         />
-        <p className="text-xs leading-5 text-ink-subtle">
-          Paste anything — a full URL works. We&apos;ll extract the domain.
-        </p>
-      </div>
+        <FieldDescription className="px-5">
+          Paste anything, even a full URL. We&apos;ll extract the domain.
+        </FieldDescription>
+      </Field>
       {parsedDomain && (
-        <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface-muted/40 px-4 py-3 text-sm">
+        <div className="flex flex-col gap-2 rounded-xl border border-border/50 bg-card px-5 py-3 text-sm">
           <p>
-            You&apos;re claiming <strong className="font-mono font-semibold">{parsedDomain.hostname}</strong>
+            You&apos;re claiming <strong className="font-semibold">{parsedDomain.hostname}</strong>
             {!parsedDomain.isApex && (
-              <span className="text-ink-muted"> — a subdomain of {parsedDomain.registrableDomain}</span>
+              <span className="text-muted-foreground">
+                , a subdomain of {parsedDomain.registrableDomain}
+              </span>
             )}
           </p>
-          <p className="text-ink-muted">
+          <p className="text-muted-foreground">
             We&apos;ll ask you to create a TXT record at{' '}
-            <code className="font-mono text-xs break-all">{parsedDomain.challengeHost}</code>
+            <span className="break-all">{parsedDomain.challengeHost}</span>
           </p>
           {apexAlternative && (
-            <button
+            <Button
               type="button"
+              variant="link"
+              size="sm"
               onClick={handleUseApex}
-              className="self-start rounded-md text-sm font-medium text-info underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+              className="self-start px-0"
             >
               Claim {apexAlternative} instead
-            </button>
+            </Button>
           )}
         </div>
       )}
-      {clientError && (
-        <p role="alert" className="text-sm leading-6 text-danger">
-          {clientError.message}
-        </p>
-      )}
-      {serverError && (
-        <p role="alert" className="text-sm leading-6 text-danger">
-          {serverError.message}
-        </p>
-      )}
-      <Button type="submit" disabled={isPending} className="self-start">
-        {isPending ? 'Adding…' : 'Add domain'}
-      </Button>
+      <div className="flex flex-wrap items-center gap-3">
+        {activeError && (
+          <p role="alert" className="min-w-0 px-5 text-sm leading-6 text-destructive">
+            {activeError.message}
+          </p>
+        )}
+        <Button type="submit" loading={isPending} className="ml-auto">
+          Add domain
+        </Button>
+      </div>
     </form>
   )
 }

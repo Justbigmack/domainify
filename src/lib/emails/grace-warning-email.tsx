@@ -47,7 +47,7 @@ export const GraceWarningEmail = ({
             </Button>
           </Section>
           <Text className="text-xs leading-5 text-neutral-400">
-            If you removed the record on purpose, you can ignore this email — the domain will
+            If you removed the record on purpose, you can ignore this email. The domain will
             move to failed status when the grace period ends.
           </Text>
         </Container>

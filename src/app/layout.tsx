@@ -1,19 +1,15 @@
 import type { Metadata } from 'next'
 import type { PropsWithChildren } from 'react'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Inter } from 'next/font/google'
+import { ThemeProvider } from '@/components/theme/theme-provider'
+import { THEME_STORAGE_KEY } from '@/lib/theme'
 import './globals.css'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const inter = Inter({
   subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
 })
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
-
-const THEME_INIT_SCRIPT = `(function(){try{var stored=localStorage.getItem('domainify-theme');var dark=stored?stored==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=dark?'dark':'light'}catch(error){document.documentElement.dataset.theme='light'}})()`
 
 export const metadata: Metadata = {
   title: {
@@ -27,12 +23,19 @@ const RootLayout = ({ children }: PropsWithChildren) => (
   <html
     lang="en"
     suppressHydrationWarning
-    className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    className={`${inter.variable} h-full antialiased`}
   >
-    <head>
-      <script id="theme-init" dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-    </head>
-    <body className="min-h-dvh bg-canvas font-sans text-ink">{children}</body>
+    <body className="min-h-dvh font-sans">
+      <ThemeProvider
+        attribute="data-theme"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+        storageKey={THEME_STORAGE_KEY}
+      >
+        {children}
+      </ThemeProvider>
+    </body>
   </html>
 )
 

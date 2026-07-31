@@ -3,6 +3,9 @@ export type DnsProvider = {
   displayName: string
   nsPatterns: readonly string[]
   dashboardUrl: string
+  logoDomain: string
+  hostFieldName: string
+  valueFieldName: string
   hostFieldHint: string
 }
 
@@ -12,63 +15,99 @@ export const DNS_PROVIDERS: readonly DnsProvider[] = [
     displayName: 'Cloudflare',
     nsPatterns: ['ns.cloudflare.com'],
     dashboardUrl: 'https://dash.cloudflare.com',
-    hostFieldHint: 'Cloudflare accepts the record name with or without your domain appended.',
+    logoDomain: 'cloudflare.com',
+    hostFieldName: 'Name',
+    valueFieldName: 'Content',
+    hostFieldHint:
+      'Cloudflare appends your domain to the Name field automatically, so paste just the prefix. Pasting the full name works too.',
   },
   {
     id: 'route53',
     displayName: 'Amazon Route 53',
     nsPatterns: ['awsdns-'],
     dashboardUrl: 'https://console.aws.amazon.com/route53',
-    hostFieldHint: 'Route 53 expects the full record name and appends nothing.',
+    logoDomain: 'aws.amazon.com',
+    hostFieldName: 'Record name',
+    valueFieldName: 'Value',
+    hostFieldHint:
+      'The console shows your domain after the Record name input and appends it for you, so type just the prefix.',
   },
   {
     id: 'godaddy',
     displayName: 'GoDaddy',
     nsPatterns: ['domaincontrol.com'],
     dashboardUrl: 'https://dcc.godaddy.com/manage-dns',
-    hostFieldHint: 'GoDaddy expects only the name prefix. It appends your domain automatically.',
+    logoDomain: 'godaddy.com',
+    hostFieldName: 'Name',
+    valueFieldName: 'Value',
+    hostFieldHint:
+      'GoDaddy appends your domain to the Name field automatically, so enter just the prefix.',
   },
   {
     id: 'namecheap',
     displayName: 'Namecheap',
     nsPatterns: ['registrar-servers.com'],
     dashboardUrl: 'https://ap.www.namecheap.com',
-    hostFieldHint: 'Namecheap expects only the name prefix in the Host field.',
+    logoDomain: 'namecheap.com',
+    hostFieldName: 'Host',
+    valueFieldName: 'Value',
+    hostFieldHint:
+      'Namecheap appends your domain to the Host field automatically, so enter just the prefix.',
   },
   {
     id: 'vercel',
     displayName: 'Vercel DNS',
     nsPatterns: ['vercel-dns.com'],
     dashboardUrl: 'https://vercel.com/dashboard/domains',
-    hostFieldHint: 'Vercel expects only the name prefix in the Name field.',
+    logoDomain: 'vercel.com',
+    hostFieldName: 'Name',
+    valueFieldName: 'Value',
+    hostFieldHint:
+      'Vercel appends your domain to the Name field automatically, so enter just the prefix.',
   },
   {
     id: 'porkbun',
     displayName: 'Porkbun',
     nsPatterns: ['porkbun.com'],
     dashboardUrl: 'https://porkbun.com/account/domainsSpeedy',
-    hostFieldHint: 'Porkbun expects only the name prefix. It appends your domain automatically.',
+    logoDomain: 'porkbun.com',
+    hostFieldName: 'Host',
+    valueFieldName: 'Answer',
+    hostFieldHint:
+      'Porkbun appends your domain to the Host field automatically, so enter just the prefix.',
   },
   {
     id: 'digitalocean',
     displayName: 'DigitalOcean',
     nsPatterns: ['digitalocean.com'],
     dashboardUrl: 'https://cloud.digitalocean.com/networking/domains',
-    hostFieldHint: 'DigitalOcean expects only the name prefix in the Hostname field.',
+    logoDomain: 'digitalocean.com',
+    hostFieldName: 'Hostname',
+    valueFieldName: 'Value',
+    hostFieldHint:
+      'DigitalOcean appends your domain to the Hostname field automatically, so enter just the prefix.',
   },
   {
     id: 'squarespace',
     displayName: 'Squarespace',
     nsPatterns: ['squarespacedns.com'],
     dashboardUrl: 'https://account.squarespace.com/domains',
-    hostFieldHint: 'Squarespace expects only the name prefix in the Host field.',
+    logoDomain: 'squarespace.com',
+    hostFieldName: 'Host',
+    valueFieldName: 'Data',
+    hostFieldHint:
+      'Squarespace appends your domain to the Host field automatically, so enter just the prefix.',
   },
   {
     id: 'google-cloud-dns',
     displayName: 'Google Cloud DNS',
     nsPatterns: ['googledomains.com'],
     dashboardUrl: 'https://console.cloud.google.com/net-services/dns',
-    hostFieldHint: 'Google Cloud DNS expects the full record name ending with a dot.',
+    logoDomain: 'cloud.google.com',
+    hostFieldName: 'DNS name',
+    valueFieldName: 'TXT data',
+    hostFieldHint:
+      'The console shows your domain after the DNS name input and appends it for you, so enter just the prefix.',
   },
 ] as const
 

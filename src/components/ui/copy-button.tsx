@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CheckIcon, CopyIcon } from '@/components/icons'
-import { cn } from '@/lib/cn'
+import { CheckIcon, CopyIcon } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
-const COPY_FEEDBACK_MS = 1500
+const COPY_FEEDBACK_MS = 1000
 
 type CopyButtonProps = {
   value: string
@@ -21,23 +22,45 @@ export const CopyButton = ({ value, label, className }: CopyButtonProps) => {
     return () => clearTimeout(timer)
   }, [hasCopied])
 
-  const handleCopy = () => {
-    void navigator.clipboard.writeText(value)
-    setHasCopied(true)
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value)
+      setHasCopied(true)
+    } catch {
+      return
+    }
   }
 
   return (
-    <button
-      type="button"
-      aria-label={hasCopied ? 'Copied' : label}
+    <Button
+      variant="ghost"
+      size="icon-xs"
       onClick={handleCopy}
+      aria-label={hasCopied ? 'Copied' : label}
       className={cn(
-        'inline-flex size-7 shrink-0 items-center justify-center rounded-md text-ink-subtle transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
-        { 'text-success hover:text-success': hasCopied },
+        'relative duration-200 active:scale-[0.97] motion-reduce:transition-none',
         className,
       )}
     >
-      {hasCopied ? <CheckIcon className="size-3.5" /> : <CopyIcon className="size-3.5" />}
-    </button>
+      <span
+        className={cn('transition-[scale,filter] duration-150 ease-out motion-reduce:transition-none', {
+          'scale-0 blur-sm': hasCopied,
+          'scale-100 blur-0': !hasCopied,
+        })}
+      >
+        <CopyIcon />
+      </span>
+      <span
+        className={cn(
+          'absolute transition-[scale,filter] duration-150 ease-out motion-reduce:transition-none',
+          {
+            'scale-100 blur-0': hasCopied,
+            'scale-0 blur-sm': !hasCopied,
+          },
+        )}
+      >
+        <CheckIcon />
+      </span>
+    </Button>
   )
 }

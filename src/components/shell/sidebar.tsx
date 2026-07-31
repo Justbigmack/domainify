@@ -1,43 +1,80 @@
-import { ExternalLinkIcon, GlobeIcon } from '@/components/icons'
-import { ThemeToggle } from '@/components/theme/theme-toggle'
-import { NavLink } from './nav-link'
-import { SignOutButton } from './sign-out-button'
+'use client'
 
-const README_URL = 'https://github.com/Justbigmack/domainify#readme'
+import { useState } from 'react'
+import { BookOpenIcon, GlobeIcon, PanelLeftIcon, SettingsIcon } from 'lucide-react'
+import { TooltipProvider } from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
+import { NavLink } from './nav-link'
+import { SIDEBAR_COLLAPSED_COOKIE, SIDEBAR_COOKIE_MAX_AGE_SECONDS } from './sidebar-cookie'
+import { SidebarTooltip } from './sidebar-tooltip'
+import { UserMenu } from './user-menu'
+
+const MUTED_ROW_CLASS =
+  'text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground'
 
 type SidebarProps = {
   userEmail: string
+  defaultCollapsed: boolean
 }
 
-export const Sidebar = ({ userEmail }: SidebarProps) => (
-  <aside className="flex w-60 shrink-0 flex-col border-r border-border bg-surface">
-    <div className="flex h-16 items-center gap-2.5 px-5">
-      <div className="flex size-7 items-center justify-center rounded-lg bg-primary text-primary-ink">
-        <GlobeIcon className="size-4" />
-      </div>
-      <span className="text-sm font-semibold tracking-tight">Domainify</span>
-    </div>
-    <nav aria-label="Main" className="flex flex-1 flex-col gap-1 px-3 pt-2">
-      <NavLink href="/domains">
-        <GlobeIcon className="size-4" />
-        Domains
-      </NavLink>
-      <a
-        href={README_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex h-10 items-center gap-2.5 rounded-lg px-3 text-sm font-medium text-ink-muted transition-colors hover:bg-surface-muted/60 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+export const Sidebar = ({ userEmail, defaultCollapsed }: SidebarProps) => {
+  const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed)
+
+  const handleToggle = () => {
+    const nextCollapsed = !isCollapsed
+    setIsCollapsed(nextCollapsed)
+    document.cookie = `${SIDEBAR_COLLAPSED_COOKIE}=${nextCollapsed}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE_SECONDS}`
+  }
+
+  return (
+    <TooltipProvider>
+      <aside
+        className={cn(
+          'sticky top-0 flex h-dvh shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground transition-[width] duration-200 ease-in-out motion-reduce:transition-none',
+          { 'w-16': isCollapsed, 'w-60': !isCollapsed },
+        )}
       >
-        <ExternalLinkIcon className="size-4" />
-        Docs
-      </a>
-    </nav>
-    <div className="flex items-center gap-2 border-t border-border px-4 py-3">
-      <span className="min-w-0 flex-1 truncate text-xs text-ink-muted" title={userEmail}>
-        {userEmail}
-      </span>
-      <ThemeToggle />
-      <SignOutButton />
-    </div>
-  </aside>
-)
+        <div
+          className={cn(
+            'relative mx-3 mt-3 transition-[height] duration-200 ease-in-out motion-reduce:transition-none',
+            { 'h-19': isCollapsed, 'h-9': !isCollapsed },
+          )}
+        >
+          <div
+            className={cn(
+              'transition-[margin] duration-200 ease-in-out motion-reduce:transition-none',
+              { 'mr-0': isCollapsed, 'mr-10': !isCollapsed },
+            )}
+          >
+            <UserMenu userEmail={userEmail} isCollapsed={isCollapsed} />
+          </div>
+          <SidebarTooltip label="Expand sidebar" isCollapsed={isCollapsed}>
+            <button
+              type="button"
+              onClick={handleToggle}
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              className={cn(
+                'absolute top-0 right-0 flex h-9 items-center justify-center rounded-md outline-none transition-[translate,width,color,background-color] duration-200 ease-in-out focus-visible:ring-3 focus-visible:ring-ring/50 motion-reduce:transition-none',
+                MUTED_ROW_CLASS,
+                { 'w-10 translate-y-10': isCollapsed, 'w-9 translate-y-0': !isCollapsed },
+              )}
+            >
+              <PanelLeftIcon className="size-4" />
+            </button>
+          </SidebarTooltip>
+        </div>
+        <nav aria-label="Main" className="flex flex-1 flex-col gap-1 px-3 pt-4">
+          <NavLink href="/domains" label="Domains" isCollapsed={isCollapsed}>
+            <GlobeIcon />
+          </NavLink>
+          <NavLink href="/settings/general" label="Settings" isCollapsed={isCollapsed}>
+            <SettingsIcon />
+          </NavLink>
+          <NavLink href="/docs" label="Docs" isCollapsed={isCollapsed}>
+            <BookOpenIcon />
+          </NavLink>
+        </nav>
+      </aside>
+    </TooltipProvider>
+  )
+}

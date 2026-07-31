@@ -129,9 +129,10 @@ describe('deriveSourcePills', () => {
 })
 
 describe('deriveDiagnosis', () => {
-  it('returns nothing for verified or missing checks', () => {
+  it('returns nothing for verified, missing, or no_record checks', () => {
     expect(deriveDiagnosis(baseDomain, null, EXPECTED)).toBeNull()
     expect(deriveDiagnosis(baseDomain, makeCheck({ verdict: 'verified' }), EXPECTED)).toBeNull()
+    expect(deriveDiagnosis(baseDomain, makeCheck({ verdict: 'no_record' }), EXPECTED)).toBeNull()
   })
 
   it('extracts expected and found token tails for wrong_value', () => {
@@ -151,5 +152,21 @@ describe('deriveDiagnosis', () => {
       EXPECTED,
     )
     expect(diagnosis?.body).toContain('_domainify-challenge.example.com.example.com')
+    expect(diagnosis?.body).toContain('Host field to just _domainify-challenge.')
+  })
+
+  it('doubles against the zone and keeps subdomain labels in the suggested host for misplaced_record', () => {
+    const subdomain: DomainView = {
+      ...baseDomain,
+      hostname: 'whatever.example.com',
+      challengeHost: '_domainify-challenge.whatever.example.com',
+    }
+    const diagnosis = deriveDiagnosis(
+      subdomain,
+      makeCheck({ verdict: 'misplaced_record' }),
+      EXPECTED,
+    )
+    expect(diagnosis?.body).toContain('_domainify-challenge.whatever.example.com.example.com')
+    expect(diagnosis?.body).toContain('Host field to just _domainify-challenge.whatever.')
   })
 })

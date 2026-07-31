@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { PlusIcon } from 'lucide-react'
 import { ApiViewPanel } from '@/components/api/api-view-panel'
 import { DomainsTable } from '@/components/domains/domains-table'
 import type { DomainListItem } from '@/components/domains/domains-table'
 import { EmptyState } from '@/components/domains/empty-state'
-import { PlusIcon } from '@/components/icons'
-import { buttonClassName } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import type { DomainRow } from '@/db/schema'
 import { getSessionUser } from '@/lib/api/session'
 import { listDomains } from '@/lib/domains/service'
@@ -26,7 +26,7 @@ const toListItem = (domain: DomainRow): DomainListItem => ({
 
 const DomainsPage = async () => {
   const sessionUser = await getSessionUser()
-  if (!sessionUser) redirect('/sign-in')
+  if (!sessionUser) redirect('/login')
 
   const userDomains = await listDomains(sessionUser.id)
   const items = userDomains.map(toListItem)
@@ -34,16 +34,16 @@ const DomainsPage = async () => {
   const apiTarget = firstItem ? { id: firstItem.id, hostname: firstItem.hostname } : null
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-8 lg:px-10">
-      <header className="flex items-center justify-between gap-4">
-        <h1 className="text-xl font-semibold tracking-tight">Domains</h1>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8 lg:px-10">
+      <header className="flex items-center justify-between gap-4 pl-5">
+        <h1 className="font-heading text-xl font-semibold tracking-tight">Domains</h1>
         <div className="flex items-center gap-2">
           <ApiViewPanel scope="collection" target={apiTarget} />
           {items.length > 0 && (
-            <Link href="/domains/add" className={buttonClassName('primary')}>
-              <PlusIcon className="size-4" />
+            <Button nativeButton={false} className="pr-5" render={<Link href="/domains/add" />}>
+              <PlusIcon data-icon="inline-start" />
               Add domain
-            </Link>
+            </Button>
           )}
         </div>
       </header>

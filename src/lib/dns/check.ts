@@ -105,7 +105,7 @@ export const checkDomainOwnership = async (
     return { verdict: 'verified', ...base }
   }
 
-  const misplacedHost = `${domain.challengeHost}.${domain.hostname}`
+  const misplacedHost = `${domain.challengeHost}.${domain.registrableDomain}`
   const misplacedLookup = nameservers
     ? await lookupTxt(misplacedHost, pickVerificationAddresses(nameservers).slice(0, 1))
     : await lookupTxtOverDoh(misplacedHost, 'cloudflare')

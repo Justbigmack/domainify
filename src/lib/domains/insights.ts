@@ -1,5 +1,6 @@
 import { containsExpectedValue } from '@/lib/dns/check'
-import { CHALLENGE_LABEL, RECORD_VALUE_PREFIX } from '@/lib/dns/constants'
+import { RECORD_VALUE_PREFIX } from '@/lib/dns/constants'
+import { challengeRecordName } from '@/lib/dns/normalize'
 import { TXT_LOOKUP_SOURCES } from '@/lib/dns/types'
 import type { CheckVerdict, TxtLookupSource } from '@/lib/dns/types'
 import { GRACE_WINDOW_MS } from './constants'
@@ -116,21 +117,12 @@ export const deriveDiagnosis = (
   check: CheckView | null,
   expectedValue: string,
 ): Diagnosis | null => {
-  if (!check || check.verdict === 'verified') return null
-  if (check.verdict === 'no_record') {
-    return {
-      verdict: check.verdict,
-      title: `No TXT record found yet at ${domain.challengeHost}`,
-      body: 'Providers usually apply changes in under a minute. We check automatically every 30 seconds while this page is open, so leave it open after adding the record.',
-      expectedTail: null,
-      foundTail: null,
-    }
-  }
+  if (!check || check.verdict === 'verified' || check.verdict === 'no_record') return null
   if (check.verdict === 'misplaced_record') {
     return {
       verdict: check.verdict,
       title: 'Your DNS provider doubled the record name',
-      body: `We found your token at ${domain.challengeHost}.${domain.hostname} — your provider added the domain to the Host field automatically. Edit the record and set the Host field to just ${CHALLENGE_LABEL}.`,
+      body: `We found your token at ${domain.challengeHost}.${domain.registrableDomain}, which means your provider added the domain to the Host field automatically. Edit the record and set the Host field to just ${challengeRecordName(domain.challengeHost, domain.registrableDomain)}.`,
       expectedTail: null,
       foundTail: null,
     }
@@ -150,7 +142,7 @@ export const deriveDiagnosis = (
   return {
     verdict: check.verdict,
     title: "We couldn't reach your domain's nameservers",
-    body: "This is usually a temporary outage (SERVFAIL or timeout), not a problem with your record. We'll keep retrying — it never counts against your verification window.",
+    body: "This is usually a temporary outage (SERVFAIL or timeout), not a problem with your record. We'll keep retrying, and it never counts against your verification window.",
     expectedTail: null,
     foundTail: null,
   }

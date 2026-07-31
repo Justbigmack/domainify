@@ -12,7 +12,6 @@ export type DomainPageData = {
   checks: CheckView[]
   record: RecordInstructions
   latestCheck: CheckView | null
-  pills: SourcePillView[]
   diagnosis: Diagnosis | null
   recordStatus: RecordStatus
 }
@@ -40,5 +39,5 @@ export const loadDomainPageData = async (
   const pills = deriveSourcePills(latestCheck, detail.record.value)
   const diagnosis = deriveDiagnosis(domain, latestCheck, detail.record.value)
   const recordStatus = deriveRecordStatus(domain, pills)
-  return { domain, checks, record: detail.record, latestCheck, pills, diagnosis, recordStatus }
+  return { domain, checks, record: detail.record, latestCheck, diagnosis, recordStatus }
 }

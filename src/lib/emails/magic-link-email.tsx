@@ -30,7 +30,7 @@ export const MagicLinkEmail = ({ magicLinkUrl }: MagicLinkEmailProps) => (
             Click the button below to sign in. This link expires shortly and can only be used
             once.
           </Text>
-          <Section className="py-4">
+          <Section className="py-4 text-center">
             <Button
               href={magicLinkUrl}
               className="rounded-md bg-neutral-900 px-6 py-3 text-sm font-medium text-white"

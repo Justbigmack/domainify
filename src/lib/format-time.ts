@@ -2,6 +2,26 @@ const MINUTE_MS = 60 * 1000
 const HOUR_MS = 60 * MINUTE_MS
 const DAY_MS = 24 * HOUR_MS
 
+const MONTH_LABELS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+] as const
+
+export const formatShortDate = (isoDate: string): string => {
+  const date = new Date(isoDate)
+  return `${MONTH_LABELS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
+}
+
 export const formatRelativeTime = (isoDate: string, nowMs: number): string => {
   const elapsedMs = nowMs - new Date(isoDate).getTime()
   if (elapsedMs < MINUTE_MS) return 'just now'

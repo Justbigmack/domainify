@@ -1,52 +1,46 @@
-import { cn } from '@/lib/cn'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 import type { DomainStatus } from '@/lib/domains/status'
 
 type StatusConfig = {
   label: string
-  pillClassName: string
-  dotClassName: string
+  badgeClassName: string
 }
 
 const STATUS_CONFIG: Record<DomainStatus, StatusConfig> = {
   pending: {
     label: 'Pending',
-    pillClassName: 'bg-info-soft text-info',
-    dotClassName: 'bg-info',
+    badgeClassName: 'bg-info/10 text-info',
   },
   verified: {
     label: 'Verified',
-    pillClassName: 'bg-success-soft text-success',
-    dotClassName: 'bg-success',
+    badgeClassName: 'bg-success/10 text-success',
   },
   temporary_failure: {
     label: 'Record missing',
-    pillClassName: 'bg-warning-soft text-warning',
-    dotClassName: 'bg-warning',
+    badgeClassName: 'bg-warning/10 text-warning',
   },
   failed: {
     label: 'Failed',
-    pillClassName: 'bg-danger-soft text-danger',
-    dotClassName: 'bg-danger',
+    badgeClassName: 'bg-destructive/10 text-destructive',
   },
 }
 
 type StatusPillProps = {
   status: DomainStatus
   detail?: string | null
+  className?: string
 }
 
-export const StatusPill = ({ status, detail }: StatusPillProps) => {
+export const StatusPill = ({ status, detail, className }: StatusPillProps) => {
   const config = STATUS_CONFIG[status]
   return (
-    <span
-      className={cn(
-        'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap',
-        config.pillClassName,
-      )}
+    <Badge
+      variant="outline"
+      className={cn('-ml-2 border-transparent', config.badgeClassName, className)}
     >
-      <span className={cn('size-1.5 shrink-0 rounded-full', config.dotClassName)} />
       {config.label}
       {detail ? <span className="opacity-80">· {detail}</span> : null}
-    </span>
+    </Badge>
   )
 }
