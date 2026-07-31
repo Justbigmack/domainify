@@ -26,13 +26,13 @@ const STATUS_CONFIG: Record<DomainStatus, StatusConfig> = {
   },
 }
 
-type StatusPillProps = {
+type StatusTagProps = {
   status: DomainStatus
   detail?: string | null
   className?: string
 }
 
-export const StatusPill = ({ status, detail, className }: StatusPillProps) => {
+export const StatusTag = ({ status, detail, className }: StatusTagProps) => {
   const config = STATUS_CONFIG[status]
   return (
     <Badge

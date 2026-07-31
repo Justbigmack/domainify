@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from 'lucide-react'
-import { CopyButton } from '@/components/ui/copy-button'
+import { CopyButton } from '@/components/brand/CopyButton'
 
 type TerminalCheckProps = {
   challengeHost: string

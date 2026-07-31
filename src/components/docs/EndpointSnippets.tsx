@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { CopyButton } from '@/components/ui/copy-button'
+import { CopyButton } from '@/components/brand/CopyButton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { buildCollectionOperations } from '@/lib/domains/apiSnippets'
 import type { ApiSnippetKind } from '@/lib/domains/apiSnippets'

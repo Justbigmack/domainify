@@ -8,7 +8,7 @@ import {
   settingsTableRowClass,
 } from '@/components/brand/Settings'
 import { Badge } from '@/components/ui/badge'
-import { CopyButton } from '@/components/ui/copy-button'
+import { CopyButton } from '@/components/brand/CopyButton'
 import {
   Table,
   TableBody,

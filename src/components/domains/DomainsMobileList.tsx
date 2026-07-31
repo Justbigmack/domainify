@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Accordion } from '@base-ui/react/accordion'
 import { ArrowUpRightIcon, ChevronDownIcon, Trash2Icon } from 'lucide-react'
 import { RemoveDomainDialog } from '@/components/domains/RemoveDomainDialog'
-import { StatusPill } from '@/components/domains/StatusPill'
+import { StatusTag } from '@/components/brand/StatusTag'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { DomainListItem } from '@/components/domains/DomainsTable'
@@ -55,7 +55,7 @@ const DomainMobileItem = ({ item, nowMs, isFirst }: DomainMobileItemProps) => {
         >
           <span className="flex min-w-0 flex-1 items-center gap-2.5">
             <span className="truncate text-sm font-medium">{item.hostname}</span>
-            <StatusPill
+            <StatusTag
               status={item.status}
               detail={
                 item.status === 'temporary_failure' && item.graceExpiresAt

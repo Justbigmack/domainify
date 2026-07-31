@@ -137,6 +137,7 @@
     @apply bg-background text-foreground overscroll-none;
   }
   html {
-    @apply font-sans overscroll-none;
+    @apply font-sans antialiased overscroll-none;
+    font-synthesis: none;
   }
 }

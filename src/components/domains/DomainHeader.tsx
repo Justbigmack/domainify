@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { ApiViewPanel } from '@/components/api/ApiViewPanel'
-import { StatusPill } from '@/components/domains/StatusPill'
+import { StatusTag } from '@/components/brand/StatusTag'
 import { BreadcrumbLink } from '@/components/shell/BreadcrumbLink'
 import { DNS_PROVIDERS } from '@/lib/dns/providers'
 import { formatRelativeTime, formatTimeLeft } from '@/lib/formatTime'
@@ -35,7 +35,7 @@ export const DomainHeader = ({ domain }: DomainHeaderProps) => {
         <h1 className="truncate text-2xl leading-9 font-medium">Edit domain</h1>
         <p className="mt-1 text-sm">
           <span className="font-semibold break-all">{domain.hostname}</span>
-          <StatusPill status={domain.status} className="ml-2 align-middle" />
+          <StatusTag status={domain.status} className="ml-2 align-middle" />
         </p>
         <p className="mt-0.5 text-sm text-muted-foreground" suppressHydrationWarning>
           Added {formatRelativeTime(domain.createdAt, nowMs)}

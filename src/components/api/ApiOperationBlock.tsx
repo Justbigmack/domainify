@@ -1,5 +1,5 @@
 import { MethodBadge } from '@/components/docs/MethodLabel'
-import { CopyButton } from '@/components/ui/copy-button'
+import { CopyButton } from '@/components/brand/CopyButton'
 import type { ApiOperation, ApiSnippetKind } from '@/lib/domains/apiSnippets'
 
 type ApiOperationBlockProps = {

@@ -12,7 +12,7 @@ import {
   findDnsProvider,
 } from '@/components/domains/ProviderSelect'
 import { TerminalCheck } from '@/components/domains/TerminalCheck'
-import { CopyButton } from '@/components/ui/copy-button'
+import { CopyButton } from '@/components/brand/CopyButton'
 import { Spinner } from '@/components/ui/spinner'
 import { pollDomainAction, verifyDomainAction } from '@/lib/domains/actions'
 import { cn } from '@/lib/utils'

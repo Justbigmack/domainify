@@ -6,7 +6,7 @@ import type { ChangeEvent } from 'react'
 import { DomainRowActions } from '@/components/domains/DomainRowActions'
 import { DomainsMobileList } from '@/components/domains/DomainsMobileList'
 import { SortableHead } from '@/components/domains/SortableHead'
-import { StatusPill } from '@/components/domains/StatusPill'
+import { StatusTag } from '@/components/brand/StatusTag'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -181,7 +181,7 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
                     </Link>
                   </TableCell>
                   <TableCell className={TABLE_CELL_CLASS}>
-                    <StatusPill
+                    <StatusTag
                       status={item.status}
                       detail={
                         item.status === 'temporary_failure' && item.graceExpiresAt
