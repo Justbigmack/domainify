@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { isUniqueViolation } from './errors'
+import {
+  DomainInputInvalidError,
+  DomainNotFoundError,
+  DomainStateError,
+  DuplicateDomainError,
+  VerifyCooldownError,
+  isUniqueViolation,
+  toErrorDetail,
+} from './errors'
 
 const uniqueViolation = () => Object.assign(new Error('duplicate key value'), { code: '23505' })
 
@@ -28,5 +36,53 @@ describe('isUniqueViolation', () => {
   it('rejects non-error values', () => {
     expect(isUniqueViolation(null)).toBe(false)
     expect(isUniqueViolation('23505')).toBe(false)
+  })
+})
+
+describe('toErrorDetail', () => {
+  it('maps DomainNotFoundError', () => {
+    expect(toErrorDetail(new DomainNotFoundError())).toEqual({
+      status: 404,
+      code: 'not_found',
+      message: 'Domain not found',
+    })
+  })
+
+  it('maps DomainInputInvalidError', () => {
+    const detail = toErrorDetail(
+      new DomainInputInvalidError({ code: 'invalid_hostname', message: 'Enter a valid domain.' }),
+    )
+    expect(detail).toEqual({
+      status: 422,
+      code: 'invalid_hostname',
+      message: 'Enter a valid domain.',
+    })
+  })
+
+  it('maps DuplicateDomainError', () => {
+    const detail = toErrorDetail(new DuplicateDomainError('app.example.com'))
+    expect(detail?.status).toBe(409)
+    expect(detail?.code).toBe('duplicate')
+    expect(detail?.message).toContain('app.example.com')
+  })
+
+  it('maps DomainStateError', () => {
+    expect(toErrorDetail(new DomainStateError('nope'))).toEqual({
+      status: 409,
+      code: 'invalid_state',
+      message: 'nope',
+    })
+  })
+
+  it('maps VerifyCooldownError', () => {
+    const detail = toErrorDetail(new VerifyCooldownError(3200))
+    expect(detail?.status).toBe(429)
+    expect(detail?.code).toBe('cooldown')
+    expect(detail?.retryAfterMs).toBe(3200)
+  })
+
+  it('returns null for unmapped errors and non-error input', () => {
+    expect(toErrorDetail(new Error('boom'))).toBeNull()
+    expect(toErrorDetail(null)).toBeNull()
   })
 })

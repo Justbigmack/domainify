@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/card'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { authClient } from '@/lib/authClient'
+import { authClient } from '@/lib/auth/client'
 
 type SendStatus = 'idle' | 'sending' | 'sent'
 

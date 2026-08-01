@@ -61,7 +61,7 @@ const DomainsOverviewPage = () => (
         of the host (for example <DocsCode>_domainify-challenge.app</DocsCode> when your zone is{' '}
         <DocsCode>example.com</DocsCode>); the app shows the right form for your provider.
       </DocsP>
-      <Callout tone="warning">
+      <Callout tone="info">
         The record has to stay in place. Verification is continuous — if the record disappears
         later, the domain enters a 72-hour grace period and eventually fails.
       </Callout>

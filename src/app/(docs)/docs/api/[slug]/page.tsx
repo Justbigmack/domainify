@@ -4,10 +4,10 @@ import { CodeBlock } from '@/app/(docs)/docs/_components/CodeBlock'
 import { DocsArticle, DocsSection, DocsSubheading } from '@/app/(docs)/docs/_components/DocsArticle'
 import { DocsTable } from '@/app/(docs)/docs/_components/DocsTable'
 import { EndpointSnippets } from '@/app/(docs)/docs/_components/EndpointSnippets'
-import { MethodBadge } from '@/app/(docs)/docs/_components/MethodLabel'
+import { MethodBadge } from '@/components/brand/MethodLabel'
 import { ParamList } from '@/app/(docs)/docs/_components/ParamList'
 import { DocsCode, DocsP } from '@/app/(docs)/docs/_components/Prose'
-import { ENDPOINT_DOCS, findEndpointDoc } from '@/lib/docs/apiReference'
+import { ENDPOINT_DOCS, findEndpointDoc } from '@/app/(docs)/docs/_lib/apiReference'
 
 type EndpointPageParams = {
   params: Promise<{ slug: string }>

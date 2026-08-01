@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 import { Text } from '@/components/brand/Text'
-import type { EndpointField } from '@/lib/docs/apiReference'
+import type { EndpointField } from '@/app/(docs)/docs/_lib/apiReference'
 
 type ParamListProps = {
   fields: EndpointField[]
@@ -18,7 +18,7 @@ export const ParamList = ({ fields }: ParamListProps) => (
           <Text as="span" variant="caption">{field.type}</Text>
           <span
             className={cn('text-xs', {
-              'text-warning': field.required,
+              'font-medium text-muted-foreground': field.required,
               'text-muted-foreground/70': !field.required,
             })}
           >

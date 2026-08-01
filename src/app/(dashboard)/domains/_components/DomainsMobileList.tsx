@@ -10,7 +10,7 @@ import { Text } from '@/components/brand/Text'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { DomainListItem } from '@/app/(dashboard)/domains/_components/DomainsTable'
-import { formatRelativeTime, formatShortDate, formatTimeLeft } from '@/lib/formatTime'
+import { formatRelativeTime, formatShortDate } from '@/lib/formatTime'
 
 const PANEL_CLASS =
   'h-[var(--accordion-panel-height)] overflow-hidden transition-[height] duration-200 ease-out data-starting-style:h-0 data-ending-style:h-0 motion-reduce:transition-none'
@@ -52,24 +52,14 @@ const DomainMobileItem = ({ item, nowMs, isFirst }: DomainMobileItemProps) => {
       <Accordion.Header className="m-0">
         <Accordion.Trigger
           className={cn(
-            'group flex w-full items-center gap-4 px-5 py-4 text-left',
+            'group flex w-full items-center gap-3 px-5 py-4 text-left',
             TRIGGER_FOCUS_CLASS,
           )}
         >
-          <span className="flex min-w-0 flex-1 items-center gap-2.5">
-            <Text as="span" className="truncate font-medium">
-              {item.hostname}
-            </Text>
-            <StatusTag
-              status={item.status}
-              detail={
-                item.status === 'temporary_failure' && item.graceExpiresAt
-                  ? formatTimeLeft(item.graceExpiresAt, nowMs)
-                  : null
-              }
-              className="ml-0 shrink-0"
-            />
-          </span>
+          <Text as="span" className="min-w-0 flex-1 truncate font-medium">
+            {item.hostname}
+          </Text>
+          <StatusTag status={item.status} className="ml-0 shrink-0" />
           <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 ease-out group-data-panel-open:rotate-180 motion-reduce:transition-none" />
         </Accordion.Trigger>
       </Accordion.Header>

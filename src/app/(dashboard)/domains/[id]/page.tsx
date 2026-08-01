@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
-import { TriangleAlertIcon } from 'lucide-react'
+import { CircleCheckIcon, TriangleAlertIcon } from 'lucide-react'
 import { AlertBanner } from '@/components/brand/AlertBanner'
 import { Text } from '@/components/brand/Text'
 import {
@@ -9,17 +9,15 @@ import {
   SectionDescription,
   SectionHeader,
   SectionTitle,
-} from '@/components/Section'
+} from '@/components/brand/Section'
 import { DangerZone } from '@/app/(dashboard)/domains/_components/DangerZone'
 import { DiagnosisCard } from '@/app/(dashboard)/domains/_components/DiagnosisCard'
-import { DomainEvents } from '@/app/(dashboard)/domains/_components/DomainEvents'
 import { DomainHeader } from '@/app/(dashboard)/domains/_components/DomainHeader'
 import { RecordCard } from '@/app/(dashboard)/domains/_components/RecordCard'
 import { RestartButton } from '@/app/(dashboard)/domains/_components/RestartButton'
 import { VerifySteps } from '@/app/(dashboard)/domains/_components/VerifySteps'
-import { getSessionUser } from '@/lib/api/session'
+import { getSessionUser } from '@/lib/auth/session'
 import { challengeRecordName } from '@/lib/dns/normalize'
-import { deriveDomainEvents } from '@/lib/domains/insights'
 import { loadDomainPageData } from '@/lib/domains/pageData'
 import { getDomainForUser } from '@/lib/domains/service'
 import type { DomainStatus } from '@/lib/domains/status'
@@ -55,9 +53,8 @@ const DomainDetailPage = async ({ params }: DomainDetailPageProps) => {
   const data = await loadDomainPageData(sessionUser.id, id)
   if (!data) notFound()
 
-  const { domain, checks, record, diagnosis, recordStatus } = data
+  const { domain, record, diagnosis, recordStatus } = data
   const recordName = challengeRecordName(domain.challengeHost, domain.registrableDomain)
-  const events = deriveDomainEvents(domain, checks, record.value)
   const isFailed = domain.status === 'failed'
   const isVerified = domain.status === 'verified'
   const isSettled = isFailed || isVerified
@@ -65,7 +62,20 @@ const DomainDetailPage = async ({ params }: DomainDetailPageProps) => {
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-8 lg:px-10">
       <DomainHeader domain={domain} />
-      <DomainEvents status={domain.status} events={events} />
+      {isVerified && (
+        <AlertBanner tone="success" icon={CircleCheckIcon}>
+          <Text className="font-medium text-inherit">
+            Your domain is verified. It’s ready to use.
+          </Text>
+        </AlertBanner>
+      )}
+      {domain.status === 'temporary_failure' && (
+        <AlertBanner tone="destructive" icon={TriangleAlertIcon}>
+          <Text className="font-medium text-inherit">
+            We can&apos;t find verification DNS records. Add the records below back to stay verified.
+          </Text>
+        </AlertBanner>
+      )}
       {isFailed && (
         <AlertBanner
           tone="destructive"
@@ -76,15 +86,15 @@ const DomainDetailPage = async ({ params }: DomainDetailPageProps) => {
             We couldn&apos;t find the record within the 72-hour window.
           </Text>
           <Text className="text-destructive/80">
-            Restarting mints a fresh token and opens a new 72-hour window.
+            You need to generate a new token and start the verification process again.
           </Text>
         </AlertBanner>
       )}
       <Section>
         <SectionHeader>
-          <SectionTitle>DNS record</SectionTitle>
+          <SectionTitle>DNS records</SectionTitle>
           <SectionDescription>
-            The TXT record we use to prove ownership of this domain.
+            The records we use to verify ownership of this domain.
           </SectionDescription>
         </SectionHeader>
         {isSettled ? (

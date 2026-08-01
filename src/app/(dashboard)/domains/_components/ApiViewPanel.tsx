@@ -75,7 +75,10 @@ export const ApiViewPanel = ({ scope, target }: ApiViewPanelProps) => {
             </ToggleGroup>
             <p className="rounded-lg border bg-card px-3 py-2.5 text-xs leading-5 text-muted-foreground">
               Snippets authenticate with an API key. Create one on the{' '}
-              <Link href="/keys" className="font-medium text-foreground underline underline-offset-2">
+              <Link
+                href="/settings/api-keys"
+                className="font-medium text-foreground underline underline-offset-2"
+              >
                 API keys
               </Link>{' '}
               page and replace {'<api-key>'}.

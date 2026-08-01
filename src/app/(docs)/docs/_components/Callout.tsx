@@ -1,18 +1,16 @@
 import type { PropsWithChildren } from 'react'
-import { InfoIcon, TriangleAlertIcon } from 'lucide-react'
+import { InfoIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-type CalloutTone = 'info' | 'warning'
+type CalloutTone = 'info'
 
 const TONE_CLASSES: Record<CalloutTone, string> = {
   info: 'border-info/20 bg-info/[0.06] text-info',
-  warning: 'border-warning/20 bg-warning/[0.06] text-warning',
 }
 
 const TONE_ICONS: Record<CalloutTone, LucideIcon> = {
   info: InfoIcon,
-  warning: TriangleAlertIcon,
 }
 
 type CalloutProps = PropsWithChildren<{

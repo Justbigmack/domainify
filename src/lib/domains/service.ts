@@ -1,3 +1,5 @@
+import { cache } from 'react'
+import { after } from 'next/server'
 import { and, asc, desc, eq, inArray, lte } from 'drizzle-orm'
 import { db } from '@/db'
 import { domains, verificationChecks } from '@/db/schema'
@@ -11,6 +13,7 @@ import type { CheckRunResult } from './checks'
 import {
   MANUAL_CHECK_COOLDOWN_MS,
   PENDING_WINDOW_MS,
+  POLL_CHECK_COOLDOWN_MS,
   STALE_CHECK_THRESHOLD_MS,
 } from './constants'
 import {
@@ -21,10 +24,13 @@ import {
   VerifyCooldownError,
   isUniqueViolation,
 } from './errors'
+import { cooldownRemainingMs } from './schedule'
 import { generateVerificationToken } from './token'
 
 const RECENT_CHECKS_LIMIT = 20
 const CRON_BATCH_SIZE = 25
+const CRON_CONCURRENCY = 5
+const SWEEP_DEADLINE_MS = 250 * 1000
 const CHECKABLE_STATUSES = ['pending', 'verified', 'temporary_failure'] as const
 
 export type RecordInstructions = {
@@ -52,14 +58,14 @@ const applyDetectedProvider = async (domain: DomainRow): Promise<void> => {
   await db.update(domains).set({ dnsProviderId: provider.id }).where(eq(domains.id, domain.id))
 }
 
-const getOwnedDomain = async (userId: string, domainId: string): Promise<DomainRow> => {
+const getOwnedDomain = cache(async (userId: string, domainId: string): Promise<DomainRow> => {
   const [domain] = await db
     .select()
     .from(domains)
     .where(and(eq(domains.id, domainId), eq(domains.userId, userId)))
   if (!domain) throw new DomainNotFoundError()
   return domain
-}
+})
 
 export const getDomainForUser = (userId: string, domainId: string): Promise<DomainRow> =>
   getOwnedDomain(userId, domainId)
@@ -85,7 +91,7 @@ export const createDomain = async (userId: string, rawInput: string): Promise<Do
         nextCheckAt: now,
       })
       .returning()
-    void applyDetectedProvider(created).catch(() => undefined)
+    after(() => applyDetectedProvider(created).catch(() => undefined))
     return created
   } catch (error) {
     if (isUniqueViolation(error)) throw new DuplicateDomainError(normalized.domain.hostname)
@@ -102,10 +108,9 @@ export const getDomainDetail = async (
   userId: string,
   domainId: string,
 ): Promise<DomainDetail> => {
-  let domain = await getOwnedDomain(userId, domainId)
+  const domain = await getOwnedDomain(userId, domainId)
   if (isStale(domain, new Date())) {
-    const result = await runCheck(domain, 'on_read')
-    domain = result.domain
+    after(() => runCheck(domain, 'on_read').catch(() => undefined))
   }
   const checks = await db
     .select()
@@ -122,18 +127,16 @@ export const verifyDomain = async (
 ): Promise<CheckRunResult> => {
   const domain = await getOwnedDomain(userId, domainId)
   const now = new Date()
-  if (domain.lastManualCheckAt !== null) {
-    const elapsedMs = now.getTime() - domain.lastManualCheckAt.getTime()
-    if (elapsedMs < MANUAL_CHECK_COOLDOWN_MS) {
-      throw new VerifyCooldownError(MANUAL_CHECK_COOLDOWN_MS - elapsedMs)
-    }
-  }
+  const remainingMs = cooldownRemainingMs(domain.lastManualCheckAt, MANUAL_CHECK_COOLDOWN_MS, now)
+  if (remainingMs > 0) throw new VerifyCooldownError(remainingMs)
   await db.update(domains).set({ lastManualCheckAt: now }).where(eq(domains.id, domain.id))
   return runCheck({ ...domain, lastManualCheckAt: now }, 'manual')
 }
 
 export const pollDomain = async (userId: string, domainId: string): Promise<CheckRunResult> => {
   const domain = await getOwnedDomain(userId, domainId)
+  const remainingMs = cooldownRemainingMs(domain.lastCheckedAt, POLL_CHECK_COOLDOWN_MS, new Date())
+  if (remainingMs > 0) throw new VerifyCooldownError(remainingMs)
   return runCheck(domain, 'poll')
 }
 
@@ -189,7 +192,13 @@ export const deleteDomain = async (userId: string, domainId: string): Promise<vo
   await db.delete(domains).where(eq(domains.id, domain.id))
 }
 
-export const sweepDueDomains = async (now: Date): Promise<number> => {
+export type SweepResult = {
+  checked: number
+  failed: number
+  remaining: number
+}
+
+export const sweepDueDomains = async (now: Date): Promise<SweepResult> => {
   const dueDomains = await db
     .select()
     .from(domains)
@@ -198,8 +207,16 @@ export const sweepDueDomains = async (now: Date): Promise<number> => {
     )
     .orderBy(asc(domains.nextCheckAt))
     .limit(CRON_BATCH_SIZE)
-  for (const domain of dueDomains) {
-    await runCheck(domain, 'cron')
+  const deadlineAt = now.getTime() + SWEEP_DEADLINE_MS
+  let checked = 0
+  let failed = 0
+  let nextIndex = 0
+  while (nextIndex < dueDomains.length && Date.now() < deadlineAt) {
+    const chunk = dueDomains.slice(nextIndex, nextIndex + CRON_CONCURRENCY)
+    const results = await Promise.allSettled(chunk.map((domain) => runCheck(domain, 'cron')))
+    checked += results.filter((result) => result.status === 'fulfilled').length
+    failed += results.filter((result) => result.status === 'rejected').length
+    nextIndex += chunk.length
   }
-  return dueDomains.length
+  return { checked, failed, remaining: dueDomains.length - nextIndex }
 }

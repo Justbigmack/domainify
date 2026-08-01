@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { ForgotPasswordCard } from '@/app/(auth)/_components/ForgotPasswordCard'
-import { getSessionUser } from '@/lib/api/session'
+import { getSessionUser } from '@/lib/auth/session'
 
 export const metadata: Metadata = {
   title: 'Forgot password',

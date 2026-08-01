@@ -21,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { authClient } from '@/lib/authClient'
+import { authClient } from '@/lib/auth/client'
 
 type ApiKeyRowActionsProps = {
   keyId: string

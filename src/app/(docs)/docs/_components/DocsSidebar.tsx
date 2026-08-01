@@ -1,11 +1,12 @@
-import { DocsBackLink } from './DocsBackLink'
+import { BackToAppLink } from '@/components/brand/BackToAppLink'
+import { Sidebar } from '@/components/brand/Sidebar'
 import { DocsNavList } from './DocsNavList'
 
 export const DocsSidebar = () => (
-  <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col overflow-y-auto border-r bg-sidebar text-sidebar-foreground md:flex">
+  <Sidebar className="overflow-y-auto">
     <div className="flex h-14 shrink-0 items-center px-6">
-      <DocsBackLink />
+      <BackToAppLink />
     </div>
     <DocsNavList />
-  </aside>
+  </Sidebar>
 )

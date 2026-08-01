@@ -1,7 +1,6 @@
 'use client'
 
 import { useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import { RotateCcwIcon } from 'lucide-react'
 import { AlertBannerAction } from '@/components/brand/AlertBanner'
 import { restartVerificationAction } from '@/lib/domains/actions'
@@ -11,13 +10,11 @@ type RestartButtonProps = {
 }
 
 export const RestartButton = ({ domainId }: RestartButtonProps) => {
-  const router = useRouter()
   const [isRestarting, startTransition] = useTransition()
 
   const handleRestart = () => {
     startTransition(async () => {
       await restartVerificationAction(domainId)
-      router.refresh()
     })
   }
 

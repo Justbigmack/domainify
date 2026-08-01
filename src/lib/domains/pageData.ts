@@ -5,13 +5,11 @@ import type { Diagnosis, SourcePillView } from './insights'
 import { getDomainDetail } from './service'
 import type { RecordInstructions } from './service'
 import { toCheckView, toDomainView } from './view'
-import type { CheckView, DomainView } from './view'
+import type { DomainView } from './view'
 
 export type DomainPageData = {
   domain: DomainView
-  checks: CheckView[]
   record: RecordInstructions
-  latestCheck: CheckView | null
   diagnosis: Diagnosis | null
   recordStatus: RecordStatus
 }
@@ -34,10 +32,9 @@ export const loadDomainPageData = async (
     throw error
   }
   const domain = toDomainView(detail.domain)
-  const checks = detail.checks.map(toCheckView)
-  const latestCheck = checks[0] ?? null
+  const latestCheck = detail.checks.map(toCheckView)[0] ?? null
   const pills = deriveSourcePills(latestCheck, detail.record.value)
   const diagnosis = deriveDiagnosis(domain, latestCheck, detail.record.value)
   const recordStatus = deriveRecordStatus(domain, pills)
-  return { domain, checks, record: detail.record, latestCheck, diagnosis, recordStatus }
+  return { domain, record: detail.record, diagnosis, recordStatus }
 }

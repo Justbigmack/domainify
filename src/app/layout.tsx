@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import type { PropsWithChildren } from 'react'
 import { Inter } from 'next/font/google'
-import { ThemeProvider } from '@/components/theme/ThemeProvider'
+import { ThemeProvider } from '@/components/brand/ThemeProvider'
 import { THEME_STORAGE_KEY } from '@/lib/theme'
 import './globals.css'
 

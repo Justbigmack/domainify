@@ -2,13 +2,11 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { getSessionUser } from '@/lib/api/session'
+import { getSessionUser } from '@/lib/auth/session'
 import {
   DomainInputInvalidError,
-  DomainNotFoundError,
-  DomainStateError,
   DuplicateDomainError,
-  VerifyCooldownError,
+  toErrorDetail,
 } from './errors'
 import {
   createDomain,
@@ -42,19 +40,12 @@ const revalidateDomainPaths = (domainId: string): void => {
 }
 
 const toActionFailure = (error: unknown): ActionResult => {
-  if (error instanceof DomainNotFoundError) {
-    return { ok: false, error: { code: 'not_found', message: error.message } }
+  const detail = toErrorDetail(error)
+  if (!detail) throw error
+  return {
+    ok: false,
+    error: { code: detail.code, message: detail.message, retryAfterMs: detail.retryAfterMs },
   }
-  if (error instanceof DomainStateError) {
-    return { ok: false, error: { code: 'invalid_state', message: error.message } }
-  }
-  if (error instanceof VerifyCooldownError) {
-    return {
-      ok: false,
-      error: { code: 'cooldown', message: error.message, retryAfterMs: error.retryAfterMs },
-    }
-  }
-  throw error
 }
 
 export const createDomainAction = async (

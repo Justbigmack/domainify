@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { CheckSourceSnapshot } from '@/lib/dns/types'
-import { deriveDiagnosis, deriveDomainEvents, deriveSourcePills } from './insights'
+import { deriveDiagnosis, deriveSourcePills } from './insights'
 import type { CheckView, DomainView } from './view'
 
 const EXPECTED = 'domainify-domain-verification=token-abcdef'
@@ -38,63 +38,6 @@ const snapshot = (overrides: Partial<CheckSourceSnapshot>): CheckSourceSnapshot 
   minTtlSeconds: null,
   errorCode: null,
   ...overrides,
-})
-
-describe('deriveDomainEvents', () => {
-  it('shows upcoming detection and verification for a fresh pending domain', () => {
-    const events = deriveDomainEvents(baseDomain, [], EXPECTED)
-    expect(events.map((event) => event.key)).toEqual(['added', 'record_detected', 'verified'])
-    expect(events[1].at).toBeNull()
-    expect(events[2].at).toBeNull()
-  })
-
-  it('dates detection from the first check that saw the token', () => {
-    const checks = [
-      makeCheck({ id: 'late', checkedAt: '2026-07-26T10:10:00.000Z', verdict: 'verified' }),
-      makeCheck({ id: 'early', checkedAt: '2026-07-26T10:05:00.000Z', foundValues: [EXPECTED] }),
-    ]
-    const events = deriveDomainEvents(
-      { ...baseDomain, status: 'verified', verifiedAt: '2026-07-26T10:10:00.000Z' },
-      checks,
-      EXPECTED,
-    )
-    expect(events.find((event) => event.key === 'record_detected')?.at).toBe(
-      '2026-07-26T10:05:00.000Z',
-    )
-  })
-
-  it('adds a restarted event when the token is newer than the domain', () => {
-    const events = deriveDomainEvents(
-      { ...baseDomain, tokenGeneratedAt: '2026-07-26T12:00:00.000Z' },
-      [],
-      EXPECTED,
-    )
-    expect(events[1].key).toBe('restarted')
-  })
-
-  it('ends the timeline at failure for failed domains', () => {
-    const events = deriveDomainEvents({ ...baseDomain, status: 'failed' }, [], EXPECTED)
-    expect(events.at(-1)?.key).toBe('failed')
-    expect(events.some((event) => event.key === 'verified')).toBe(false)
-  })
-
-  it('marks the grace start when a verified domain loses its record', () => {
-    const events = deriveDomainEvents(
-      {
-        ...baseDomain,
-        status: 'temporary_failure',
-        verifiedAt: '2026-07-26T11:00:00.000Z',
-        graceExpiresAt: '2026-07-30T12:00:00.000Z',
-      },
-      [],
-      EXPECTED,
-    )
-    expect(events.at(-1)).toEqual({
-      key: 'record_missing',
-      label: 'Record missing',
-      at: '2026-07-27T12:00:00.000Z',
-    })
-  })
 })
 
 describe('deriveSourcePills', () => {

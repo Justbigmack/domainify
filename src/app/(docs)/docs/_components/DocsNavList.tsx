@@ -3,9 +3,9 @@
 import Link from 'next/link'
 import { Text } from '@/components/brand/Text'
 import { usePathname } from 'next/navigation'
-import { DOCS_NAV } from '@/lib/docs/nav'
+import { DOCS_NAV } from '@/app/(docs)/docs/_lib/nav'
 import { cn } from '@/lib/utils'
-import { MethodLabel } from './MethodLabel'
+import { MethodLabel } from '@/components/brand/MethodLabel'
 
 type DocsNavListProps = {
   onNavigate?: () => void

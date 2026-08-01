@@ -5,6 +5,7 @@ import { GlobeIcon } from 'lucide-react'
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -56,12 +57,14 @@ export const ProviderSelect = ({ value, onValueChange, id }: ProviderSelectProps
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {PROVIDER_ITEMS.map((item) => (
-          <SelectItem key={item.value} value={item.value}>
-            <ProviderLogo provider={findDnsProvider(item.value)} />
-            {item.label}
-          </SelectItem>
-        ))}
+        <SelectGroup>
+          {PROVIDER_ITEMS.map((item) => (
+            <SelectItem key={item.value} value={item.value}>
+              <ProviderLogo provider={findDnsProvider(item.value)} />
+              {item.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
       </SelectContent>
     </Select>
   )

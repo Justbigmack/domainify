@@ -1,14 +1,14 @@
-'use client'
-
-import { useState } from 'react'
 import { CheckIcon, ChevronDownIcon } from 'lucide-react'
 import {
   SECTION_TABLE_CELL_CLASS,
   SECTION_TABLE_HEAD_CLASS,
+  SECTION_TABLE_HEAD_DIVIDER_CLASS,
+  SectionDivider,
   sectionTableRowClass,
-} from '@/components/Section'
-import { Badge } from '@/components/ui/badge'
+} from '@/components/brand/Section'
 import { CopyButton } from '@/components/brand/CopyButton'
+import { StatusTag } from '@/components/brand/StatusTag'
+import { MiddleTruncate } from '@/app/(dashboard)/domains/_components/MiddleTruncate'
 import {
   Table,
   TableBody,
@@ -17,30 +17,34 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
 import type { RecordStatus } from '@/lib/domains/status'
 
-const VALUE_HEAD_LENGTH = 24
-const VALUE_TAIL_LENGTH = 8
+const VALUE_CELL_CLASS = cn(SECTION_TABLE_CELL_CLASS, 'font-medium')
+const FIELD_LABEL_CLASS = 'text-xs font-medium text-muted-foreground/80'
 
-const STATUS_LABELS: Record<RecordStatus, string> = {
-  verified: 'Verified',
-  pending: 'Pending',
-  not_found: 'Not found',
+type RecordFieldProps = {
+  label: string
+  value: string
+  copyLabel: string
 }
 
-const STATUS_CLASSES: Record<RecordStatus, string> = {
-  verified: 'bg-success/10 text-success',
-  pending: 'bg-info/10 text-info',
-  not_found: 'bg-muted text-muted-foreground',
-}
-
-const VALUE_CELL_CLASS = cn(SECTION_TABLE_CELL_CLASS, 'font-medium tabular-nums')
-
-const truncateMiddle = (value: string): string =>
-  value.length <= VALUE_HEAD_LENGTH + VALUE_TAIL_LENGTH
-    ? value
-    : `${value.slice(0, VALUE_HEAD_LENGTH)}…${value.slice(-VALUE_TAIL_LENGTH)}`
+const RecordField = ({ label, value, copyLabel }: RecordFieldProps) => (
+  <div className="flex flex-col gap-1.5">
+    <span className={FIELD_LABEL_CLASS}>{label}</span>
+    <div className="flex h-9 items-center gap-1 rounded-lg border border-input pr-1 pl-2.5 text-sm font-medium shadow-xs dark:bg-input/30">
+      <span className="flex min-w-0 flex-1">
+        <MiddleTruncate value={value} />
+      </span>
+      <CopyButton value={value} label={copyLabel} className="text-muted-foreground" />
+    </div>
+  </div>
+)
 
 type RecordCardProps = {
   recordValue: string
@@ -50,41 +54,56 @@ type RecordCardProps = {
 
 export const RecordCard = ({ recordValue, recordName, recordStatus = null }: RecordCardProps) => {
   const isVerified = recordStatus === 'verified'
-  const [isCollapsed, setIsCollapsed] = useState(isVerified)
-
-  const handleToggleCollapsed = () => {
-    setIsCollapsed((current) => !current)
-  }
 
   return (
-    <div className="flex flex-col">
+    <Collapsible defaultOpen={!isVerified} className="flex flex-col">
       {isVerified && (
-        <button
-          type="button"
-          onClick={handleToggleCollapsed}
-          aria-expanded={!isCollapsed}
-          className="flex cursor-pointer items-center justify-between gap-2 px-5 py-3.5 text-sm text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset"
-        >
+        <CollapsibleTrigger className="group flex cursor-pointer items-center justify-between gap-2 rounded-t-xl px-5 py-3.5 text-sm text-muted-foreground transition-colors outline-none not-data-panel-open:rounded-b-xl hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset">
           <span className="flex items-center gap-2">
             <CheckIcon className="size-4 shrink-0 text-success" />
-            TXT record verified. Keep it in place to stay verified.
+            DNS records are verified. Expand to view them.
           </span>
-          <ChevronDownIcon
-            className={cn('size-4 shrink-0 transition-transform', { 'rotate-180': !isCollapsed })}
-          />
-        </button>
+          <ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 ease-out group-data-panel-open:rotate-180 motion-reduce:transition-none" />
+        </CollapsibleTrigger>
       )}
-      {!isCollapsed && (
-        <div className={cn('overflow-x-auto py-1', { 'border-t border-border/50': isVerified })}>
-          <Table>
-            <TableHeader>
+      <CollapsibleContent>
+        {isVerified && <SectionDivider />}
+        <div className="flex flex-col gap-4 px-5 py-4 sm:hidden">
+          <RecordField label="Host" value={recordName} copyLabel="Copy record host" />
+          <RecordField label="Value" value={recordValue} copyLabel="Copy record value" />
+          {recordStatus !== null && (
+            <div className="flex flex-col gap-1.5">
+              <span className={FIELD_LABEL_CLASS}>Status</span>
+              <StatusTag status={recordStatus} className="ml-0 self-start" />
+            </div>
+          )}
+        </div>
+        <div className="py-1 max-sm:hidden">
+          <Table className="table-fixed">
+            <TableHeader className="[&_tr]:border-b-0">
               <TableRow className={sectionTableRowClass(false)}>
-                <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, 'w-20')}>Type</TableHead>
-                <TableHead className={SECTION_TABLE_HEAD_CLASS}>Host</TableHead>
-                <TableHead className={SECTION_TABLE_HEAD_CLASS}>Value</TableHead>
-                <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, 'w-16')}>TTL</TableHead>
+                <TableHead
+                  className={cn(SECTION_TABLE_HEAD_CLASS, SECTION_TABLE_HEAD_DIVIDER_CLASS, 'w-20')}
+                >
+                  Type
+                </TableHead>
+                <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, SECTION_TABLE_HEAD_DIVIDER_CLASS)}>
+                  Host
+                </TableHead>
+                <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, SECTION_TABLE_HEAD_DIVIDER_CLASS)}>
+                  Value
+                </TableHead>
+                <TableHead
+                  className={cn(SECTION_TABLE_HEAD_CLASS, SECTION_TABLE_HEAD_DIVIDER_CLASS, 'w-16')}
+                >
+                  TTL
+                </TableHead>
                 {recordStatus !== null && (
-                  <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, 'w-28')}>Status</TableHead>
+                  <TableHead
+                    className={cn(SECTION_TABLE_HEAD_CLASS, SECTION_TABLE_HEAD_DIVIDER_CLASS, 'w-28')}
+                  >
+                    Status
+                  </TableHead>
                 )}
               </TableRow>
             </TableHeader>
@@ -94,8 +113,10 @@ export const RecordCard = ({ recordValue, recordName, recordStatus = null }: Rec
                   TXT
                 </TableCell>
                 <TableCell className={VALUE_CELL_CLASS}>
-                  <span className="inline-flex items-center gap-1.5">
-                    <span>{recordName}</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="min-w-0 truncate" title={recordName}>
+                      {recordName}
+                    </span>
                     <CopyButton
                       value={recordName}
                       label="Copy record host"
@@ -104,8 +125,10 @@ export const RecordCard = ({ recordValue, recordName, recordStatus = null }: Rec
                   </span>
                 </TableCell>
                 <TableCell className={VALUE_CELL_CLASS}>
-                  <span className="inline-flex items-center gap-1.5">
-                    <span title={recordValue}>{truncateMiddle(recordValue)}</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="flex min-w-0">
+                      <MiddleTruncate value={recordValue} />
+                    </span>
                     <CopyButton
                       value={recordValue}
                       label="Copy record value"
@@ -118,19 +141,14 @@ export const RecordCard = ({ recordValue, recordName, recordStatus = null }: Rec
                 </TableCell>
                 {recordStatus !== null && (
                   <TableCell className={SECTION_TABLE_CELL_CLASS}>
-                    <Badge
-                      variant="outline"
-                      className={cn('-ml-2 border-transparent', STATUS_CLASSES[recordStatus])}
-                    >
-                      {STATUS_LABELS[recordStatus]}
-                    </Badge>
+                    <StatusTag status={recordStatus} />
                   </TableCell>
                 )}
               </TableRow>
             </TableBody>
           </Table>
         </div>
-      )}
-    </div>
+      </CollapsibleContent>
+    </Collapsible>
   )
 }

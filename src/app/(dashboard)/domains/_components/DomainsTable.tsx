@@ -27,13 +27,13 @@ import {
 import {
   SECTION_TABLE_CELL_CLASS as TABLE_CELL_CLASS,
   SECTION_TABLE_HEAD_CLASS as TABLE_HEAD_CLASS,
-} from '@/components/Section'
+} from '@/components/brand/Section'
 import { cn } from '@/lib/utils'
 import { DOMAIN_STATUSES } from '@/lib/domains/status'
 import type { DomainStatus } from '@/lib/domains/status'
 import { INITIAL_SORT_DIRECTIONS, sortDomainItems } from '@/lib/domains/sort'
 import type { SortColumn, SortDirection } from '@/lib/domains/sort'
-import { formatRelativeTime, formatShortDate, formatTimeLeft } from '@/lib/formatTime'
+import { formatRelativeTime, formatShortDate } from '@/lib/formatTime'
 
 export type DomainListItem = {
   id: string
@@ -101,7 +101,7 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
           onChange={handleSearchChange}
           placeholder="Search domains…"
           aria-label="Search domains"
-          className="flex-1 bg-card px-5"
+          className="flex-1 bg-card px-5 text-sm"
         />
         <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
           <SelectTrigger
@@ -181,14 +181,7 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
                     </Link>
                   </TableCell>
                   <TableCell className={TABLE_CELL_CLASS}>
-                    <StatusTag
-                      status={item.status}
-                      detail={
-                        item.status === 'temporary_failure' && item.graceExpiresAt
-                          ? formatTimeLeft(item.graceExpiresAt, nowMs)
-                          : null
-                      }
-                    />
+                    <StatusTag status={item.status} />
                   </TableCell>
                   <TableCell
                     className={cn(TABLE_CELL_CLASS, 'text-[0.8125rem] text-muted-foreground')}

@@ -14,14 +14,14 @@ import {
   SectionDescription,
   SectionToolbar,
   sectionTableRowClass,
-} from '@/components/Section'
+} from '@/components/brand/Section'
 import { ApiKeyRowActions } from '@/app/settings/_components/ApiKeyRowActions'
 import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/brand/CopyButton'
 import { Text } from '@/components/brand/Text'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { authClient } from '@/lib/authClient'
+import { authClient } from '@/lib/auth/client'
 import { cn } from '@/lib/utils'
 import { formatRelativeTime } from '@/lib/formatTime'
 

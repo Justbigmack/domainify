@@ -1,21 +1,13 @@
 import type { PropsWithChildren } from 'react'
-import { redirect } from 'next/navigation'
-import { SettingsBackLink, SettingsSidebar } from '@/app/settings/_components/SettingsSidebar'
-import { getSessionUser } from '@/lib/api/session'
+import { SettingsMobileNav } from '@/app/settings/_components/SettingsMobileNav'
+import { SettingsSidebar } from '@/app/settings/_components/SettingsSidebar'
 
-const SettingsLayout = async ({ children }: PropsWithChildren) => {
-  const sessionUser = await getSessionUser()
-  if (!sessionUser) redirect('/login')
-
-  return (
-    <div className="flex min-h-dvh flex-col md:flex-row">
-      <SettingsSidebar />
-      <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center border-b bg-background/90 px-6 backdrop-blur md:hidden">
-        <SettingsBackLink />
-      </header>
-      <main className="min-w-0 flex-1">{children}</main>
-    </div>
-  )
-}
+const SettingsLayout = ({ children }: PropsWithChildren) => (
+  <div className="flex min-h-dvh flex-col md:flex-row">
+    <SettingsSidebar />
+    <SettingsMobileNav />
+    <main className="min-w-0 flex-1">{children}</main>
+  </div>
+)
 
 export default SettingsLayout

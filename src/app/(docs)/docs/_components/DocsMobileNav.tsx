@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { MenuIcon } from 'lucide-react'
+import { PanelLeftIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { DocsBackLink } from './DocsBackLink'
+import { BackToAppLink } from '@/components/brand/BackToAppLink'
 import { DocsNavList } from './DocsNavList'
 
 export const DocsMobileNav = () => {
@@ -14,14 +14,14 @@ export const DocsMobileNav = () => {
 
   return (
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between border-b bg-background/90 px-6 backdrop-blur md:hidden">
-      <DocsBackLink />
+      <BackToAppLink />
       <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <SheetTrigger
           render={
             <Button variant="ghost" size="icon-lg" aria-label="Open docs menu" className="-mr-3" />
           }
         >
-          <MenuIcon />
+          <PanelLeftIcon />
         </SheetTrigger>
         <SheetContent
           side="left"
@@ -31,7 +31,7 @@ export const DocsMobileNav = () => {
           <SheetTitle className="sr-only">Docs navigation</SheetTitle>
           <div className="flex flex-1 flex-col overflow-y-auto">
             <div className="flex h-14 shrink-0 items-center px-6">
-              <DocsBackLink onNavigate={handleMenuClose} />
+              <BackToAppLink onNavigate={handleMenuClose} />
             </div>
             <DocsNavList onNavigate={handleMenuClose} />
           </div>

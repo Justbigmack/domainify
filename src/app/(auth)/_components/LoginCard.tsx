@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/card'
 import { Field, FieldLabel, FieldSeparator } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { authClient } from '@/lib/authClient'
+import { authClient } from '@/lib/auth/client'
 import { cn } from '@/lib/utils'
 
 type LoginCardProps = {

@@ -3,61 +3,10 @@ import { RECORD_VALUE_PREFIX } from '@/lib/dns/constants'
 import { challengeRecordName } from '@/lib/dns/normalize'
 import { TXT_LOOKUP_SOURCES } from '@/lib/dns/types'
 import type { CheckVerdict, TxtLookupSource } from '@/lib/dns/types'
-import { GRACE_WINDOW_MS } from './constants'
 import type { CheckView, DomainView } from './view'
 
-const RESTART_TOLERANCE_MS = 60 * 1000
 const TOKEN_TAIL_LENGTH = 6
 const SECOND_MS = 1000
-
-export type DomainEventKey =
-  | 'added'
-  | 'restarted'
-  | 'record_detected'
-  | 'verified'
-  | 'record_missing'
-  | 'failed'
-
-export type DomainEvent = {
-  key: DomainEventKey
-  label: string
-  at: string | null
-}
-
-export const deriveDomainEvents = (
-  domain: DomainView,
-  checks: CheckView[],
-  expectedValue: string,
-): DomainEvent[] => {
-  const events: DomainEvent[] = [{ key: 'added', label: 'Domain added', at: domain.createdAt }]
-  const restartDelayMs =
-    new Date(domain.tokenGeneratedAt).getTime() - new Date(domain.createdAt).getTime()
-  if (restartDelayMs > RESTART_TOLERANCE_MS) {
-    events.push({ key: 'restarted', label: 'Verification restarted', at: domain.tokenGeneratedAt })
-  }
-  if (domain.status === 'failed') {
-    events.push({ key: 'failed', label: 'Verification failed', at: domain.lastCheckedAt })
-    return events
-  }
-  const orderedChecks = [...checks].sort((a, b) => a.checkedAt.localeCompare(b.checkedAt))
-  const detection = orderedChecks.find(
-    (check) =>
-      check.verdict === 'verified' || containsExpectedValue(check.foundValues, expectedValue),
-  )
-  events.push({
-    key: 'record_detected',
-    label: 'Record detected',
-    at: detection?.checkedAt ?? null,
-  })
-  events.push({ key: 'verified', label: 'Domain verified', at: domain.verifiedAt })
-  if (domain.status === 'temporary_failure') {
-    const graceStartedAt = domain.graceExpiresAt
-      ? new Date(new Date(domain.graceExpiresAt).getTime() - GRACE_WINDOW_MS).toISOString()
-      : null
-    events.push({ key: 'record_missing', label: 'Record missing', at: graceStartedAt })
-  }
-  return events
-}
 
 export type SourcePillState = 'match' | 'stale_value' | 'missing' | 'error' | 'unchecked'
 

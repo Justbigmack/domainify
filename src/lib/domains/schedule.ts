@@ -17,3 +17,20 @@ export const computeNextCheckAt = (
   if (status === 'verified') return new Date(now.getTime() + VERIFIED_RECHECK_INTERVAL_MS)
   return new Date(now.getTime() + nextCheckDelayMs(attemptCount))
 }
+
+const POLL_BASE_DELAY_SECONDS = 30
+const POLL_BACKOFF_FACTOR = 2
+const POLL_MAX_DELAY_SECONDS = 300
+
+export const pollDelaySeconds = (failureCount: number): number =>
+  Math.min(POLL_BASE_DELAY_SECONDS * POLL_BACKOFF_FACTOR ** failureCount, POLL_MAX_DELAY_SECONDS)
+
+export const cooldownRemainingMs = (
+  lastAttemptAt: Date | null,
+  cooldownMs: number,
+  now: Date,
+): number => {
+  if (lastAttemptAt === null) return 0
+  const elapsedMs = now.getTime() - lastAttemptAt.getTime()
+  return Math.max(cooldownMs - elapsedMs, 0)
+}

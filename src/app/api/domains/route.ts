@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { invalidBodyResponse, serviceErrorResponse, unauthorizedResponse } from '@/lib/api/responses'
-import { getSessionUser } from '@/lib/api/session'
+import { invalidBodyResponse, serviceErrorResponse, unauthorizedResponse } from '@/lib/http/responses'
+import { getSessionUser } from '@/lib/auth/session'
 import { createDomain, listDomains } from '@/lib/domains/service'
 
 const createDomainBodySchema = z.object({ name: z.string() })

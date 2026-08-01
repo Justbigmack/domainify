@@ -3,11 +3,11 @@ import type { LucideIcon } from 'lucide-react'
 import { Alert } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 
-type AlertBannerTone = 'info' | 'warning' | 'destructive'
+type AlertBannerTone = 'info' | 'success' | 'destructive'
 
 const TONE_CLASSES: Record<AlertBannerTone, string> = {
   info: 'border-info/20 bg-info/[0.06] text-info',
-  warning: 'border-warning/20 bg-warning/[0.06] text-warning',
+  success: 'border-success/20 bg-success-subtle text-success',
   destructive: 'border-destructive/20 bg-destructive/[0.06] text-destructive',
 }
 

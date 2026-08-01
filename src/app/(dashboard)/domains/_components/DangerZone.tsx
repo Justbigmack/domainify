@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import { RefreshCwIcon, Trash2Icon } from 'lucide-react'
 import { GhostButton } from '@/components/brand/GhostButton'
 import { Text } from '@/components/brand/Text'
@@ -12,7 +11,7 @@ import {
   SectionLabel,
   SectionRow,
   SectionRowText,
-} from '@/components/Section'
+} from '@/components/brand/Section'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +27,12 @@ import type { DomainStatus } from '@/lib/domains/status'
 
 type PendingAction = 'regenerate' | 'remove' | null
 
+const TruncatedHostname = ({ hostname }: { hostname: string }) => (
+  <span className="inline-block max-w-full truncate align-bottom" title={hostname}>
+    {hostname}
+  </span>
+)
+
 type DangerZoneProps = {
   domainId: string
   hostname: string
@@ -35,14 +40,18 @@ type DangerZoneProps = {
 }
 
 export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
-  const router = useRouter()
   const [pendingAction, setPendingAction] = useState<PendingAction>(null)
   const [isWorking, startTransition] = useTransition()
 
-  const regenerateWarning =
-    status === 'verified' || status === 'temporary_failure'
-      ? `${hostname} goes back to pending until the new record is in place.`
-      : 'The record value changes. Update your DNS record with the new value.'
+  const revertsToPending = status === 'verified' || status === 'temporary_failure'
+  const regenerateWarning = revertsToPending ? (
+    <>
+      <TruncatedHostname hostname={hostname} /> goes back to pending until the new record is in
+      place.
+    </>
+  ) : (
+    'The record value changes. Update your DNS record with the new value.'
+  )
 
   const handleRequestRegenerate = () => {
     setPendingAction('regenerate')
@@ -61,7 +70,6 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
     startTransition(async () => {
       await regenerateTokenAction(domainId)
       setPendingAction(null)
-      router.refresh()
     })
   }
 
@@ -88,7 +96,8 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
           <SectionRowText>
             <SectionLabel>Remove domain</SectionLabel>
             <SectionDescription className="mt-0.5">
-              Deletes {hostname} and its full check history. This cannot be undone.
+              Deletes <TruncatedHostname hostname={hostname} /> and its full check history. This
+              cannot be undone.
             </SectionDescription>
           </SectionRowText>
           <GhostButton

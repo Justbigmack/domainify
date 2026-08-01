@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { serviceErrorResponse, unauthorizedResponse } from '@/lib/api/responses'
-import { getSessionUser } from '@/lib/api/session'
+import { serviceErrorResponse, unauthorizedResponse } from '@/lib/http/responses'
+import { getSessionUser } from '@/lib/auth/session'
 import { restartVerification } from '@/lib/domains/service'
 
 type RouteParams = { params: Promise<{ id: string }> }

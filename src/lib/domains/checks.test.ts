@@ -42,6 +42,12 @@ vi.mock('@/db', () => ({
   },
 }))
 
+vi.mock('next/server', () => ({
+  after: (task: () => Promise<void>) => {
+    void task()
+  },
+}))
+
 vi.mock('@/lib/dns/check', () => ({
   checkDomainOwnership: vi.fn(),
 }))

@@ -1,3 +1,4 @@
+import { after } from 'next/server'
 import { and, count, eq, gte } from 'drizzle-orm'
 import { db } from '@/db'
 import { user } from '@/db/authSchema'
@@ -122,11 +123,7 @@ export const runCheck = async (
     .where(eq(domains.id, domain.id))
     .returning()
   if (becameVerified || enteredGrace) {
-    try {
-      await notifyOwner(domain, updated)
-    } catch {
-      return { domain: updated, check }
-    }
+    after(() => notifyOwner(domain, updated).catch(() => undefined))
   }
   return { domain: updated, check }
 }

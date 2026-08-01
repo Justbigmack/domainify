@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { GlobeIcon } from 'lucide-react'
 import { AddDomainForm } from '@/app/(dashboard)/domains/_components/AddDomainForm'
 import {
   Stepper,
@@ -9,7 +10,7 @@ import {
 } from '@/app/(dashboard)/domains/_components/Stepper'
 import { Heading } from '@/components/brand/Heading'
 import { Text } from '@/components/brand/Text'
-import { BreadcrumbLink } from '@/components/shell/BreadcrumbLink'
+import { BreadcrumbLink } from '@/components/brand/BreadcrumbLink'
 
 export const metadata: Metadata = {
   title: 'Add domain',
@@ -19,7 +20,7 @@ const AddDomainPage = () => (
   <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8 lg:px-10">
     <header className="flex flex-col gap-1 pr-5 pl-17">
       <div>
-        <BreadcrumbLink href="/domains" label="Domains" />
+        <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
       </div>
       <Heading as="h1">Add domain</Heading>
       <Text className="leading-6 text-muted-foreground">

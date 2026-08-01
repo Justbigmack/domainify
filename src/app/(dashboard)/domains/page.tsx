@@ -9,7 +9,7 @@ import { EmptyState } from '@/app/(dashboard)/domains/_components/EmptyState'
 import { Heading } from '@/components/brand/Heading'
 import { Button } from '@/components/ui/button'
 import type { DomainRow } from '@/db/schema'
-import { getSessionUser } from '@/lib/api/session'
+import { getSessionUser } from '@/lib/auth/session'
 import { listDomains } from '@/lib/domains/service'
 
 export const metadata: Metadata = {
@@ -39,7 +39,9 @@ const DomainsPage = async () => {
       <header className="flex items-center justify-between gap-4 pl-5">
         <Heading as="h1">Domains</Heading>
         <div className="flex items-center gap-2">
-          <ApiViewPanel scope="collection" target={apiTarget} />
+          <div className="max-sm:hidden">
+            <ApiViewPanel scope="collection" target={apiTarget} />
+          </div>
           {items.length > 0 && (
             <Button nativeButton={false} className="pr-5" render={<Link href="/domains/add" />}>
               <PlusIcon data-icon="inline-start" />

@@ -3,9 +3,9 @@
 import Link from 'next/link'
 import { Text } from '@/components/brand/Text'
 import { usePathname } from 'next/navigation'
-import { flattenDocsNav } from '@/lib/docs/nav'
+import { flattenDocsNav } from '@/app/(docs)/docs/_lib/nav'
 import { cn } from '@/lib/utils'
-import type { DocsNavItem } from '@/lib/docs/nav'
+import type { DocsNavItem } from '@/app/(docs)/docs/_lib/nav'
 
 type PagerLinkProps = {
   item: DocsNavItem

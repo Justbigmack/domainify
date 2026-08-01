@@ -1,15 +1,20 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { ApiKeysCard } from '@/app/settings/_components/ApiKeysCard'
 import type { ApiKeyListItem } from '@/app/settings/_components/ApiKeysCard'
 import { Heading } from '@/components/brand/Heading'
-import { auth } from '@/lib/auth'
+import { getSessionUser } from '@/lib/auth/session'
+import { auth } from '@/lib/auth/server'
 
 export const metadata: Metadata = {
   title: 'API keys · Settings',
 }
 
 const ApiKeysPage = async () => {
+  const sessionUser = await getSessionUser()
+  if (!sessionUser) redirect('/login')
+
   const { apiKeys } = await auth.api.listApiKeys({ headers: await headers() })
   const items: ApiKeyListItem[] = [...apiKeys]
     .sort((first, second) => second.createdAt.getTime() - first.createdAt.getTime())

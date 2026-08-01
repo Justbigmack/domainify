@@ -7,7 +7,7 @@ import { CopyButton } from '@/components/brand/CopyButton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { buildCollectionOperations } from '@/lib/domains/apiSnippets'
 import type { ApiSnippetKind } from '@/lib/domains/apiSnippets'
-import { DOCS_API_ORIGIN } from '@/lib/docs/constants'
+import { DOCS_API_ORIGIN } from '@/app/(docs)/docs/_lib/constants'
 
 const SNIPPET_KIND_LABELS: Record<ApiSnippetKind, string> = {
   curl: 'cURL',

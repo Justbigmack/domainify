@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
+import { GlobeIcon } from 'lucide-react'
 import { DiagnosisCard } from '@/app/(dashboard)/domains/_components/DiagnosisCard'
 import { RecordCard } from '@/app/(dashboard)/domains/_components/RecordCard'
 import {
@@ -12,8 +13,8 @@ import {
 import { VerifySteps } from '@/app/(dashboard)/domains/_components/VerifySteps'
 import { Heading } from '@/components/brand/Heading'
 import { Text } from '@/components/brand/Text'
-import { BreadcrumbLink } from '@/components/shell/BreadcrumbLink'
-import { getSessionUser } from '@/lib/api/session'
+import { BreadcrumbLink } from '@/components/brand/BreadcrumbLink'
+import { getSessionUser } from '@/lib/auth/session'
 import { challengeRecordName } from '@/lib/dns/normalize'
 import { loadDomainPageData } from '@/lib/domains/pageData'
 
@@ -41,7 +42,7 @@ const AddDomainRecordPage = async ({ params }: AddDomainRecordPageProps) => {
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8 lg:px-10">
       <header className="flex flex-col gap-1 pr-5 pl-17">
         <div>
-          <BreadcrumbLink href="/domains" label="Domains" />
+          <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
         </div>
         <Heading as="h1">Add domain</Heading>
       </header>
@@ -62,7 +63,7 @@ const AddDomainRecordPage = async ({ params }: AddDomainRecordPageProps) => {
             <div className="flex flex-col gap-4">
               {isVerified ? (
                 <>
-                  <Text className="rounded-xl bg-success/10 px-5 py-3 font-medium text-success">
+                  <Text className="rounded-xl bg-success-subtle px-5 py-3 font-medium text-success">
                     {domain.hostname} is verified. Ownership is proven.
                   </Text>
                   <RecordCard recordValue={record.value} recordName={recordName} recordStatus={recordStatus} />

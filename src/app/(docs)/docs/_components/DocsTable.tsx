@@ -3,7 +3,7 @@ import {
   SECTION_TABLE_CELL_CLASS,
   SECTION_TABLE_HEAD_CLASS,
   sectionTableRowClass,
-} from '@/components/Section'
+} from '@/components/brand/Section'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 

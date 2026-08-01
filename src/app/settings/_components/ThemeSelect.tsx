@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { useTheme } from 'next-themes'
 import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
 import {
@@ -19,15 +19,15 @@ const THEME_OPTIONS = [
   { value: 'dark', label: 'Dark', Icon: MoonIcon },
 ] as const
 
+const subscribeToNothing = () => () => {}
+const getClientSnapshot = () => true
+const getServerSnapshot = () => false
+
 export const ThemeSelect = () => {
   const { theme, setTheme } = useTheme()
-  const [isMounted, setIsMounted] = useState(false)
+  const isHydrated = useSyncExternalStore(subscribeToNothing, getClientSnapshot, getServerSnapshot)
 
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  const activeTheme = isMounted ? theme : 'system'
+  const activeTheme = isHydrated ? theme : 'system'
   const selectedOption =
     THEME_OPTIONS.find((option) => option.value === activeTheme) ?? THEME_OPTIONS[0]
   const preference = selectedOption.value

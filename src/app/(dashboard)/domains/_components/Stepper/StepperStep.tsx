@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 export type StepState = 'done' | 'active' | 'upcoming'
 
 const CIRCLE_CLASSES: Record<StepState, string> = {
-  done: 'border-success bg-success/10 text-success',
+  done: 'border-success bg-success-subtle text-success',
   active: 'border-input bg-background text-foreground',
   upcoming: 'border-border bg-background text-muted-foreground',
 }

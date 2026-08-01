@@ -6,7 +6,7 @@ import { DocsCards } from '@/app/(docs)/docs/_components/DocsCards'
 import { DocsTable } from '@/app/(docs)/docs/_components/DocsTable'
 import { DocsCode, DocsLink, DocsP, DocsStrong, DocsUl } from '@/app/(docs)/docs/_components/Prose'
 import { DNS_PROVIDERS } from '@/lib/dns/providers'
-import { DOCS_API_ORIGIN } from '@/lib/docs/constants'
+import { DOCS_API_ORIGIN } from '@/app/(docs)/docs/_lib/constants'
 
 export const metadata: Metadata = {
   title: 'Add a domain',
@@ -114,7 +114,7 @@ const AddADomainPage = () => (
         <DocsCode>_domainify-challenge.app.example.com</DocsCode> and the value is{' '}
         <DocsCode>domainify-domain-verification=&lt;token&gt;</DocsCode>.
       </DocsP>
-      <Callout tone="warning">
+      <Callout tone="info">
         Most providers append your zone to the host field automatically. If the app shows{' '}
         <DocsCode>_domainify-challenge.app</DocsCode>, paste exactly that — pasting the full
         hostname would create{' '}

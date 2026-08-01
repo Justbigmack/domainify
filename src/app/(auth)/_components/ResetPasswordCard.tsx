@@ -17,8 +17,8 @@ import {
 } from '@/components/ui/card'
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { authClient } from '@/lib/authClient'
-import { PASSWORD_MIN_LENGTH } from '@/lib/authPolicy'
+import { authClient } from '@/lib/auth/client'
+import { PASSWORD_MIN_LENGTH } from '@/lib/auth/policy'
 import { cn } from '@/lib/utils'
 
 type ResetPasswordCardProps = {

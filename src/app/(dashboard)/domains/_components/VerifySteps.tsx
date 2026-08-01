@@ -2,24 +2,25 @@
 
 import { useEffect, useId, useState, useTransition } from 'react'
 import type { ReactNode } from 'react'
-import { useRouter } from 'next/navigation'
 import { ClockIcon, ExternalLinkIcon, RefreshCwIcon } from 'lucide-react'
 import { GhostButton } from '@/components/brand/GhostButton'
 import { AlertBanner } from '@/components/brand/AlertBanner'
-import { SectionContent, SectionToolbar } from '@/components/Section'
+import { SectionContent, SectionToolbar } from '@/components/brand/Section'
 import {
   OTHER_PROVIDER_ID,
   ProviderSelect,
   findDnsProvider,
 } from '@/app/(dashboard)/domains/_components/ProviderSelect'
+import { MiddleTruncate } from '@/app/(dashboard)/domains/_components/MiddleTruncate'
+import { PollCountdown } from '@/app/(dashboard)/domains/_components/PollCountdown'
 import { TerminalCheck } from '@/app/(dashboard)/domains/_components/TerminalCheck'
 import { CopyButton } from '@/components/brand/CopyButton'
 import { Text } from '@/components/brand/Text'
 import { Spinner } from '@/components/ui/spinner'
 import { pollDomainAction, verifyDomainAction } from '@/lib/domains/actions'
+import { pollDelaySeconds } from '@/lib/domains/schedule'
 import { cn } from '@/lib/utils'
 
-const POLL_INTERVAL_SECONDS = 30
 const SECOND_MS = 1000
 const PHASE_ROTATION_MS = 1400
 
@@ -70,20 +71,6 @@ const Step = ({ number, title, description, isLast = false, isActive = false, ch
   </li>
 )
 
-const TAIL_KEEP_LENGTH = 8
-
-const MiddleTruncate = ({ value }: { value: string }) => {
-  if (value.length <= TAIL_KEEP_LENGTH) {
-    return <span title={value}>{value}</span>
-  }
-  return (
-    <span className="flex min-w-0" title={value}>
-      <span className="truncate">{value.slice(0, -TAIL_KEEP_LENGTH)}</span>
-      <span className="shrink-0">{value.slice(-TAIL_KEEP_LENGTH)}</span>
-    </span>
-  )
-}
-
 const RecordLine = ({ label, value }: { label: string; value: string }) => (
   <div className="grid grid-cols-[5rem_1fr] items-center gap-2">
     <Text as="span" variant="micro" className="font-medium tracking-wider text-muted-foreground/80 uppercase">
@@ -114,9 +101,9 @@ export const VerifySteps = ({
   detectedProviderId,
 }: VerifyStepsProps) => {
   const selectId = useId()
-  const router = useRouter()
   const [isChecking, startTransition] = useTransition()
-  const [countdownSeconds, setCountdownSeconds] = useState(POLL_INTERVAL_SECONDS)
+  const [nextCheckAt, setNextCheckAt] = useState(() => Date.now() + pollDelaySeconds(0) * SECOND_MS)
+  const [failureCount, setFailureCount] = useState(0)
   const [phaseIndex, setPhaseIndex] = useState(0)
   const [cooldownMessage, setCooldownMessage] = useState<string | null>(null)
   const [providerId, setProviderId] = useState(detectedProviderId ?? OTHER_PROVIDER_ID)
@@ -133,33 +120,49 @@ export const VerifySteps = ({
 
   useEffect(() => {
     if (isChecking) return
-    const timer = setInterval(
-      () => setCountdownSeconds((current) => (current > 0 ? current - 1 : current)),
-      SECOND_MS,
-    )
-    return () => clearInterval(timer)
-  }, [isChecking])
+    const delayMs = Math.max(nextCheckAt - Date.now(), 0)
+    const timer = setTimeout(() => {
+      if (document.visibilityState === 'hidden') return
+      startTransition(async () => {
+        setPhaseIndex(0)
+        let isPollHealthy = false
+        try {
+          const result = await pollDomainAction(domainId)
+          isPollHealthy = result.ok || result.error.code === 'cooldown'
+        } catch {
+          isPollHealthy = false
+        }
+        const nextFailureCount = isPollHealthy ? 0 : failureCount + 1
+        setFailureCount(nextFailureCount)
+        setNextCheckAt(Date.now() + pollDelaySeconds(nextFailureCount) * SECOND_MS)
+      })
+    }, delayMs)
+    return () => clearTimeout(timer)
+  }, [nextCheckAt, isChecking, failureCount, domainId, startTransition])
 
   useEffect(() => {
-    if (countdownSeconds !== 0 || isChecking) return
-    startTransition(async () => {
-      setPhaseIndex(0)
-      await pollDomainAction(domainId)
-      router.refresh()
-      setCountdownSeconds(POLL_INTERVAL_SECONDS)
-    })
-  }, [countdownSeconds, isChecking, domainId, router, startTransition])
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== 'visible') return
+      setNextCheckAt((current) => (current <= Date.now() ? Date.now() : current))
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [])
 
   const handleVerify = () => {
     setCooldownMessage(null)
     setPhaseIndex(0)
     startTransition(async () => {
-      const result = await verifyDomainAction(domainId)
-      if (!result.ok && result.error.code === 'cooldown') {
-        setCooldownMessage(result.error.message)
+      try {
+        const result = await verifyDomainAction(domainId)
+        if (!result.ok && result.error.code === 'cooldown') {
+          setCooldownMessage(result.error.message)
+        }
+      } catch {
+        setCooldownMessage(null)
       }
-      router.refresh()
-      setCountdownSeconds(POLL_INTERVAL_SECONDS)
+      setFailureCount(0)
+      setNextCheckAt(Date.now() + pollDelaySeconds(0) * SECOND_MS)
     })
   }
 
@@ -178,7 +181,7 @@ export const VerifySteps = ({
                 {CHECK_PHASES[phaseIndex]}
               </>
             ) : (
-              `Next check in ${countdownSeconds}s`
+              <PollCountdown key={nextCheckAt} deadline={nextCheckAt} />
             )}
           </Text>
           <GhostButton
@@ -232,7 +235,7 @@ export const VerifySteps = ({
         </ol>
       </SectionContent>
       {cooldownMessage && (
-        <AlertBanner tone="warning" icon={ClockIcon}>
+        <AlertBanner tone="destructive" icon={ClockIcon}>
           {cooldownMessage}
         </AlertBanner>
       )}
