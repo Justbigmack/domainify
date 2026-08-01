@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { Heading } from '@/components/brand/Heading'
+import { Text } from '@/components/brand/Text'
 import type { ChangeEvent, FormEvent } from 'react'
 import Link from 'next/link'
 import { CircleCheckIcon, CircleAlertIcon } from 'lucide-react'
-import { FormError } from '@/components/auth/FormError'
+import { FormError } from '@/app/(auth)/_components/FormError'
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
   Card,
@@ -58,13 +60,13 @@ export const ResetPasswordCard = ({ token }: ResetPasswordCardProps) => {
           <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
             <CircleAlertIcon className="size-5" />
           </div>
-          <h1 className="mt-4 font-heading text-lg font-semibold tracking-tight">
+          <Heading as="h1" size="h2" className="mt-4">
             This link is invalid or expired
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          </Heading>
+          <Text className="mt-2 leading-6 text-muted-foreground">
             Password reset links can only be used once and expire after one hour. Request a
             new one to continue.
-          </p>
+          </Text>
           <div className="mt-6 flex w-full flex-col gap-2">
             <Link href="/forgot-password" className={cn(buttonVariants({ variant: 'default' }))}>
               Request a new link
@@ -85,13 +87,13 @@ export const ResetPasswordCard = ({ token }: ResetPasswordCardProps) => {
           <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
             <CircleCheckIcon className="size-5" />
           </div>
-          <h1 className="mt-4 font-heading text-lg font-semibold tracking-tight">
+          <Heading as="h1" size="h2" className="mt-4">
             Password updated
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          </Heading>
+          <Text className="mt-2 leading-6 text-muted-foreground">
             Your password has been changed and existing sessions were signed out. Sign in with
             your new password to continue.
-          </p>
+          </Text>
           <div className="mt-6 flex w-full flex-col gap-2">
             <Link href="/login" className={cn(buttonVariants({ variant: 'default' }))}>
               Sign in

@@ -1,10 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Heading } from '@/components/brand/Heading'
+import { Text } from '@/components/brand/Text'
 import type { ChangeEvent, FormEvent } from 'react'
 import Link from 'next/link'
 import { MailIcon } from 'lucide-react'
-import { FormError } from '@/components/auth/FormError'
+import { FormError } from '@/app/(auth)/_components/FormError'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -85,13 +87,13 @@ export const MagicLinkCard = ({ isAddingAccount = false }: MagicLinkCardProps) =
           <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
             <MailIcon className="size-5" />
           </div>
-          <h1 className="mt-4 font-heading text-lg font-semibold tracking-tight">
+          <Heading as="h1" size="h2" className="mt-4">
             Check your inbox
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            We sent a sign-in link to <span className="font-medium text-foreground">{email}</span>.
+          </Heading>
+          <Text className="mt-2 leading-6 text-muted-foreground">
+            We sent a sign-in link to <Text as="span" className="font-medium">{email}</Text>.
             It expires in a few minutes.
-          </p>
+          </Text>
           <div className="mt-6 flex w-full flex-col gap-2">
             <Button
               variant="outline"
@@ -137,7 +139,7 @@ export const MagicLinkCard = ({ isAddingAccount = false }: MagicLinkCardProps) =
             Send sign-in link
           </Button>
         </form>
-        <p className="mt-6 text-center text-sm text-muted-foreground">
+        <Text className="mt-6 text-center text-muted-foreground">
           Prefer a password?{' '}
           <Link
             href={passwordLoginHref}
@@ -145,7 +147,7 @@ export const MagicLinkCard = ({ isAddingAccount = false }: MagicLinkCardProps) =
           >
             Sign in with password
           </Link>
-        </p>
+        </Text>
       </CardContent>
     </Card>
   )

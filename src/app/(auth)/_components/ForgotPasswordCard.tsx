@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { Heading } from '@/components/brand/Heading'
+import { Text } from '@/components/brand/Text'
 import type { ChangeEvent, FormEvent } from 'react'
 import Link from 'next/link'
 import { MailIcon } from 'lucide-react'
-import { FormError } from '@/components/auth/FormError'
+import { FormError } from '@/app/(auth)/_components/FormError'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -60,14 +62,14 @@ export const ForgotPasswordCard = () => {
           <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
             <MailIcon className="size-5" />
           </div>
-          <h1 className="mt-4 font-heading text-lg font-semibold tracking-tight">
+          <Heading as="h1" size="h2" className="mt-4">
             Check your inbox
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          </Heading>
+          <Text className="mt-2 leading-6 text-muted-foreground">
             If an account exists for{' '}
-            <span className="font-medium text-foreground">{email}</span>, we sent a link to
+            <Text as="span" className="font-medium">{email}</Text>, we sent a link to
             reset your password. It expires in one hour.
-          </p>
+          </Text>
           <div className="mt-6 flex w-full flex-col gap-2">
             <Button variant="ghost" onClick={handleUseDifferentEmail}>
               Use a different email
@@ -107,7 +109,7 @@ export const ForgotPasswordCard = () => {
             Send reset link
           </Button>
         </form>
-        <p className="mt-6 text-center text-sm text-muted-foreground">
+        <Text className="mt-6 text-center text-muted-foreground">
           Remembered it?{' '}
           <Link
             href="/login"
@@ -115,7 +117,7 @@ export const ForgotPasswordCard = () => {
           >
             Back to sign in
           </Link>
-        </p>
+        </Text>
       </CardContent>
     </Card>
   )

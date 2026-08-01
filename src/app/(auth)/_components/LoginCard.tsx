@@ -1,11 +1,12 @@
 'use client'
 
+import { Text } from '@/components/brand/Text'
 import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FormError } from '@/components/auth/FormError'
-import { Button } from '@/components/ui/button'
+import { FormError } from '@/app/(auth)/_components/FormError'
+import { Button, buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -13,30 +14,29 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
+import { Field, FieldLabel, FieldSeparator } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { authClient } from '@/lib/authClient'
-import { PASSWORD_MIN_LENGTH } from '@/lib/authPolicy'
+import { cn } from '@/lib/utils'
 
-type SignUpCardProps = {
+type LoginCardProps = {
   isAddingAccount?: boolean
 }
 
-export const SignUpCard = ({ isAddingAccount = false }: SignUpCardProps) => {
+export const LoginCard = ({ isAddingAccount = false }: LoginCardProps) => {
   const router = useRouter()
-  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const signUp = async () => {
+  const signIn = async () => {
     setIsSubmitting(true)
     setErrorMessage(null)
-    const { error } = await authClient.signUp.email({ name, email, password })
+    const { error } = await authClient.signIn.email({ email, password })
     if (error) {
       setIsSubmitting(false)
-      setErrorMessage(error.message ?? 'Could not create your account. Please try again.')
+      setErrorMessage(error.message ?? 'Could not sign you in. Please try again.')
       return
     }
     router.push('/domains')
@@ -44,11 +44,7 @@ export const SignUpCard = ({ isAddingAccount = false }: SignUpCardProps) => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    void signUp()
-  }
-
-  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
+    void signIn()
   }
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -59,35 +55,25 @@ export const SignUpCard = ({ isAddingAccount = false }: SignUpCardProps) => {
     setPassword(event.target.value)
   }
 
-  const loginHref = isAddingAccount ? '/login?add=1' : '/login'
+  const cardTitle = isAddingAccount ? 'Add an account' : 'Sign in to Domainify'
+  const magicLinkHref = isAddingAccount ? '/login/link?add=1' : '/login/link'
+  const signUpHref = isAddingAccount ? '/sign-up?add=1' : '/sign-up'
 
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>Create your account</CardTitle>
-        <CardDescription>Start tracking and verifying your domains.</CardDescription>
+        <CardTitle>{cardTitle}</CardTitle>
+        <CardDescription>Enter your email and password to continue.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <Field>
-            <FieldLabel htmlFor="name">Name</FieldLabel>
-            <Input
-              id="name"
-              required
-              autoFocus
-              autoComplete="name"
-              placeholder="Ada Lovelace"
-              value={name}
-              onChange={handleNameChange}
-              className="h-11"
-            />
-          </Field>
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
             <Input
               id="email"
               type="email"
               required
+              autoFocus
               autoComplete="email"
               placeholder="you@example.com"
               value={email}
@@ -96,33 +82,43 @@ export const SignUpCard = ({ isAddingAccount = false }: SignUpCardProps) => {
             />
           </Field>
           <Field>
-            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <div className="flex items-center justify-between">
+              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <Link
+                href="/forgot-password"
+                className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <Input
               id="password"
               type="password"
               required
-              autoComplete="new-password"
-              minLength={PASSWORD_MIN_LENGTH}
+              autoComplete="current-password"
               value={password}
               onChange={handlePasswordChange}
               className="h-11"
             />
-            <FieldDescription>At least {PASSWORD_MIN_LENGTH} characters.</FieldDescription>
           </Field>
           <FormError message={errorMessage} />
           <Button type="submit" loading={isSubmitting}>
-            Create account
+            Sign in
           </Button>
+          <FieldSeparator>or</FieldSeparator>
+          <Link href={magicLinkHref} className={cn(buttonVariants({ variant: 'outline' }))}>
+            Email me a sign-in link
+          </Link>
         </form>
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Already have an account?{' '}
+        <Text className="mt-6 text-center text-muted-foreground">
+          New to Domainify?{' '}
           <Link
-            href={loginHref}
+            href={signUpHref}
             className="font-medium text-foreground underline-offset-4 hover:underline"
           >
-            Sign in
+            Create an account
           </Link>
-        </p>
+        </Text>
       </CardContent>
     </Card>
   )
