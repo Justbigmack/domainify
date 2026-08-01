@@ -15,9 +15,10 @@ import {
   SectionToolbar,
   sectionTableRowClass,
 } from '@/components/Section'
-import { ApiKeyRowActions } from '@/components/settings/ApiKeyRowActions'
+import { ApiKeyRowActions } from '@/app/settings/_components/ApiKeyRowActions'
 import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/brand/CopyButton'
+import { Text } from '@/components/brand/Text'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { authClient } from '@/lib/authClient'
@@ -119,10 +120,12 @@ export const ApiKeysCard = ({ items }: ApiKeysCardProps) => {
               </div>
             }
           >
-            <span className="block font-mono text-xs break-all">{createdKey}</span>
-            <span className="block pt-1 text-[0.8125rem]">
+            <Text as="span" variant="caption" className="block font-mono break-all text-inherit">
+              {createdKey}
+            </Text>
+            <Text as="span" variant="secondary" className="block pt-1 text-inherit">
               Copy this key now — it is shown only once.
-            </span>
+            </Text>
           </AlertBanner>
         ) : null}
         <Table>

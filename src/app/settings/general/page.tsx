@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
-import { SettingsRow, SettingsSection } from '@/components/settings/SettingsSection'
-import { ThemeSelect } from '@/components/settings/ThemeSelect'
+import { SettingsRow, SettingsSection } from '@/app/settings/_components/SettingsSection'
+import { ThemeSelect } from '@/app/settings/_components/ThemeSelect'
+import { Heading } from '@/components/brand/Heading'
 
 export const metadata: Metadata = {
   title: 'General · Settings',
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 const GeneralSettingsPage = () => (
   <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-8 lg:px-10">
     <header className="pl-5">
-      <h1 className="font-heading text-xl font-semibold tracking-tight">General</h1>
+      <Heading as="h1">General</Heading>
     </header>
     <SettingsSection
       title="Appearance"

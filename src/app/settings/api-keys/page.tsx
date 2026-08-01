@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
-import { ApiKeysCard } from '@/components/settings/ApiKeysCard'
-import type { ApiKeyListItem } from '@/components/settings/ApiKeysCard'
+import { ApiKeysCard } from '@/app/settings/_components/ApiKeysCard'
+import type { ApiKeyListItem } from '@/app/settings/_components/ApiKeysCard'
+import { Heading } from '@/components/brand/Heading'
 import { auth } from '@/lib/auth'
 
 export const metadata: Metadata = {
@@ -23,7 +24,7 @@ const ApiKeysPage = async () => {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-8 lg:px-10">
       <header className="pl-5">
-        <h1 className="font-heading text-xl font-semibold tracking-tight">API keys</h1>
+        <Heading as="h1">API keys</Heading>
       </header>
       <ApiKeysCard items={items} />
     </div>

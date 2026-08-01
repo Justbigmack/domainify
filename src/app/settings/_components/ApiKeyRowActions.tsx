@@ -13,6 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Text } from '@/components/brand/Text'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -70,7 +71,11 @@ export const ApiKeyRowActions = ({ keyId, keyName }: ApiKeyRowActionsProps) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Revoke key</AlertDialogTitle>
             <AlertDialogDescription>
-              Revokes <span className="font-medium text-foreground">{keyName}</span> immediately.
+              Revokes{' '}
+              <Text as="span" className="font-medium">
+                {keyName}
+              </Text>{' '}
+              immediately.
               Requests using it will start failing with 401. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
