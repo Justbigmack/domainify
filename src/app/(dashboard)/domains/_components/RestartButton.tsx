@@ -3,7 +3,7 @@
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { RotateCcwIcon } from 'lucide-react'
-import { Settings } from '@/components/brand/Settings'
+import { AlertBannerAction } from '@/components/brand/AlertBanner'
 import { restartVerificationAction } from '@/lib/domains/actions'
 
 type RestartButtonProps = {
@@ -22,8 +22,8 @@ export const RestartButton = ({ domainId }: RestartButtonProps) => {
   }
 
   return (
-    <Settings.AlertAction icon={RotateCcwIcon} onClick={handleRestart} loading={isRestarting}>
+    <AlertBannerAction icon={RotateCcwIcon} onClick={handleRestart} loading={isRestarting}>
       Restart verification
-    </Settings.AlertAction>
+    </AlertBannerAction>
   )
 }

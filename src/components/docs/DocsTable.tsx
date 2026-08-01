@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 import {
-  SETTINGS_TABLE_CELL_CLASS,
-  SETTINGS_TABLE_HEAD_CLASS,
-  settingsTableRowClass,
-} from '@/components/brand/Settings'
+  SECTION_TABLE_CELL_CLASS,
+  SECTION_TABLE_HEAD_CLASS,
+  sectionTableRowClass,
+} from '@/components/Section'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 
@@ -18,7 +18,7 @@ export const DocsTable = ({ columns, rows }: DocsTableProps) => (
       <TableHeader>
         <TableRow className="hover:bg-transparent">
           {columns.map((column) => (
-            <TableHead key={column} className={SETTINGS_TABLE_HEAD_CLASS}>
+            <TableHead key={column} className={SECTION_TABLE_HEAD_CLASS}>
               {column}
             </TableHead>
           ))}
@@ -26,12 +26,12 @@ export const DocsTable = ({ columns, rows }: DocsTableProps) => (
       </TableHeader>
       <TableBody>
         {rows.map((row, rowIndex) => (
-          <TableRow key={rowIndex} className={settingsTableRowClass(rowIndex === rows.length - 1)}>
+          <TableRow key={rowIndex} className={sectionTableRowClass(rowIndex === rows.length - 1)}>
             {row.map((cell, cellIndex) => (
               <TableCell
                 key={cellIndex}
                 className={cn(
-                  SETTINGS_TABLE_CELL_CLASS,
+                  SECTION_TABLE_CELL_CLASS,
                   'align-top leading-6 whitespace-normal text-muted-foreground',
                 )}
               >

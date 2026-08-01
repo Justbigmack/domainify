@@ -1,8 +1,15 @@
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { TriangleAlertIcon } from 'lucide-react'
-import { Settings } from '@/components/brand/Settings'
+import { AlertBanner } from '@/components/brand/AlertBanner'
 import { Text } from '@/components/brand/Text'
+import {
+  Section,
+  SectionContent,
+  SectionDescription,
+  SectionHeader,
+  SectionTitle,
+} from '@/components/Section'
 import { DangerZone } from '@/app/(dashboard)/domains/_components/DangerZone'
 import { DiagnosisCard } from '@/app/(dashboard)/domains/_components/DiagnosisCard'
 import { DomainEvents } from '@/app/(dashboard)/domains/_components/DomainEvents'
@@ -60,7 +67,7 @@ const DomainDetailPage = async ({ params }: DomainDetailPageProps) => {
       <DomainHeader domain={domain} />
       <DomainEvents status={domain.status} events={events} />
       {isFailed && (
-        <Settings.Alert
+        <AlertBanner
           tone="destructive"
           icon={TriangleAlertIcon}
           action={<RestartButton domainId={domain.id} />}
@@ -71,19 +78,19 @@ const DomainDetailPage = async ({ params }: DomainDetailPageProps) => {
           <Text className="text-destructive/80">
             Restarting mints a fresh token and opens a new 72-hour window.
           </Text>
-        </Settings.Alert>
+        </AlertBanner>
       )}
-      <Settings.Root>
-        <Settings.Header>
-          <Settings.Title>DNS record</Settings.Title>
-          <Settings.Description>
+      <Section>
+        <SectionHeader>
+          <SectionTitle>DNS record</SectionTitle>
+          <SectionDescription>
             The TXT record we use to prove ownership of this domain.
-          </Settings.Description>
-        </Settings.Header>
+          </SectionDescription>
+        </SectionHeader>
         {isSettled ? (
-          <Settings.Content>
+          <SectionContent>
             <RecordCard recordValue={record.value} recordName={recordName} recordStatus={recordStatus} />
-          </Settings.Content>
+          </SectionContent>
         ) : (
           <>
             <VerifySteps
@@ -96,14 +103,14 @@ const DomainDetailPage = async ({ params }: DomainDetailPageProps) => {
             {diagnosis && <DiagnosisCard diagnosis={diagnosis} />}
           </>
         )}
-      </Settings.Root>
-      <Settings.Root>
-        <Settings.Header>
-          <Settings.Title>Danger zone</Settings.Title>
-          <Settings.Description>Irreversible actions for this domain.</Settings.Description>
-        </Settings.Header>
+      </Section>
+      <Section>
+        <SectionHeader>
+          <SectionTitle>Danger zone</SectionTitle>
+          <SectionDescription>Irreversible actions for this domain.</SectionDescription>
+        </SectionHeader>
         <DangerZone domainId={domain.id} hostname={domain.hostname} status={domain.status} />
-      </Settings.Root>
+      </Section>
     </div>
   )
 }

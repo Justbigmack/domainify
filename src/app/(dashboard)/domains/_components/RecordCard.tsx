@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { CheckIcon, ChevronDownIcon } from 'lucide-react'
 import {
-  SETTINGS_TABLE_CELL_CLASS,
-  SETTINGS_TABLE_HEAD_CLASS,
-  settingsTableRowClass,
-} from '@/components/brand/Settings'
+  SECTION_TABLE_CELL_CLASS,
+  SECTION_TABLE_HEAD_CLASS,
+  sectionTableRowClass,
+} from '@/components/Section'
 import { Badge } from '@/components/ui/badge'
 import { CopyButton } from '@/components/brand/CopyButton'
 import {
@@ -35,7 +35,7 @@ const STATUS_CLASSES: Record<RecordStatus, string> = {
   not_found: 'bg-muted text-muted-foreground',
 }
 
-const VALUE_CELL_CLASS = cn(SETTINGS_TABLE_CELL_CLASS, 'font-medium tabular-nums')
+const VALUE_CELL_CLASS = cn(SECTION_TABLE_CELL_CLASS, 'font-medium tabular-nums')
 
 const truncateMiddle = (value: string): string =>
   value.length <= VALUE_HEAD_LENGTH + VALUE_TAIL_LENGTH
@@ -78,19 +78,19 @@ export const RecordCard = ({ recordValue, recordName, recordStatus = null }: Rec
         <div className={cn('overflow-x-auto py-1', { 'border-t border-border/50': isVerified })}>
           <Table>
             <TableHeader>
-              <TableRow className={settingsTableRowClass(false)}>
-                <TableHead className={cn(SETTINGS_TABLE_HEAD_CLASS, 'w-20')}>Type</TableHead>
-                <TableHead className={SETTINGS_TABLE_HEAD_CLASS}>Host</TableHead>
-                <TableHead className={SETTINGS_TABLE_HEAD_CLASS}>Value</TableHead>
-                <TableHead className={cn(SETTINGS_TABLE_HEAD_CLASS, 'w-16')}>TTL</TableHead>
+              <TableRow className={sectionTableRowClass(false)}>
+                <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, 'w-20')}>Type</TableHead>
+                <TableHead className={SECTION_TABLE_HEAD_CLASS}>Host</TableHead>
+                <TableHead className={SECTION_TABLE_HEAD_CLASS}>Value</TableHead>
+                <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, 'w-16')}>TTL</TableHead>
                 {recordStatus !== null && (
-                  <TableHead className={cn(SETTINGS_TABLE_HEAD_CLASS, 'w-28')}>Status</TableHead>
+                  <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, 'w-28')}>Status</TableHead>
                 )}
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow className={settingsTableRowClass(true)}>
-                <TableCell className={cn(SETTINGS_TABLE_CELL_CLASS, 'text-muted-foreground/80')}>
+              <TableRow className={sectionTableRowClass(true)}>
+                <TableCell className={cn(SECTION_TABLE_CELL_CLASS, 'text-muted-foreground/80')}>
                   TXT
                 </TableCell>
                 <TableCell className={VALUE_CELL_CLASS}>
@@ -113,11 +113,11 @@ export const RecordCard = ({ recordValue, recordName, recordStatus = null }: Rec
                     />
                   </span>
                 </TableCell>
-                <TableCell className={cn(SETTINGS_TABLE_CELL_CLASS, 'text-muted-foreground')}>
+                <TableCell className={cn(SECTION_TABLE_CELL_CLASS, 'text-muted-foreground')}>
                   Auto
                 </TableCell>
                 {recordStatus !== null && (
-                  <TableCell className={SETTINGS_TABLE_CELL_CLASS}>
+                  <TableCell className={SECTION_TABLE_CELL_CLASS}>
                     <Badge
                       variant="outline"
                       className={cn('-ml-2 border-transparent', STATUS_CLASSES[recordStatus])}

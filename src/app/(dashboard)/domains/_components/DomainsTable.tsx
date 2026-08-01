@@ -25,9 +25,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import {
-  SETTINGS_TABLE_CELL_CLASS as TABLE_CELL_CLASS,
-  SETTINGS_TABLE_HEAD_CLASS as TABLE_HEAD_CLASS,
-} from '@/components/brand/Settings'
+  SECTION_TABLE_CELL_CLASS as TABLE_CELL_CLASS,
+  SECTION_TABLE_HEAD_CLASS as TABLE_HEAD_CLASS,
+} from '@/components/Section'
 import { cn } from '@/lib/utils'
 import { DOMAIN_STATUSES } from '@/lib/domains/status'
 import type { DomainStatus } from '@/lib/domains/status'

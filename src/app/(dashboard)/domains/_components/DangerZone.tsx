@@ -4,8 +4,15 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { RefreshCwIcon, Trash2Icon } from 'lucide-react'
 import { GhostButton } from '@/components/brand/GhostButton'
-import { Settings } from '@/components/brand/Settings'
 import { Text } from '@/components/brand/Text'
+import {
+  SectionContent,
+  SectionDescription,
+  SectionDivider,
+  SectionLabel,
+  SectionRow,
+  SectionRowText,
+} from '@/components/Section'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -66,24 +73,24 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
 
   return (
     <>
-      <Settings.Content>
-        <Settings.Row>
-          <Settings.RowText>
-            <Settings.Label>Regenerate token</Settings.Label>
-            <Settings.Description className="mt-0.5">{regenerateWarning}</Settings.Description>
-          </Settings.RowText>
+      <SectionContent>
+        <SectionRow>
+          <SectionRowText>
+            <SectionLabel>Regenerate token</SectionLabel>
+            <SectionDescription className="mt-0.5">{regenerateWarning}</SectionDescription>
+          </SectionRowText>
           <GhostButton icon={RefreshCwIcon} className="-mr-2.5" onClick={handleRequestRegenerate}>
             Regenerate
           </GhostButton>
-        </Settings.Row>
-        <Settings.Divider />
-        <Settings.Row>
-          <Settings.RowText>
-            <Settings.Label>Remove domain</Settings.Label>
-            <Settings.Description className="mt-0.5">
+        </SectionRow>
+        <SectionDivider />
+        <SectionRow>
+          <SectionRowText>
+            <SectionLabel>Remove domain</SectionLabel>
+            <SectionDescription className="mt-0.5">
               Deletes {hostname} and its full check history. This cannot be undone.
-            </Settings.Description>
-          </Settings.RowText>
+            </SectionDescription>
+          </SectionRowText>
           <GhostButton
             icon={Trash2Icon}
             variant="destructive"
@@ -92,8 +99,8 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
           >
             Remove
           </GhostButton>
-        </Settings.Row>
-      </Settings.Content>
+        </SectionRow>
+      </SectionContent>
       <AlertDialog open={pendingAction === 'regenerate'} onOpenChange={handleDialogOpenChange}>
         <AlertDialogContent>
           <AlertDialogHeader>

@@ -5,7 +5,8 @@ import type { ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { ClockIcon, ExternalLinkIcon, RefreshCwIcon } from 'lucide-react'
 import { GhostButton } from '@/components/brand/GhostButton'
-import { Settings } from '@/components/brand/Settings'
+import { AlertBanner } from '@/components/brand/AlertBanner'
+import { SectionContent, SectionToolbar } from '@/components/Section'
 import {
   OTHER_PROVIDER_ID,
   ProviderSelect,
@@ -164,8 +165,8 @@ export const VerifySteps = ({
 
   return (
     <div className="flex flex-col gap-3">
-      <Settings.Content>
-        <Settings.Toolbar>
+      <SectionContent>
+        <SectionToolbar>
           <Text
             as="span"
             aria-live="polite"
@@ -188,7 +189,7 @@ export const VerifySteps = ({
           >
             Check now
           </GhostButton>
-        </Settings.Toolbar>
+        </SectionToolbar>
         <ol className="flex flex-col px-5 py-5">
           <Step
             number={1}
@@ -229,11 +230,11 @@ export const VerifySteps = ({
             <TerminalCheck challengeHost={challengeHost} />
           </Step>
         </ol>
-      </Settings.Content>
+      </SectionContent>
       {cooldownMessage && (
-        <Settings.Alert tone="warning" icon={ClockIcon}>
+        <AlertBanner tone="warning" icon={ClockIcon}>
           {cooldownMessage}
-        </Settings.Alert>
+        </AlertBanner>
       )}
     </div>
   )

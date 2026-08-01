@@ -5,7 +5,16 @@ import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { KeyRoundIcon, PlusIcon } from 'lucide-react'
 import { GhostButton } from '@/components/brand/GhostButton'
-import { Settings, SETTINGS_TABLE_CELL_CLASS, SETTINGS_TABLE_HEAD_CLASS, settingsTableRowClass } from '@/components/brand/Settings'
+import { AlertBanner, AlertBannerAction } from '@/components/brand/AlertBanner'
+import {
+  SECTION_TABLE_CELL_CLASS,
+  SECTION_TABLE_HEAD_CLASS,
+  Section,
+  SectionContent,
+  SectionDescription,
+  SectionToolbar,
+  sectionTableRowClass,
+} from '@/components/Section'
 import { ApiKeyRowActions } from '@/components/settings/ApiKeyRowActions'
 import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/brand/CopyButton'
@@ -66,17 +75,17 @@ export const ApiKeysCard = ({ items }: ApiKeysCardProps) => {
   }
 
   return (
-    <Settings.Root>
-      <Settings.Content>
-        <Settings.Toolbar>
-          <Settings.Description>
+    <Section>
+      <SectionContent>
+        <SectionToolbar>
+          <SectionDescription>
             Keys authenticate API requests via the Authorization header. A key grants full access
             to your domains.
-          </Settings.Description>
+          </SectionDescription>
           <GhostButton icon={PlusIcon} onClick={handleOpenForm} className="-mr-2.5 shrink-0">
             Create key
           </GhostButton>
-        </Settings.Toolbar>
+        </SectionToolbar>
         {isFormOpen ? (
           <form
             onSubmit={handleCreate}
@@ -99,14 +108,14 @@ export const ApiKeysCard = ({ items }: ApiKeysCardProps) => {
           </form>
         ) : null}
         {createdKey ? (
-          <Settings.Alert
+          <AlertBanner
             tone="info"
             icon={KeyRoundIcon}
             className="rounded-none border-x-0 border-t-0 border-b border-border/50 bg-info/[0.04]"
             action={
               <div className="flex items-center gap-1 self-center">
                 <CopyButton value={createdKey} label="Copy the new API key" />
-                <Settings.AlertAction onClick={handleDismissCreatedKey}>Done</Settings.AlertAction>
+                <AlertBannerAction onClick={handleDismissCreatedKey}>Done</AlertBannerAction>
               </div>
             }
           >
@@ -114,16 +123,16 @@ export const ApiKeysCard = ({ items }: ApiKeysCardProps) => {
             <span className="block pt-1 text-[0.8125rem]">
               Copy this key now — it is shown only once.
             </span>
-          </Settings.Alert>
+          </AlertBanner>
         ) : null}
         <Table>
           <TableHeader>
             <TableRow className="border-border/40 hover:bg-transparent">
-              <TableHead className={SETTINGS_TABLE_HEAD_CLASS}>Name</TableHead>
-              <TableHead className={cn(SETTINGS_TABLE_HEAD_CLASS, 'w-48')}>Key</TableHead>
-              <TableHead className={cn(SETTINGS_TABLE_HEAD_CLASS, 'w-32')}>Created</TableHead>
-              <TableHead className={cn(SETTINGS_TABLE_HEAD_CLASS, 'w-32')}>Last used</TableHead>
-              <TableHead className={cn(SETTINGS_TABLE_HEAD_CLASS, 'w-24 text-right')}>
+              <TableHead className={SECTION_TABLE_HEAD_CLASS}>Name</TableHead>
+              <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, 'w-48')}>Key</TableHead>
+              <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, 'w-32')}>Created</TableHead>
+              <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, 'w-32')}>Last used</TableHead>
+              <TableHead className={cn(SECTION_TABLE_HEAD_CLASS, 'w-24 text-right')}>
                 Actions
               </TableHead>
             </TableRow>
@@ -137,26 +146,26 @@ export const ApiKeysCard = ({ items }: ApiKeysCardProps) => {
               </TableRow>
             ) : (
               items.map((item, index) => (
-                <TableRow key={item.id} className={settingsTableRowClass(index === items.length - 1)}>
-                  <TableCell className={cn(SETTINGS_TABLE_CELL_CLASS, 'font-medium')}>
+                <TableRow key={item.id} className={sectionTableRowClass(index === items.length - 1)}>
+                  <TableCell className={cn(SECTION_TABLE_CELL_CLASS, 'font-medium')}>
                     {item.name}
                   </TableCell>
-                  <TableCell className={cn(SETTINGS_TABLE_CELL_CLASS, 'font-mono text-xs text-muted-foreground')}>
+                  <TableCell className={cn(SECTION_TABLE_CELL_CLASS, 'font-mono text-xs text-muted-foreground')}>
                     {item.start ? `${item.start}…` : '••••'}
                   </TableCell>
                   <TableCell
-                    className={cn(SETTINGS_TABLE_CELL_CLASS, 'text-muted-foreground tabular-nums')}
+                    className={cn(SECTION_TABLE_CELL_CLASS, 'text-muted-foreground tabular-nums')}
                     suppressHydrationWarning
                   >
                     {formatRelativeTime(item.createdAt, nowMs)}
                   </TableCell>
                   <TableCell
-                    className={cn(SETTINGS_TABLE_CELL_CLASS, 'text-muted-foreground tabular-nums')}
+                    className={cn(SECTION_TABLE_CELL_CLASS, 'text-muted-foreground tabular-nums')}
                     suppressHydrationWarning
                   >
                     {item.lastRequest ? formatRelativeTime(item.lastRequest, nowMs) : '—'}
                   </TableCell>
-                  <TableCell className={cn(SETTINGS_TABLE_CELL_CLASS, 'text-right')}>
+                  <TableCell className={cn(SECTION_TABLE_CELL_CLASS, 'text-right')}>
                     <ApiKeyRowActions keyId={item.id} keyName={item.name} />
                   </TableCell>
                 </TableRow>
@@ -164,7 +173,7 @@ export const ApiKeysCard = ({ items }: ApiKeysCardProps) => {
             )}
           </TableBody>
         </Table>
-      </Settings.Content>
-    </Settings.Root>
+      </SectionContent>
+    </Section>
   )
 }
