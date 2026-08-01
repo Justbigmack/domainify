@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { Text } from '@/components/brand/Text'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import {
@@ -37,9 +38,9 @@ const AccountRow = ({ account, onSelect }: AccountRowProps) => {
 
   return (
     <button type="button" onClick={handleClick} className={MENU_ROW_CLASS}>
-      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-sidebar-accent text-xs font-medium text-sidebar-accent-foreground">
+      <Text as="span" variant="caption" className="flex size-6 shrink-0 items-center justify-center rounded-full bg-sidebar-accent font-medium text-sidebar-accent-foreground">
         {account.email.charAt(0).toUpperCase()}
-      </span>
+      </Text>
       <span className="min-w-0 flex-1 truncate text-left">{account.email}</span>
       <CheckIcon
         aria-hidden={!account.isCurrent}
@@ -119,16 +120,16 @@ export const MobileNav = ({ userEmail }: MobileNavProps) => {
                 <SettingsIcon />
                 Settings
               </Link>
-              <p className="px-3 pt-5 pb-1.5 text-xs font-medium text-muted-foreground/70">
+              <Text variant="caption" className="px-3 pt-5 pb-1.5 font-medium text-muted-foreground/70">
                 Resources
-              </p>
+              </Text>
               <Link href="/docs" onClick={handleMenuClose} className={MENU_ROW_CLASS}>
                 <BookOpenIcon />
                 Docs
               </Link>
             </nav>
             <div className="mt-auto flex flex-col gap-0.5 px-3 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-              <p className="px-3 pb-1.5 text-xs font-medium text-muted-foreground/70">Accounts</p>
+              <Text variant="caption" className="px-3 pb-1.5 font-medium text-muted-foreground/70">Accounts</Text>
               {accounts.map((account) => (
                 <AccountRow key={account.email} account={account} onSelect={handleAccountSelect} />
               ))}

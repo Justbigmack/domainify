@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
-import { Callout } from '@/components/docs/Callout'
-import { CodeBlock } from '@/components/docs/CodeBlock'
-import { DocsArticle, DocsSection } from '@/components/docs/DocsArticle'
-import { DocsCode, DocsLink, DocsP, DocsStrong, DocsUl } from '@/components/docs/Prose'
+import { Callout } from '@/app/(docs)/docs/_components/Callout'
+import { CodeBlock } from '@/app/(docs)/docs/_components/CodeBlock'
+import { DocsArticle, DocsSection } from '@/app/(docs)/docs/_components/DocsArticle'
+import { DocsCode, DocsLink, DocsP, DocsStrong, DocsUl } from '@/app/(docs)/docs/_components/Prose'
 
 export const metadata: Metadata = {
   title: 'Troubleshooting',

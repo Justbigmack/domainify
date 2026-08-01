@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import { Callout } from '@/components/docs/Callout'
-import { DocsArticle, DocsSection } from '@/components/docs/DocsArticle'
-import { DocsCards } from '@/components/docs/DocsCards'
-import { DocsTable } from '@/components/docs/DocsTable'
-import { DocsCode, DocsLink, DocsP, DocsStrong } from '@/components/docs/Prose'
+import { Callout } from '@/app/(docs)/docs/_components/Callout'
+import { DocsArticle, DocsSection } from '@/app/(docs)/docs/_components/DocsArticle'
+import { DocsCards } from '@/app/(docs)/docs/_components/DocsCards'
+import { DocsTable } from '@/app/(docs)/docs/_components/DocsTable'
+import { DocsCode, DocsLink, DocsP, DocsStrong } from '@/app/(docs)/docs/_components/Prose'
 
 export const metadata: Metadata = {
   title: 'Domains overview',

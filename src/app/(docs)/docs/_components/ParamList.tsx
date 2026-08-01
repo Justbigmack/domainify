@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { Text } from '@/components/brand/Text'
 import type { EndpointField } from '@/lib/docs/apiReference'
 
 type ParamListProps = {
@@ -14,7 +15,7 @@ export const ParamList = ({ fields }: ParamListProps) => (
       >
         <div className="flex items-baseline gap-2">
           <code className="font-mono text-[0.8125rem] font-medium">{field.name}</code>
-          <span className="text-xs text-muted-foreground">{field.type}</span>
+          <Text as="span" variant="caption">{field.type}</Text>
           <span
             className={cn('text-xs', {
               'text-warning': field.required,
@@ -24,7 +25,7 @@ export const ParamList = ({ fields }: ParamListProps) => (
             {field.required ? 'required' : 'optional'}
           </span>
         </div>
-        <p className="text-[0.8125rem] leading-6 text-muted-foreground">{field.description}</p>
+        <Text variant="secondary" className="leading-6">{field.description}</Text>
       </div>
     ))}
   </div>

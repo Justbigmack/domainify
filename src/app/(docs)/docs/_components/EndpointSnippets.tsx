@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { Text } from '@/components/brand/Text'
 import { useState } from 'react'
 import { CopyButton } from '@/components/brand/CopyButton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
@@ -54,7 +55,7 @@ export const EndpointSnippets = ({ operationKey }: EndpointSnippetsProps) => {
           className="absolute top-1.5 right-1.5 bg-muted"
         />
       </div>
-      <p className="text-xs leading-5 text-muted-foreground">
+      <Text variant="caption" className="leading-5">
         Replace {'<api-key>'} with a key from{' '}
         <Link
           href="/settings/api-keys"
@@ -63,7 +64,7 @@ export const EndpointSnippets = ({ operationKey }: EndpointSnippetsProps) => {
           Settings → API keys
         </Link>
         .
-      </p>
+      </Text>
     </div>
   )
 }

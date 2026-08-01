@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import type { PropsWithChildren } from 'react'
-import { DocsMobileNav } from '@/components/docs/DocsMobileNav'
-import { DocsSidebar } from '@/components/docs/DocsSidebar'
+import { DocsMobileNav } from '@/app/(docs)/docs/_components/DocsMobileNav'
+import { DocsSidebar } from '@/app/(docs)/docs/_components/DocsSidebar'
 
 export const metadata: Metadata = {
   title: {

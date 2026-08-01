@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Text } from '@/components/brand/Text'
 
 type DocsCard = {
   title: string
@@ -18,10 +19,10 @@ export const DocsCards = ({ cards }: DocsCardsProps) => (
         href={card.href}
         className="flex flex-col gap-1 rounded-xl border border-border/50 bg-card px-5 py-4 transition-colors outline-none hover:border-border focus-visible:ring-3 focus-visible:ring-ring/50"
       >
-        <span className="text-sm font-medium">{card.title}</span>
-        <span className="text-[0.8125rem] leading-5.5 text-muted-foreground">
+        <Text as="span" className="font-medium">{card.title}</Text>
+        <Text as="span" variant="secondary" className="leading-5.5">
           {card.description}
-        </span>
+        </Text>
       </Link>
     ))}
   </div>

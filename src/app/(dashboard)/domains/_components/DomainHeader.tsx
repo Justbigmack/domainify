@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ApiViewPanel } from '@/components/api/ApiViewPanel'
+import { ApiViewPanel } from '@/app/(dashboard)/domains/_components/ApiViewPanel'
 import { Heading } from '@/components/brand/Heading'
 import { StatusTag } from '@/components/brand/StatusTag'
 import { Text } from '@/components/brand/Text'

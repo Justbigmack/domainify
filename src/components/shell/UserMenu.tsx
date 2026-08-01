@@ -1,6 +1,7 @@
 'use client'
 
 import { CheckIcon, ChevronsUpDownIcon, LogOutIcon, PlusIcon } from 'lucide-react'
+import { Text } from '@/components/brand/Text'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,9 +31,9 @@ const AccountItem = ({ account, onSelect }: AccountItemProps) => {
 
   return (
     <DropdownMenuItem onClick={handleClick}>
-      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+      <Text as="span" variant="caption" className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted font-medium">
         {account.email.charAt(0).toUpperCase()}
-      </span>
+      </Text>
       <span className="min-w-0 flex-1 truncate">{account.email}</span>
       <CheckIcon
         aria-hidden={!account.isCurrent}
@@ -63,9 +64,9 @@ export const UserMenu = ({ userEmail, isCollapsed }: UserMenuProps) => {
         aria-label={isCollapsed ? userEmail : undefined}
         className="flex h-9 w-full items-center gap-2 overflow-hidden rounded-md px-2 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors outline-none select-none hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 aria-expanded:bg-sidebar-accent aria-expanded:text-sidebar-accent-foreground"
       >
-        <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-sidebar-accent text-xs font-medium text-sidebar-accent-foreground">
+        <Text as="span" variant="caption" className="flex size-6 shrink-0 items-center justify-center rounded-full bg-sidebar-accent font-medium text-sidebar-accent-foreground">
           {userEmail.charAt(0).toUpperCase()}
-        </span>
+        </Text>
         <span
           className={cn(
             'min-w-0 flex-1 truncate text-left transition-opacity duration-200 ease-in-out motion-reduce:transition-none',

@@ -1,4 +1,4 @@
-import { MethodBadge } from '@/components/docs/MethodLabel'
+import { MethodBadge } from '@/app/(docs)/docs/_components/MethodLabel'
 import { CopyButton } from '@/components/brand/CopyButton'
 import type { ApiOperation, ApiSnippetKind } from '@/lib/domains/apiSnippets'
 

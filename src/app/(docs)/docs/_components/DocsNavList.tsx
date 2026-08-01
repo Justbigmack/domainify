@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { Text } from '@/components/brand/Text'
 import { usePathname } from 'next/navigation'
 import { DOCS_NAV } from '@/lib/docs/nav'
 import { cn } from '@/lib/utils'
@@ -17,9 +18,9 @@ export const DocsNavList = ({ onNavigate }: DocsNavListProps) => {
     <nav aria-label="Documentation" className="flex flex-col px-3 pb-6">
       {DOCS_NAV.map((group) => (
         <div key={group.title} className="flex flex-col gap-0.5">
-          <p className="px-3 pt-6 pb-1.5 text-xs font-medium text-muted-foreground/70">
+          <Text variant="caption" className="px-3 pt-6 pb-1.5 font-medium text-muted-foreground/70">
             {group.title}
-          </p>
+          </Text>
           {group.items.map((item) => {
             const isActive = pathname === item.href
             return (

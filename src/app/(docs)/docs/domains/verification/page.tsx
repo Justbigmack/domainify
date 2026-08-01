@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
-import { Callout } from '@/components/docs/Callout'
-import { DocsArticle, DocsSection } from '@/components/docs/DocsArticle'
-import { DocsTable } from '@/components/docs/DocsTable'
-import { DocsCode, DocsLink, DocsP, DocsStrong, DocsUl } from '@/components/docs/Prose'
+import { Callout } from '@/app/(docs)/docs/_components/Callout'
+import { DocsArticle, DocsSection } from '@/app/(docs)/docs/_components/DocsArticle'
+import { DocsTable } from '@/app/(docs)/docs/_components/DocsTable'
+import { DocsCode, DocsLink, DocsP, DocsStrong, DocsUl } from '@/app/(docs)/docs/_components/Prose'
 
 export const metadata: Metadata = {
   title: 'How verification works',

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { Text } from '@/components/brand/Text'
 import { usePathname } from 'next/navigation'
 import { flattenDocsNav } from '@/lib/docs/nav'
 import { cn } from '@/lib/utils'
@@ -19,12 +20,12 @@ const PagerLink = ({ item, direction }: PagerLinkProps) => (
       { 'items-end text-right': direction === 'next' },
     )}
   >
-    <span className="text-xs text-muted-foreground/70">
+    <Text as="span" variant="caption" className="text-muted-foreground/70">
       {direction === 'previous' ? 'Previous' : 'Next'}
-    </span>
-    <span className="text-sm font-medium text-muted-foreground transition-colors group-hover:text-foreground">
+    </Text>
+    <Text as="span" className="font-medium text-muted-foreground transition-colors group-hover:text-foreground">
       {item.title}
-    </span>
+    </Text>
   </Link>
 )
 

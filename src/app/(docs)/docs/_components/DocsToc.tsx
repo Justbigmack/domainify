@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Text } from '@/components/brand/Text'
 import { cn } from '@/lib/utils'
 
 export type TocItem = {
@@ -38,7 +39,7 @@ export const DocsToc = ({ items }: DocsTocProps) => {
       aria-label="On this page"
       className="sticky top-12 hidden w-48 shrink-0 self-start xl:block"
     >
-      <p className="px-2 text-xs font-medium text-muted-foreground/70">On this page</p>
+      <Text variant="caption" className="px-2 font-medium text-muted-foreground/70">On this page</Text>
       <ul className="flex flex-col gap-0.5 pt-2">
         {items.map((item) => (
           <li key={item.id}>
