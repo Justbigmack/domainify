@@ -17,7 +17,7 @@ export const useAccountSessions = (userEmail?: string) => {
 
   const hasInitialAccount = userEmail !== undefined
   const fallbackAccounts: AccountSession[] = hasInitialAccount
-    ? [{ sessionToken: '', email: userEmail, isCurrent: true }]
+    ? [{ activeSessionToken: '', deviceSessionTokens: [], email: userEmail, isCurrent: true }]
     : []
   const hasLoadedAccounts = loadedAccounts !== null && !hasSignedInAccountChanged
   const accounts = hasLoadedAccounts ? loadedAccounts : fallbackAccounts
@@ -32,5 +32,13 @@ export const useAccountSessions = (userEmail?: string) => {
       .finally(() => setIsLoadingSessions(false))
   }
 
-  return { accounts, handleMenuOpen, isLoadingSessions }
+  const removeAccount = (email: string) => {
+    setLoadedAccounts((currentAccounts) =>
+      currentAccounts === null
+        ? null
+        : currentAccounts.filter((account) => account.email !== email),
+    )
+  }
+
+  return { accounts, handleMenuOpen, removeAccount, isLoadingSessions }
 }

@@ -170,7 +170,12 @@ describe('listAccountSessions', () => {
     ]
 
     await expect(listAccountSessions()).resolves.toEqual([
-      { sessionToken: 'newest', email: COOKIE_OWNER.email, isCurrent: true },
+      {
+        activeSessionToken: 'newest',
+        deviceSessionTokens: ['oldest', 'newest'],
+        email: COOKIE_OWNER.email,
+        isCurrent: true,
+      },
     ])
   })
 
@@ -182,8 +187,18 @@ describe('listAccountSessions', () => {
     ]
 
     await expect(listAccountSessions()).resolves.toEqual([
-      { sessionToken: 'token-other', email: 'other@example.com', isCurrent: false },
-      { sessionToken: 'token-current', email: COOKIE_OWNER.email, isCurrent: true },
+      {
+        activeSessionToken: 'token-other',
+        deviceSessionTokens: ['token-other'],
+        email: 'other@example.com',
+        isCurrent: false,
+      },
+      {
+        activeSessionToken: 'token-current',
+        deviceSessionTokens: ['token-current'],
+        email: COOKIE_OWNER.email,
+        isCurrent: true,
+      },
     ])
   })
 })

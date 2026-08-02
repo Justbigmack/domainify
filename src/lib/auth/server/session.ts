@@ -41,7 +41,8 @@ export const getApiRequestUser = cache(async (): Promise<SessionUser | null> => 
 })
 
 export type AccountSession = {
-  sessionToken: string
+  activeSessionToken: string
+  deviceSessionTokens: string[]
   email: string
   isCurrent: boolean
 }
@@ -59,11 +60,13 @@ export const listAccountSessions = cache(async (): Promise<AccountSession[]> => 
   for (const { session, user } of orderedSessions) {
     const existingAccount = accountsByUserId.get(user.id)
     if (existingAccount) {
-      existingAccount.sessionToken = session.token
+      existingAccount.activeSessionToken = session.token
+      existingAccount.deviceSessionTokens.push(session.token)
       continue
     }
     accountsByUserId.set(user.id, {
-      sessionToken: session.token,
+      activeSessionToken: session.token,
+      deviceSessionTokens: [session.token],
       email: user.email,
       isCurrent: user.id === sessionUser.id,
     })

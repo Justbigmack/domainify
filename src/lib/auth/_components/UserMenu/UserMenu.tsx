@@ -1,6 +1,6 @@
 'use client'
 
-import { CheckIcon, ChevronsUpDownIcon, LogOutIcon, PlusIcon } from 'lucide-react'
+import { ChevronsUpDownIcon, LogOutIcon, PlusIcon } from 'lucide-react'
 import { Text } from '@/components/brand/Text'
 import {
   DropdownMenu,
@@ -17,14 +17,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useSidebar } from '@/components/brand/Sidebar'
 import { useAccountActions } from '@/lib/auth/client/useAccountActions'
 import { useAccountSessions } from '@/lib/auth/client/useAccountSessions'
+import { AccountMenuItem } from './AccountMenuItem'
 
 type UserMenuProps = {
   userEmail: string
-}
-
-type AccountItemProps = {
-  account: AccountSession
-  onSelect: (account: AccountSession) => void
 }
 
 const AccountItemSkeleton = () => (
@@ -32,36 +28,26 @@ const AccountItemSkeleton = () => (
     <Skeleton className="size-6 shrink-0 rounded-full" />
     <Skeleton className="h-4 flex-1" />
     <div aria-hidden className="size-4 shrink-0" />
+    <div aria-hidden className="size-4 shrink-0" />
   </div>
 )
 
-const AccountItem = ({ account, onSelect }: AccountItemProps) => {
-  const handleClick = () => onSelect(account)
-
-  return (
-    <DropdownMenuItem onClick={handleClick}>
-      <Text as="span" variant="caption" className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted font-medium">
-        {account.email.charAt(0).toUpperCase()}
-      </Text>
-      <span className="min-w-0 flex-1 truncate">{account.email}</span>
-      <CheckIcon
-        aria-hidden={!account.isCurrent}
-        className={cn('shrink-0', { 'opacity-0': !account.isCurrent })}
-      />
-    </DropdownMenuItem>
-  )
-}
-
 export const UserMenu = ({ userEmail }: UserMenuProps) => {
   const { isCollapsed } = useSidebar()
-  const { handleSignOut, handleAddAccount, handleAccountSwitch } = useAccountActions()
-  const { accounts, handleMenuOpen, isLoadingSessions } = useAccountSessions(userEmail)
+  const { handleSignOut, handleAddAccount, handleAccountSwitch, handleAccountSignOut } =
+    useAccountActions()
+  const { accounts, handleMenuOpen, removeAccount, isLoadingSessions } =
+    useAccountSessions(userEmail)
 
   const hasMultipleAccounts = accounts.length > 1
 
   const handleAccountSelect = (account: AccountSession) => {
-    if (account.isCurrent) return
-    void handleAccountSwitch(account.sessionToken)
+    void handleAccountSwitch(account.activeSessionToken)
+  }
+
+  const handleAccountSignOutSelect = (account: AccountSession) => {
+    removeAccount(account.email)
+    void handleAccountSignOut(account)
   }
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -96,12 +82,18 @@ export const UserMenu = ({ userEmail }: UserMenuProps) => {
         side={isCollapsed ? 'right' : 'bottom'}
         align="start"
         sideOffset={8}
-        className="min-w-56"
+        className="min-w-64"
       >
         <DropdownMenuGroup>
           <DropdownMenuLabel>Accounts</DropdownMenuLabel>
           {accounts.map((account) => (
-            <AccountItem key={account.email} account={account} onSelect={handleAccountSelect} />
+            <AccountMenuItem
+              key={account.email}
+              account={account}
+              hasMultipleAccounts={hasMultipleAccounts}
+              onSwitch={handleAccountSelect}
+              onSignOut={handleAccountSignOutSelect}
+            />
           ))}
           {isLoadingSessions && <AccountItemSkeleton />}
           <DropdownMenuItem onClick={handleAddAccount}>

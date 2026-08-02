@@ -31,23 +31,36 @@ export const MENU_ROW_CLASS =
 
 type AccountRowProps = {
   account: AccountSession
+  hasMultipleAccounts: boolean
   onSelect: (account: AccountSession) => void
+  onSignOut: (account: AccountSession) => void
 }
 
-const AccountRow = ({ account, onSelect }: AccountRowProps) => {
+const AccountRow = ({ account, hasMultipleAccounts, onSelect, onSignOut }: AccountRowProps) => {
   const handleClick = () => onSelect(account)
+  const handleSignOutClick = () => onSignOut(account)
 
   return (
-    <button type="button" onClick={handleClick} className={MENU_ROW_CLASS}>
-      <Text as="span" variant="caption" className="flex size-6 shrink-0 items-center justify-center rounded-full bg-sidebar-accent font-medium text-sidebar-accent-foreground">
-        {account.email.charAt(0).toUpperCase()}
-      </Text>
-      <span className="min-w-0 flex-1 truncate text-left">{account.email}</span>
-      <CheckIcon
-        aria-hidden={!account.isCurrent}
-        className={cn('shrink-0', { 'opacity-0': !account.isCurrent })}
-      />
-    </button>
+    <div className="flex items-center gap-1">
+      <button type="button" onClick={handleClick} className={cn(MENU_ROW_CLASS, 'min-w-0 flex-1')}>
+        <Text as="span" variant="caption" className="flex size-6 shrink-0 items-center justify-center rounded-full bg-sidebar-accent font-medium text-sidebar-accent-foreground">
+          {account.email.charAt(0).toUpperCase()}
+        </Text>
+        <span className="min-w-0 flex-1 truncate text-left">{account.email}</span>
+        {account.isCurrent ? <span className="sr-only">Current account</span> : null}
+        <CheckIcon aria-hidden className={cn('shrink-0', { 'opacity-0': !account.isCurrent })} />
+      </button>
+      {hasMultipleAccounts ? (
+        <button
+          type="button"
+          onClick={handleSignOutClick}
+          aria-label={`Sign out of ${account.email}`}
+          className={cn(MENU_ROW_CLASS, 'size-11 shrink-0 justify-center px-0')}
+        >
+          <LogOutIcon />
+        </button>
+      ) : null}
+    </div>
   )
 }
 
@@ -59,8 +72,9 @@ const SETTINGS_LINKS = [
 export const MobileNav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { handleSignOut, handleAddAccount, handleAccountSwitch } = useAccountActions()
-  const { accounts, handleMenuOpen, isLoadingSessions } = useAccountSessions()
+  const { handleSignOut, handleAddAccount, handleAccountSwitch, handleAccountSignOut } =
+    useAccountActions()
+  const { accounts, handleMenuOpen, removeAccount, isLoadingSessions } = useAccountSessions()
 
   const isSettingsSection = pathname.startsWith(SETTINGS_PATH_PREFIX)
   const isDomainsActive = pathname === '/domains' || pathname.startsWith('/domains/')
@@ -75,7 +89,12 @@ export const MobileNav = () => {
   const handleAccountSelect = (account: AccountSession) => {
     handleMenuClose()
     if (account.isCurrent) return
-    void handleAccountSwitch(account.sessionToken)
+    void handleAccountSwitch(account.activeSessionToken)
+  }
+
+  const handleAccountSignOutClick = (account: AccountSession) => {
+    removeAccount(account.email)
+    void handleAccountSignOut(account)
   }
 
   const handleAddAccountClick = () => {
@@ -164,7 +183,13 @@ export const MobileNav = () => {
             <div className="mt-auto flex flex-col gap-0.5 px-3 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               <Text variant="caption" className="px-3 pb-1.5 font-medium text-muted-foreground/70">Accounts</Text>
               {accounts.map((account) => (
-                <AccountRow key={account.email} account={account} onSelect={handleAccountSelect} />
+                <AccountRow
+                  key={account.email}
+                  account={account}
+                  hasMultipleAccounts={hasMultipleAccounts}
+                  onSelect={handleAccountSelect}
+                  onSignOut={handleAccountSignOutClick}
+                />
               ))}
               {isLoadingSessions && (
                 <div aria-busy className="flex h-11 items-center gap-3 px-3">

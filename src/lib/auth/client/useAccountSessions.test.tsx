@@ -12,7 +12,8 @@ vi.mock('@/lib/auth/actions', () => ({
 }))
 
 const accountSession = (email: string, isCurrent: boolean): AccountSession => ({
-  sessionToken: `token-${email}`,
+  activeSessionToken: `token-${email}`,
+  deviceSessionTokens: [`token-${email}`],
   email,
   isCurrent,
 })
@@ -49,7 +50,7 @@ describe('useAccountSessions', () => {
     rerender({ email: ADDED_EMAIL })
 
     expect(result.current.accounts).toEqual([
-      { sessionToken: '', email: ADDED_EMAIL, isCurrent: true },
+      { activeSessionToken: '', deviceSessionTokens: [], email: ADDED_EMAIL, isCurrent: true },
     ])
   })
 
@@ -77,5 +78,22 @@ describe('useAccountSessions', () => {
     })
     expect(result.current.accounts.find((account) => account.isCurrent)?.email).toBe(ADDED_EMAIL)
     expect(loadAccountSessionsMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('drops a signed-out account without refetching the list', async () => {
+    loadAccountSessionsMock.mockResolvedValue([
+      accountSession(OWNER_EMAIL, true),
+      accountSession(ADDED_EMAIL, false),
+    ])
+    const { result } = renderHook(() => useAccountSessions(OWNER_EMAIL))
+
+    await act(async () => result.current.handleMenuOpen())
+    await waitFor(() => expect(result.current.accounts).toHaveLength(2))
+
+    act(() => result.current.removeAccount(ADDED_EMAIL))
+    await act(async () => result.current.handleMenuOpen())
+
+    expect(result.current.accounts.map((account) => account.email)).toEqual([OWNER_EMAIL])
+    expect(loadAccountSessionsMock).toHaveBeenCalledTimes(1)
   })
 })

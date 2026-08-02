@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth/client/authClient'
+import type { AccountSession } from '@/lib/auth/server/session'
 
 const ADD_ACCOUNT_PATH = '/login?add=1'
 const LOGIN_PATH = '/login'
@@ -28,5 +29,16 @@ export const useAccountActions = () => {
     window.location.href = DOMAINS_PATH
   }
 
-  return { handleSignOut, handleAddAccount, handleAccountSwitch }
+  const handleAccountSignOut = async (account: AccountSession) => {
+    for (const sessionToken of account.deviceSessionTokens) {
+      const { error } = await authClient.multiSession.revoke({ sessionToken })
+      if (error) {
+        window.location.href = DOMAINS_PATH
+        return
+      }
+    }
+    if (account.isCurrent) window.location.href = DOMAINS_PATH
+  }
+
+  return { handleSignOut, handleAddAccount, handleAccountSwitch, handleAccountSignOut }
 }
