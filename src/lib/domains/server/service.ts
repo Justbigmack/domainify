@@ -32,6 +32,7 @@ const RECENT_CHECKS_LIMIT = 20
 const CRON_BATCH_SIZE = 25
 const CRON_CONCURRENCY = 5
 const SWEEP_DEADLINE_MS = 250 * 1000
+const CLAIM_LEASE_MS = 5 * 60 * 1000
 const CHECKABLE_STATUSES = ['pending', 'verified', 'temporary_failure'] as const
 
 export type RecordInstructions = {
@@ -203,15 +204,25 @@ export type SweepResult = {
   affectedUserIds: string[]
 }
 
-export const sweepDueDomains = async (now: Date): Promise<SweepResult> => {
-  const dueDomains = await db
-    .select()
+const claimDueDomains = async (now: Date): Promise<DomainRow[]> => {
+  const dueDomainIds = db
+    .select({ id: domains.id })
     .from(domains)
     .where(
       and(lte(domains.nextCheckAt, now), inArray(domains.status, [...CHECKABLE_STATUSES])),
     )
     .orderBy(asc(domains.nextCheckAt))
     .limit(CRON_BATCH_SIZE)
+    .for('update', { skipLocked: true })
+  return db
+    .update(domains)
+    .set({ nextCheckAt: new Date(now.getTime() + CLAIM_LEASE_MS) })
+    .where(inArray(domains.id, dueDomainIds))
+    .returning()
+}
+
+export const sweepDueDomains = async (now: Date): Promise<SweepResult> => {
+  const dueDomains = await claimDueDomains(now)
   const deadlineAt = now.getTime() + SWEEP_DEADLINE_MS
   let checked = 0
   let failed = 0
