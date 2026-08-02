@@ -13,6 +13,7 @@ import { PrimaryButton } from '@/components/brand/PrimaryButton'
 import type { DomainRow } from '@/db/schema'
 import { getSessionUser } from '@/lib/auth/server/session'
 import { getCachedDomains } from '@/lib/domains/server/cache'
+import { getRequestTimeMs } from '@/lib/requestTime'
 
 export const metadata: Metadata = {
   title: 'Domains',
@@ -33,7 +34,7 @@ const DomainsList = async () => {
 
   const userDomains = await getCachedDomains(sessionUser.id)
   if (userDomains.length === 0) return <EmptyState />
-  return <DomainsTable items={userDomains.map(toListItem)} />
+  return <DomainsTable items={userDomains.map(toListItem)} nowMs={await getRequestTimeMs()} />
 }
 
 const DomainsPage = () => (

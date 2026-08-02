@@ -1,12 +1,9 @@
 'use client'
 
-import Link from 'next/link'
-import { useState } from 'react'
 import type { ChangeEvent } from 'react'
-import { DomainRowActions } from '@/app/(dashboard)/domains/_components/DomainRowActions'
+import { DomainRow } from '@/app/(dashboard)/domains/_components/DomainRow'
 import { DomainsMobileList } from '@/app/(dashboard)/domains/_components/DomainsMobileList'
 import { SortableHead } from '@/app/(dashboard)/domains/_components/SortableHead'
-import { StatusTag } from '@/components/brand/StatusTag'
 import { Text } from '@/components/brand/Text'
 import { Input } from '@/components/ui/input'
 import {
@@ -25,10 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  SECTION_TABLE_CELL_CLASS as TABLE_CELL_CLASS,
-  SECTION_TABLE_HEAD_CLASS as TABLE_HEAD_CLASS,
-} from '@/components/brand/Section'
+import { SECTION_TABLE_HEAD_CLASS as TABLE_HEAD_CLASS } from '@/components/brand/Section'
 import { cn } from '@/lib/utils'
 import { DOMAIN_STATUSES } from '@/lib/domains/model/status'
 import type { DomainStatus } from '@/lib/domains/model/status'
@@ -37,7 +31,6 @@ import type { SortColumn } from '@/lib/domains/model/sort'
 import { ALL_STATUSES_FILTER } from '@/lib/domains/model/tableParams'
 import type { StatusFilter } from '@/lib/domains/model/tableParams'
 import { useDomainsTableParams } from '@/lib/domains/client/useDomainsTableParams'
-import { formatRelativeTime, formatShortDate } from '@/lib/formatTime'
 
 export type DomainListItem = {
   id: string
@@ -58,9 +51,10 @@ const FILTER_LABELS: Record<StatusFilter, string> = {
 
 type DomainsTableProps = {
   items: DomainListItem[]
+  nowMs: number
 }
 
-export const DomainsTable = ({ items }: DomainsTableProps) => {
+export const DomainsTable = ({ items, nowMs }: DomainsTableProps) => {
   const {
     searchQuery,
     statusFilter,
@@ -71,7 +65,6 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
     setSort,
     flushSearchQuery,
   } = useDomainsTableParams()
-  const [nowMs] = useState(() => Date.now())
 
   const normalizedQuery = searchQuery.trim().toLowerCase()
   const filteredItems = items.filter(
@@ -182,36 +175,7 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
                 </TableCell>
               </TableRow>
             ) : (
-              visibleItems.map((item) => (
-                <TableRow key={item.id} className="relative border-border/40">
-                  <TableCell className={TABLE_CELL_CLASS}>
-                    <Link
-                      href={`/domains/${item.id}`}
-                      className="outline-none after:absolute after:inset-0 focus-visible:ring-3 focus-visible:ring-ring/50"
-                    >
-                      <Text as="span" className="font-medium">
-                        {item.hostname}
-                      </Text>
-                    </Link>
-                  </TableCell>
-                  <TableCell className={TABLE_CELL_CLASS}>
-                    <StatusTag status={item.status} />
-                  </TableCell>
-                  <TableCell className={TABLE_CELL_CLASS} suppressHydrationWarning>
-                    <Text as="span" variant="secondary">
-                      {formatShortDate(item.createdAt)}
-                    </Text>
-                  </TableCell>
-                  <TableCell className={TABLE_CELL_CLASS} suppressHydrationWarning>
-                    <Text as="span" variant="secondary">
-                      {item.lastCheckedAt ? formatRelativeTime(item.lastCheckedAt, nowMs) : 'Never'}
-                    </Text>
-                  </TableCell>
-                  <TableCell className={cn(TABLE_CELL_CLASS, 'relative text-right')}>
-                    <DomainRowActions domainId={item.id} hostname={item.hostname} />
-                  </TableCell>
-                </TableRow>
-              ))
+              visibleItems.map((item) => <DomainRow key={item.id} item={item} nowMs={nowMs} />)
             )}
           </TableBody>
         </Table>

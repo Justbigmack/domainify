@@ -24,6 +24,7 @@ import { VerifySteps } from '@/lib/domains/_components/VerifySteps'
 import { getSessionUser } from '@/lib/auth/server/session'
 import { challengeRecordName } from '@/lib/dns/normalize'
 import { loadDomainPageData } from '@/lib/domains/server/pageData'
+import { getRequestTimeMs } from '@/lib/requestTime'
 
 export const metadata: Metadata = {
   title: 'Domain',
@@ -59,7 +60,11 @@ const DomainIdentity = async ({ params }: DomainDetailPageProps) => {
 
   return (
     <>
-      <DomainHeader key={deadlineAtFor(domain) ?? 'no-deadline'} domain={domain} />
+      <DomainHeader
+        key={deadlineAtFor(domain) ?? 'no-deadline'}
+        domain={domain}
+        nowMs={await getRequestTimeMs()}
+      />
       {domain.status === 'verified' && (
         <AlertBanner tone="success" icon={CircleCheckIcon}>
           <Text className="font-medium text-inherit">

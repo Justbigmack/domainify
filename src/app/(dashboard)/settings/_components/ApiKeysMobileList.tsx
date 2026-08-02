@@ -27,12 +27,7 @@ const MetaRow = ({ label, value, valueClassName }: MetaRowProps) => (
     <Text as="span" variant="secondary">
       {label}
     </Text>
-    <Text
-      as="span"
-      variant="secondary"
-      className={cn('text-foreground', valueClassName)}
-      suppressHydrationWarning
-    >
+    <Text as="span" variant="secondary" className={cn('text-foreground', valueClassName)}>
       {value}
     </Text>
   </div>

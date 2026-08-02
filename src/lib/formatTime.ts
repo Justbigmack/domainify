@@ -19,7 +19,7 @@ const MONTH_LABELS = [
 
 export const formatShortDate = (isoDate: string): string => {
   const date = new Date(isoDate)
-  return `${MONTH_LABELS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
+  return `${MONTH_LABELS[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`
 }
 
 export const formatRelativeTime = (isoDate: string, nowMs: number): string => {

@@ -10,6 +10,7 @@ import { Heading } from '@/components/brand/Heading'
 import { Text } from '@/components/brand/Text'
 import { getSessionUser } from '@/lib/auth/server/session'
 import { auth } from '@/lib/auth/server/auth'
+import { getRequestTimeMs } from '@/lib/requestTime'
 
 export const metadata: Metadata = {
   title: 'API keys · Settings',
@@ -30,7 +31,7 @@ const ApiKeysList = async () => {
       lastRequest: key.lastRequest ? key.lastRequest.toISOString() : null,
     }))
 
-  return <ApiKeysCard items={items} />
+  return <ApiKeysCard items={items} nowMs={await getRequestTimeMs()} />
 }
 
 const ApiKeysPage = () => (

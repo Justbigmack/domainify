@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { PlusIcon } from 'lucide-react'
 import { GhostButton } from '@/components/brand/GhostButton'
 import {
@@ -29,12 +28,12 @@ export type ApiKeyListItem = {
 
 type ApiKeysCardProps = {
   items: ApiKeyListItem[]
+  nowMs: number
 }
 
 const CREATE_KEY_HREF = '/settings/api-keys/new'
 
-export const ApiKeysCard = ({ items }: ApiKeysCardProps) => {
-  const [nowMs] = useState(() => Date.now())
+export const ApiKeysCard = ({ items, nowMs }: ApiKeysCardProps) => {
   const countLabel = items.length === 1 ? '1 API key' : `${items.length} API keys`
 
   if (items.length === 0) {
@@ -88,12 +87,12 @@ export const ApiKeysCard = ({ items }: ApiKeysCardProps) => {
                       {item.start ? `${item.start}…` : '••••'}
                     </Text>
                   </TableCell>
-                  <TableCell className={SECTION_TABLE_CELL_CLASS} suppressHydrationWarning>
+                  <TableCell className={SECTION_TABLE_CELL_CLASS}>
                     <Text as="span" variant="secondary">
                       {formatShortDate(item.createdAt)}
                     </Text>
                   </TableCell>
-                  <TableCell className={SECTION_TABLE_CELL_CLASS} suppressHydrationWarning>
+                  <TableCell className={SECTION_TABLE_CELL_CLASS}>
                     <Text as="span" variant="secondary">
                       {item.lastRequest ? formatRelativeTime(item.lastRequest, nowMs) : 'Never'}
                     </Text>

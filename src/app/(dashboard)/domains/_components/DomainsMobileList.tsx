@@ -28,7 +28,7 @@ const MetaRow = ({ label, value }: MetaRowProps) => (
     <Text as="span" variant="secondary">
       {label}
     </Text>
-    <Text as="span" variant="secondary" className="text-foreground" suppressHydrationWarning>
+    <Text as="span" variant="secondary" className="text-foreground">
       {value}
     </Text>
   </div>

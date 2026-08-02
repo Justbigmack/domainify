@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import Image from 'next/image'
 import { GlobeIcon } from 'lucide-react'
 import { ApiViewPanel } from '@/lib/apiSurface/_components/ApiViewPanel'
@@ -24,6 +23,7 @@ const TILE_ICON_RENDER_SIZE = 24
 
 type DomainHeaderProps = {
   domain: DomainView
+  nowMs: number
 }
 
 const faviconUrl = (provider: DnsProvider): string =>
@@ -45,8 +45,7 @@ const ProviderTile = ({ provider }: { provider: DnsProvider | null }) => (
   </div>
 )
 
-export const DomainHeader = ({ domain }: DomainHeaderProps) => {
-  const [nowMs] = useState(() => Date.now())
+export const DomainHeader = ({ domain, nowMs }: DomainHeaderProps) => {
   const deadlineAt = deadlineAtFor(domain)
   const provider = DNS_PROVIDERS.find((entry) => entry.id === domain.dnsProviderId) ?? null
   const deadline = deadlineAt === null ? null : formatTimeLeft(deadlineAt, nowMs)
@@ -71,11 +70,7 @@ export const DomainHeader = ({ domain }: DomainHeaderProps) => {
         </Heading>
         <StatusTag status={domain.status} className="ml-0 shrink-0" />
       </div>
-      <Text
-        as="div"
-        className="mt-1 flex min-w-0 items-center gap-1.5 text-muted-foreground"
-        suppressHydrationWarning
-      >
+      <Text as="div" className="mt-1 flex min-w-0 items-center gap-1.5 text-muted-foreground">
         <Text as="span" className="shrink-0 text-inherit">
           Added {formatRelativeTime(domain.createdAt, nowMs)}
         </Text>
