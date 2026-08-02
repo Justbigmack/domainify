@@ -3,7 +3,9 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { ApiKeysCard } from '@/app/(dashboard)/settings/_components/ApiKeysCard'
 import type { ApiKeyListItem } from '@/app/(dashboard)/settings/_components/ApiKeysCard'
+import { ExternalLink } from '@/components/brand/ExternalLink'
 import { Heading } from '@/components/brand/Heading'
+import { Text } from '@/components/brand/Text'
 import { getSessionUser } from '@/lib/auth/session'
 import { auth } from '@/lib/auth/server'
 
@@ -27,12 +29,16 @@ const ApiKeysPage = async () => {
     }))
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-8 lg:px-10">
-      <header className="pl-5">
+    <>
+      <header className="flex flex-col gap-1 pl-5">
         <Heading as="h1">API keys</Heading>
+        <Text className="max-w-prose leading-6 text-muted-foreground">
+          Keys authenticate API requests via the Authorization header. A key grants full access to
+          your domains. <ExternalLink href="/docs/api">Docs</ExternalLink>
+        </Text>
       </header>
       <ApiKeysCard items={items} />
-    </div>
+    </>
   )
 }
 

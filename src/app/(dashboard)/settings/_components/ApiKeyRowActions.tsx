@@ -1,19 +1,8 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { EllipsisIcon } from 'lucide-react'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Text } from '@/components/brand/Text'
+import { RevokeKeyDialog } from '@/app/(dashboard)/settings/_components/RevokeKeyDialog'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -21,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { authClient } from '@/lib/auth/client'
 
 type ApiKeyRowActionsProps = {
   keyId: string
@@ -29,20 +17,10 @@ type ApiKeyRowActionsProps = {
 }
 
 export const ApiKeyRowActions = ({ keyId, keyName }: ApiKeyRowActionsProps) => {
-  const router = useRouter()
   const [isRevokeDialogOpen, setIsRevokeDialogOpen] = useState(false)
-  const [isRevoking, startTransition] = useTransition()
 
   const handleRequestRevoke = () => {
     setIsRevokeDialogOpen(true)
-  }
-
-  const handleRevoke = () => {
-    startTransition(async () => {
-      await authClient.apiKey.delete({ keyId })
-      setIsRevokeDialogOpen(false)
-      router.refresh()
-    })
   }
 
   return (
@@ -66,27 +44,12 @@ export const ApiKeyRowActions = ({ keyId, keyName }: ApiKeyRowActionsProps) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <AlertDialog open={isRevokeDialogOpen} onOpenChange={setIsRevokeDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Revoke key</AlertDialogTitle>
-            <AlertDialogDescription>
-              Revokes{' '}
-              <Text as="span" className="font-medium">
-                {keyName}
-              </Text>{' '}
-              immediately.
-              Requests using it will start failing with 401. This cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isRevoking}>Cancel</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={handleRevoke} disabled={isRevoking}>
-              {isRevoking ? 'Revoking…' : 'Revoke key'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <RevokeKeyDialog
+        keyId={keyId}
+        keyName={keyName}
+        open={isRevokeDialogOpen}
+        onOpenChange={setIsRevokeDialogOpen}
+      />
     </>
   )
 }
