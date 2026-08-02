@@ -11,163 +11,6 @@ Every operation works over two surfaces backed by the same service code: the UI,
 plain HTTP API you can drive with `curl` (see the [API reference](#api-reference) and
 the `</>` panels inside the app).
 
-## The whole system on one page
-
-```
-DOMAINIFY · one domain in  →  proof that you own it out
-one path down the middle: the same check runs behind every trigger, and both surfaces call the same service
-
-
-   WHAT IS KEPT, WHAT STARTS A CHECK     THE MAIN PATH                              HOW YOU REACH IT, WHAT IT TELLS YOU
-   ┌────────────────────────────────┐    ┌──────────────────────────────────────┐   ┌────────────────────────────────┐
-   │ TWO TABLES                     │    │ 1 · YOU SIGN IN                      │   │ TWO SURFACES, ONE SERVICE      │
-   │ A domain row holds the         │    │ Better Auth runs password and magic- │   │ The dashboard mutates through  │
-   │ hostname, its status, the live │    │ link sign-in. A new password account │   │ Server Actions and the HTTP    │
-   │ token and the deadlines        │    │ gets no session until it confirms    │   │ API mutates through route      │
-   │ attached to it. A check row is │    │ its address, so an unconfirmed sign- │   │ handlers, but both are thin    │
-   │ appended for every single      │    │ up can never claim a domain.         │   │ wrappers over one service      │
-   │ lookup, recording what each    │    └──────────────────────────────────────┘   │ module, so the API can never   │
-   │ source answered and when.      │                        │                      │ drift away from the UI.        │
-   └────────────────────────────────┘                        ▼                      └────────────────────────────────┘
-                                         ┌──────────────────────────────────────┐
-                                         │ 2 · YOU ADD A DOMAIN YOU OWN         │
-                                         │ Paste anything a person would paste: │
-                                         │ https://www.example.com/pricing      │
-                                         │ becomes example.com. IP addresses,   │
-                                         │ public suffixes such as co.uk and    │
-                                         │ platform domains such as vercel.app  │
-                                         │ are refused before a single DNS      │
-                                         │ query is made.                       │
-                                         └──────────────────────────────────────┘
-                                                             │
-                                                             ▼
-                                         ┌──────────────────────────────────────┐
-                                         │ 3 · DOMAINIFY MINTS ONE TOKEN        │
-                                         │ 32 random bytes, base64url encoded,  │
-                                         │ tied to this account and this domain │
-                                         │ alone. You have 72 hours to publish  │   ┌────────────────────────────────┐
-                                         │ it, and rotating it invalidates the  │   │ WE ALREADY KNOW YOUR DNS HOST  │
-                                         │ old one immediately.                 │   │ Your nameservers say who runs  │
-                                         └──────────────────────────────────────┘   │ your DNS, so the instructions  │
-                                                             │                      │ use that provider's own field  │
-                                                             ▼                      │ names, warn you that it will   │
-                                         ┌──────────────────────────────────────┐   │ append your domain for you,    │
-                                         │ 4 · YOU PUBLISH ONE TXT RECORD       │   │ and link straight into its     │
-                                         │ Create _domainify-challenge.<your-   │   │ dashboard.                     │
-                                         │ domain> holding the value domainify- │   └────────────────────────────────┘
-                                         │ domain-verification=<token>. That is │
-                                         │ the whole ask: one record, one       │
-                                         │ value, nothing else to configure.    │
-  the schedule feeds the next check      └──────────────────────────────────────┘
-┌────────────────────────────────────────────────────────────┤
-│  ┌────────────────────────────────┐                        ▼
-│  │ FOUR WAYS A CHECK STARTS       │    ┌──────────────────────────────────────┐
-│  │ All four end in the same       │    │ 5 · A CHECK RUNS                     │
-│  │ function, so a check you       │    │ One entry point takes the domain and │
-│  │ started by hand and a check    │    │ the token it is carrying right now,  │
-│  │ started by a machine are the   │    │ and turns them into the exact string │
-│  │ same code:                     │    │ that has to be in DNS.               │
-│  │ · you press Check now, at most │    └──────────────────────────────────────┘
-│  │   once every five seconds per  │                        │
-│  │   domain                       │                        ▼
-│  │ · the page you are watching    │    ┌──────────────────────────────────────┐
-│  │   polls every 30 seconds, and  │    │ 6 · THREE SOURCES ARE ASKED AT ONCE  │
-│  │   backs off when the network   │    │ Not one resolver, three. Agreement   │
-│  │   misbehaves                   │    │ between independent views is what    │
-│  │ · reading a domain nobody has  │    │ makes the answer trustworthy, and    │
-│  │   checked in two minutes       │    │ disagreement is what makes a useful  │
-│  │   schedules one, after the     │    │ diagnosis possible.                  │
-│  │   response is already sent     │    └──────────────────────────────────────┘
-│  │ · a sweep every five minutes   │                        │
-│  │   picks up whatever is due     │                        │
-│  └────────────────────────────────┘                        │
-│                                                            │
-│                                                            │
-│                    ┌──────────────────────────────────────┬┴─────────────────────────────────────┐
-│                    ▼                                      ▼                                      ▼
-│  ┌───────────────────────────────────┐  ┌───────────────────────────────────┐  ┌───────────────────────────────────┐
-│  │ YOUR NAMESERVERS, ASKED DIRECTLY  │  │ CLOUDFLARE 1.1.1.1, OVER HTTPS    │  │ GOOGLE 8.8.8.8, OVER HTTPS        │
-│  │ Up to two of them, following      │  │ A DNSSEC-validating view of what  │  │ A second independent network. Two │
-│  │ CNAME aliases up to eight hops.   │  │ the rest of the internet          │  │ large anycast networks agreeing   │
-│  │ This is the only source that can  │  │ currently sees, over a connection │  │ is this project's small-scale     │
-│  │ see a record you created seconds  │  │ that cannot be forged, and it     │  │ stand-in for the corroboration    │
-│  │ ago, because public caches also   │  │ reports the TTL, so we can say    │  │ from several vantage points that  │
-│  │ remember that it used to be       │  │ how long a stale answer will      │  │ certificate authorities now       │
-│  │ missing.                          │  │ linger.                           │  │ require.                          │
-│  └───────────────────────────────────┘  └───────────────────────────────────┘  └───────────────────────────────────┘
-│                    └──────────────────────────────────────┴┬─────────────────────────────────────┘
-│                                                            │
-│                                                            ▼
-│                                        ┌──────────────────────────────────────┐
-│                                        │ 7 · A VERDICT IS REACHED             │
-│                                        │ Verified when every authoritative    │
-│                                        │ nameserver that answered returns the │
-│                                        │ expected value, or when both public  │
-│                                        │ resolvers agree. A nameserver that   │
-│                                        │ never answered is silence, not       │
-│                                        │ disagreement.                        │
-│                                        └──────────────────────────────────────┘   ┌────────────────────────────────┐
-│                                                            │                      │ WHEN IT IS NOT VERIFIED        │
-│                                                            ▼                      │ The verdict names the failure, │
-│                                        ┌──────────────────────────────────────┐   │ and each one gets its own      │
-│                                        │ 8 · THE DOMAIN'S STATE MOVES         │   │ explanation on screen:         │
-│                                        │ Pending becomes verified the moment  │   │ · the record is nowhere yet,   │
-│                                        │ the record is found. A verified      │   │   so keep waiting              │
-│                                        │ domain whose record disappears drops │   │ · your provider doubled the    │
-│                                        │ into a 72-hour grace period instead  │   │   name and it ended up one     │
-│                                        │ of being revoked. A window that runs │   │   level too deep, so shorten   │
-│                                        │ out ends as failed, and only an      │   │   the Host field               │
-│                                        │ explicit restart, with a fresh       │   │ · a Domainify record is there  │
-│                                        │ token, leaves that state. A lookup   │   │   but carries an older token,  │
-│                                        │ failure never demotes anything,      │   │   so remove the stale one      │
-│                                        │ because an outage is not evidence    │   │ · nothing could be reached at  │
-│                                        │ that the record was removed.         │   │   all, which is an outage and  │
-│                                        └──────────────────────────────────────┘   │   never counts against you     │
-│                                                            │                      └────────────────────────────────┘
-│                                                            ▼
-│                                        ┌──────────────────────────────────────┐   ┌────────────────────────────────┐
-│                                        │ 9 · YOU SEE THE RESULT               │   │ WHAT LANDS IN YOUR INBOX       │
-│                                        │ The check is stored with every       │   │ Two emails, both sent after    │
-│                                        │ source it asked, your cached domain  │   │ the response has already gone  │
-│                                        │ list is thrown away so the next read │   │ out: one when a domain first   │
-│                                        │ is fresh, and the page you are       │   │ verifies, and one when a       │
-│                                        │ looking at picks the change up on    │   │ verified domain loses its      │
-│                                        │ its next poll without you touching   │   │ record, saying exactly when    │
-│                                        │ anything.                            │   │ the grace period ends.         │
-│                                        └──────────────────────────────────────┘   └────────────────────────────────┘
-│                                                            │
-│  ┌────────────────────────────────┐                        ▼
-│  │ WHEN THE NEXT CHECK HAPPENS    │    ┌──────────────────────────────────────┐
-│  │ A verified domain is simply    │    │ 10 · THE NEXT CHECK IS SCHEDULED     │
-│  │ looked at again once a day.    │    │ Every domain carries the time it is  │
-│  │ Everything else backs off      │    │ next due. The sweep claims a batch   │
-│  │ gradually, from one minute     │    │ of due domains atomically before     │
-│  │ towards a four-hour ceiling,   │    │ checking them, so two overlapping    │
-│  │ so a domain nobody is fixing   │    │ triggers can never check the same    │
-│  │ stops costing lookups.         │    │ domain twice.                        │
-│  └────────────────────────────────┘    └──────────────────────────────────────┘
-│
-└────────────────────────────────────────────────────────────┘
-
-   WHAT THE PROJECT ACTUALLY SHIPS
-   ┌───────────────────────────────────┐  ┌───────────────────────────────────┐  ┌───────────────────────────────────┐
-   │ THE DASHBOARD                     │  │ THE HTTP API                      │  │ THE DOCS AND THE SETTINGS         │
-   │ A domain list you can sort and    │  │ Every operation the UI performs,  │  │ A docs area covering the          │
-   │ filter, a guided add-domain flow  │  │ driven with a bearer key you      │  │ mechanics, the failure modes and  │
-   │ with a live countdown to the next │  │ create in settings. Errors share  │  │ every endpoint, plus account      │
-   │ check, and a detail page showing  │  │ one shape, and a domain that is   │  │ settings for API keys, signed-in  │
-   │ every source and every earlier    │  │ not yours is indistinguishable    │  │ devices and theme.                │
-   │ attempt.                          │  │ from one that does not exist.     │  └───────────────────────────────────┘
-   └───────────────────────────────────┘  └───────────────────────────────────┘
-
-HOW TO READ IT
-the middle     the ten steps a domain travels, from signing in to being watched
-the left       what gets stored, what starts a check, and when the next one is due
-the right      how you drive the system, and what it tells you when a check fails
-the loop       nothing is one-shot: every finished check schedules the next one
-the bottom     the surfaces all of this is exposed through
-```
-
 ## How verification works
 
 1. Add a domain. Domainify generates a single-purpose 256-bit token bound to your account.
@@ -377,3 +220,150 @@ Documented, deliberately not built:
   scoped grant. v1 ships provider detection + deep links instead of a dead button.
 - **Webhooks** (`domain.verified`, `domain.failed`) and a durable job queue for
   check scheduling beyond the external 5-minute sweep.
+
+## The whole system on one page
+
+```
+DOMAINIFY · one domain in  →  proof that you own it out
+one path down the middle, and the same check behind every trigger
+
+
+  THE MAIN PATH                                               WORTH KNOWING
+  ┌────────────────────────────────────────────────────────┐  ┌────────────────────────────────┐
+  │ 1 · YOU SIGN IN                                        │  │ TWO SURFACES, ONE SERVICE      │
+  │ Better Auth runs password and magic-link sign-in. A    │  │ The dashboard mutates through  │
+  │ new password account gets no session until it confirms │  │ Server Actions and the API     │
+  │ its address, so an unconfirmed sign-up can never claim │  │ through route handlers, but    │
+  │ a domain.                                              │  │ both are thin wrappers over    │
+  └────────────────────────────────────────────────────────┘  │ one service module, so the API │
+                               │                              │ cannot drift away from the UI. │
+                               ▼                              └────────────────────────────────┘
+  ┌────────────────────────────────────────────────────────┐
+  │ 2 · YOU ADD A DOMAIN YOU OWN                           │
+  │ Paste anything a person would paste:                   │
+  │ https://www.example.com/pricing becomes example.com.   │
+  │ IP addresses, public suffixes such as co.uk and        │  ┌────────────────────────────────┐
+  │ platform domains such as vercel.app are refused before │  │ TWO TABLES HOLD EVERYTHING     │
+  │ a single DNS query is made.                            │  │ A domain row keeps the         │
+  └────────────────────────────────────────────────────────┘  │ hostname, its status, the live │
+                               │                              │ token and the deadlines        │
+                               ▼                              │ attached to it. A check row is │
+  ┌────────────────────────────────────────────────────────┐  │ appended for every single      │
+  │ 3 · DOMAINIFY MINTS ONE TOKEN                          │  │ lookup, recording what each    │
+  │ 32 random bytes, base64url encoded, tied to this       │  │ source answered and when.      │
+  │ account and this domain alone. You have 72 hours to    │  └────────────────────────────────┘
+  │ publish it, and rotating it invalidates the old one    │
+  │ immediately.                                           │  ┌────────────────────────────────┐
+  └────────────────────────────────────────────────────────┘  │ WE ALREADY KNOW YOUR DNS HOST  │
+                               │                              │ Your nameservers say who runs  │
+                               ▼                              │ your DNS, so the steps use     │
+  ┌────────────────────────────────────────────────────────┐  │ that provider's own field      │
+  │ 4 · YOU PUBLISH ONE TXT RECORD                         │  │ names, warn you that it will   │
+  │ Create _domainify-challenge.<your-domain> holding the  │  │ append your domain, and link   │
+  │ value domainify-domain-verification=<token>. That is   │  │ into its dashboard.            │
+  │ the whole ask: one record, one value, nothing else to  │  └────────────────────────────────┘
+  │ configure.                                             │
+  └────────────────────────────────────────────────────────┘
+┌──────────────────────────────┤
+│                              ▼
+│ ┌────────────────────────────────────────────────────────┐  ┌────────────────────────────────┐
+│ │ 5 · A CHECK RUNS                                       │  │ FOUR WAYS A CHECK STARTS       │
+│ │ One entry point takes the domain and the token it is   │  │ All four end in the same       │
+│ │ carrying right now, and turns them into the exact      │  │ function, so a check you       │
+│ │ string that has to be in DNS.                          │  │ started by hand and a check    │
+│ └────────────────────────────────────────────────────────┘  │ started by a machine are the   │
+│                              │                              │ same code:                     │
+│                              ▼                              │ · you press Check now, at most │
+│ ┌────────────────────────────────────────────────────────┐  │   once every five seconds      │
+│ │ 6 · THREE SOURCES ARE ASKED AT ONCE                    │  │ · the page you are watching    │
+│ │ Not one resolver, three. Agreement between independent │  │   polls every 30 seconds,      │
+│ │ views is what makes the answer trustworthy, and        │  │   backing off when the network │
+│ │ disagreement is what makes a useful diagnosis          │  │   misbehaves                   │
+│ │ possible.                                              │  │ · reading a domain nobody has  │
+│ └────────────────────────────────────────────────────────┘  │   checked in two minutes       │
+│                              │                              │   schedules one                │
+│                              │                              │ · a sweep every five minutes   │
+│                              │                              │   picks up whatever is due     │
+│                              │                              └────────────────────────────────┘
+│                              │
+│                              │
+│                ┌─────────────┴─────────────────┬───────────────────────────────┐
+│                ▼                               ▼                               ▼
+│ ┌────────────────────────────┐  ┌────────────────────────────┐  ┌────────────────────────────┐
+│ │ YOUR OWN NAMESERVERS       │  │ CLOUDFLARE, OVER HTTPS     │  │ GOOGLE, OVER HTTPS         │
+│ │ Asked directly, up to two  │  │ A DNSSEC-validating view   │  │ A second independent       │
+│ │ of them, following CNAME   │  │ of what the rest of the    │  │ network. Two large anycast │
+│ │ aliases up to eight hops.  │  │ internet currently sees,   │  │ networks agreeing is this  │
+│ │ The only source that can   │  │ over a connection that     │  │ project's small-scale      │
+│ │ see a record you created   │  │ cannot be forged,          │  │ stand-in for the           │
+│ │ seconds ago, because       │  │ reporting the TTL that     │  │ corroboration from several │
+│ │ public caches also         │  │ says how long a stale      │  │ vantage points that        │
+│ │ remember that it used to   │  │ answer will linger.        │  │ certificate authorities    │
+│ │ be missing.                │  └────────────────────────────┘  │ now require.               │
+│ └────────────────────────────┘                                  └────────────────────────────┘
+│                └─────────────┬─────────────────┴───────────────────────────────┘
+│                              │
+│                              ▼
+│ ┌────────────────────────────────────────────────────────┐  ┌────────────────────────────────┐
+│ │ 7 · A VERDICT IS REACHED                               │  │ WHEN IT IS NOT VERIFIED        │
+│ │ Verified when every authoritative nameserver that      │  │ The verdict names the failure, │
+│ │ answered returns the expected value, or when both      │  │ and each one gets its own      │
+│ │ public resolvers agree. A nameserver that never        │  │ explanation on screen:         │
+│ │ answered is silence, not disagreement.                 │  │ · the record is nowhere yet,   │
+│ └────────────────────────────────────────────────────────┘  │   so keep waiting              │
+│                              │                              │ · your provider doubled the    │
+│                              ▼                              │   name and it ended up one     │
+│ ┌────────────────────────────────────────────────────────┐  │   level too deep, so shorten   │
+│ │ 8 · THE DOMAIN'S STATE MOVES                           │  │   the Host field               │
+│ │ Pending becomes verified the moment the record is      │  │ · a Domainify record is there  │
+│ │ found. A verified domain whose record disappears drops │  │   but carries an older token,  │
+│ │ into a 72-hour grace period instead of being revoked.  │  │   so remove the stale one      │
+│ │ A window that runs out ends as failed, and only an     │  │ · nothing could be reached at  │
+│ │ explicit restart, with a fresh token, leaves that      │  │   all, which is an outage and  │
+│ │ state. A lookup failure never demotes anything,        │  │   never counts against you     │
+│ │ because an outage is not evidence that the record was  │  └────────────────────────────────┘
+│ │ removed.                                               │
+│ └────────────────────────────────────────────────────────┘
+│                              │                              ┌────────────────────────────────┐
+│                              ▼                              │ WHAT LANDS IN YOUR INBOX       │
+│ ┌────────────────────────────────────────────────────────┐  │ Two emails, both sent after    │
+│ │ 9 · YOU SEE THE RESULT                                 │  │ the response has already gone  │
+│ │ The check is stored with every source it asked, your   │  │ out: one when a domain first   │
+│ │ cached domain list is thrown away so the next read is  │  │ verifies, and one when a       │
+│ │ fresh, and the page you are looking at picks the       │  │ verified domain loses its      │
+│ │ change up on its next poll without you touching        │  │ record, saying exactly when    │
+│ │ anything.                                              │  │ the grace period ends.         │
+│ └────────────────────────────────────────────────────────┘  └────────────────────────────────┘
+│                              │
+│                              ▼                              ┌────────────────────────────────┐
+│ ┌────────────────────────────────────────────────────────┐  │ HOW OFTEN IT COMES BACK        │
+│ │ 10 · THE NEXT CHECK IS SCHEDULED                       │  │ A verified domain is simply    │
+│ │ Every domain carries the time it is next due. The      │  │ looked at again once a day.    │
+│ │ sweep claims a batch of due domains atomically before  │  │ Everything else backs off      │
+│ │ checking them, so two overlapping triggers can never   │  │ gradually, from one minute     │
+│ │ check the same domain twice.                           │  │ towards a four-hour ceiling,   │
+│ └────────────────────────────────────────────────────────┘  │ so a domain nobody is fixing   │
+│                                                             │ stops costing lookups.         │
+│                                                             └────────────────────────────────┘
+│
+└──────────────────────────────┘ and the schedule starts the loop again
+
+  WHAT ALL OF THIS IS EXPOSED THROUGH
+  ┌────────────────────────────┐  ┌────────────────────────────┐  ┌────────────────────────────┐
+  │ THE DASHBOARD              │  │ THE HTTP API               │  │ THE DOCS AND SETTINGS      │
+  │ A domain list you can sort │  │ Every operation the UI     │  │ A docs area covering the   │
+  │ and filter, a guided add-  │  │ performs, driven with a    │  │ mechanics, the failure     │
+  │ domain flow with a live    │  │ bearer key you create in   │  │ modes and every endpoint,  │
+  │ countdown to the next      │  │ settings. Errors share one │  │ plus account settings for  │
+  │ check, and a detail page   │  │ shape, and a domain that   │  │ API keys, signed-in        │
+  │ showing every source and   │  │ is not yours is            │  │ devices and theme.         │
+  │ every earlier attempt.     │  │ indistinguishable from one │  └────────────────────────────┘
+  └────────────────────────────┘  │ that does not exist.       │
+                                  └────────────────────────────┘
+
+HOW TO READ IT
+the spine    the ten steps a domain travels, from signing in to being watched
+the right    the context each step needs, and what you are told when it fails
+the loop     nothing is one-shot: every finished check schedules the next one
+the bottom   the three surfaces all of this is exposed through
+```
