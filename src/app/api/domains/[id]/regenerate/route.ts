@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { toApiDomain } from '@/lib/apiSurface/domainPayload'
 import { serviceErrorResponse, unauthorizedResponse } from '@/lib/apiSurface/responses'
 import { getApiRequestUser } from '@/lib/auth/server/session'
 import { buildRecordInstructions, regenerateToken } from '@/lib/domains/server/service'
@@ -11,7 +12,10 @@ export const POST = async (request: Request, { params }: RouteParams) => {
   const { id } = await params
   try {
     const domain = await regenerateToken(sessionUser.id, id)
-    return NextResponse.json({ domain, record: buildRecordInstructions(domain) })
+    return NextResponse.json({
+      domain: toApiDomain(domain),
+      record: buildRecordInstructions(domain),
+    })
   } catch (error) {
     return serviceErrorResponse(error)
   }

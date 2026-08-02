@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { toApiCheck, toApiDomain } from '@/lib/apiSurface/domainPayload'
 import { serviceErrorResponse, unauthorizedResponse } from '@/lib/apiSurface/responses'
 import { getApiRequestUser } from '@/lib/auth/server/session'
 import { verifyDomain } from '@/lib/domains/server/service'
@@ -11,7 +12,10 @@ export const POST = async (request: Request, { params }: RouteParams) => {
   const { id } = await params
   try {
     const result = await verifyDomain(sessionUser.id, id)
-    return NextResponse.json(result)
+    return NextResponse.json({
+      domain: toApiDomain(result.domain),
+      check: toApiCheck(result.check),
+    })
   } catch (error) {
     return serviceErrorResponse(error)
   }

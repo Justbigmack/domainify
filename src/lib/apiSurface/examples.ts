@@ -3,21 +3,17 @@ const EXAMPLE_RECORD_VALUE = `domainify-domain-verification=${EXAMPLE_TOKEN}`
 
 const EXAMPLE_PENDING_DOMAIN = {
   id: '2fbe5ad2-8a01-4b8c-9d5e-6f2a7c4e91b3',
-  userId: 'k1XyPq8vR2mA7cT4wN9uJ5sB3dF6hL0e',
   hostname: 'app.example.com',
   registrableDomain: 'example.com',
   challengeHost: '_domainify-challenge.app.example.com',
   status: 'pending',
-  verificationToken: EXAMPLE_TOKEN,
-  tokenGeneratedAt: '2026-07-30T09:12:44.000Z',
+  createdAt: '2026-07-30T09:12:44.000Z',
   pendingExpiresAt: '2026-08-02T09:12:44.000Z',
   verifiedAt: null,
   graceExpiresAt: null,
   lastCheckedAt: '2026-07-30T09:13:52.000Z',
-  lastManualCheckAt: '2026-07-30T09:13:52.000Z',
   nextCheckAt: '2026-07-30T09:15:01.000Z',
   dnsProviderId: 'cloudflare',
-  createdAt: '2026-07-30T09:12:44.000Z',
 }
 
 const EXAMPLE_VERIFIED_DOMAIN = {
@@ -92,28 +88,26 @@ export const VERIFY_DOMAIN_EXAMPLE = toJson({
   check: EXAMPLE_CHECK,
 })
 
+const EXAMPLE_FRESH_TOKEN = 'nT7wLc2eF9xViS5dK8gA1zHqYp4mB6rUj3oE0yPaWQk'
+
+const EXAMPLE_FRESH_RECORD = {
+  ...EXAMPLE_RECORD,
+  value: `domainify-domain-verification=${EXAMPLE_FRESH_TOKEN}`,
+}
+
 export const RESTART_DOMAIN_EXAMPLE = toJson({
   domain: {
     ...EXAMPLE_PENDING_DOMAIN,
-    verificationToken: 'nT7wLc2eF9xViS5dK8gA1zHqYp4mB6rUj3oE0yPaWQk',
-    tokenGeneratedAt: '2026-07-31T14:02:10.000Z',
     pendingExpiresAt: '2026-08-03T14:02:10.000Z',
     lastCheckedAt: null,
-    lastManualCheckAt: null,
     nextCheckAt: '2026-07-31T14:03:10.000Z',
   },
+  record: EXAMPLE_FRESH_RECORD,
 })
 
 export const REGENERATE_DOMAIN_EXAMPLE = toJson({
-  domain: {
-    ...EXAMPLE_PENDING_DOMAIN,
-    verificationToken: 'nT7wLc2eF9xViS5dK8gA1zHqYp4mB6rUj3oE0yPaWQk',
-    tokenGeneratedAt: '2026-07-31T14:02:10.000Z',
-  },
-  record: {
-    ...EXAMPLE_RECORD,
-    value: 'domainify-domain-verification=nT7wLc2eF9xViS5dK8gA1zHqYp4mB6rUj3oE0yPaWQk',
-  },
+  domain: EXAMPLE_PENDING_DOMAIN,
+  record: EXAMPLE_FRESH_RECORD,
 })
 
 export const ERROR_SHAPE_EXAMPLE = toJson({

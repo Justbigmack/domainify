@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { toApiCheck, toApiDomain } from '@/lib/apiSurface/domainPayload'
 import { serviceErrorResponse, unauthorizedResponse } from '@/lib/apiSurface/responses'
 import { getApiRequestUser } from '@/lib/auth/server/session'
 import { deleteDomain, getDomainDetail } from '@/lib/domains/server/service'
@@ -13,7 +14,11 @@ export const GET = async (request: Request, { params }: RouteParams) => {
   const { id } = await params
   try {
     const detail = await getDomainDetail(sessionUser.id, id)
-    return NextResponse.json(detail)
+    return NextResponse.json({
+      domain: toApiDomain(detail.domain),
+      checks: detail.checks.map(toApiCheck),
+      record: detail.record,
+    })
   } catch (error) {
     return serviceErrorResponse(error)
   }

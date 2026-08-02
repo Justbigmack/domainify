@@ -65,7 +65,7 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     method: 'GET',
     path: '/api/domains',
     description: [
-      'Returns every domain on your account, newest first. Each entry is the full domain object, including its current status, the active verification token, and the timestamps that drive the 72-hour windows.',
+      'Returns every domain on your account, newest first. Each entry carries its current status, the challenge host, and the timestamps that drive the 72-hour windows. The record to publish is not included here: fetch a single domain, or create or regenerate one, to get it.',
       'This endpoint never triggers a DNS check. To get fresh check results for one domain, use Get domain (which re-checks stale domains) or Verify domain (which always checks).',
     ],
     pathParams: [],
@@ -84,7 +84,7 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     description: [
       'Adds a domain to your account and starts the 72-hour verification window. The input goes through the same normalization as the dashboard form: full URLs are accepted, the hostname is lowercased, and a trailing dot is stripped.',
       'The response carries the record instructions alongside the domain, so a single call is enough to know what to publish, and the first automatic check is scheduled about a minute out. Domainify also tries to detect your DNS provider from the domain’s nameservers and stores it as dnsProviderId.',
-      'The record object gives the name twice: host is fully qualified (_domainify-challenge.app.example.com) and name is the same record relative to the zone (_domainify-challenge.app). Most providers append the zone to whatever you type, so send name — sending host to those providers creates the doubled record that stalls verification.',
+      'The record object gives the name twice: host is fully qualified (_domainify-challenge.app.example.com) and name is the same record relative to the zone (_domainify-challenge.app). Most providers append the zone to whatever you type, so send name. Sending host to those providers creates the doubled record that stalls verification.',
     ],
     pathParams: [],
     bodyParams: [
@@ -133,7 +133,7 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     pathParams: [ID_PATH_PARAM],
     bodyParams: [],
     responseDescription:
-      'The domain, its recent checks (newest first, up to 20), and the record instructions with the current token — host fully qualified, name relative to the zone.',
+      'The domain, its recent checks (newest first, up to 20), and the record instructions with the current token: host fully qualified, name relative to the zone.',
     responseExample: GET_DOMAIN_EXAMPLE,
     errors: [UNAUTHORIZED_ERROR, NOT_FOUND_ERROR],
   },
@@ -172,11 +172,12 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     path: '/api/domains/:id/restart',
     description: [
       'Brings a failed domain back to pending. A fresh verification token is minted, a new 72-hour window opens, and checks resume on the usual schedule.',
-      'Because the token changes, the old TXT record no longer counts — update the record value at your DNS provider before waiting for verification. This endpoint only works on failed domains; any other status returns a 409.',
+      'Because the token changes, the old TXT record no longer counts, so update the record value at your DNS provider before waiting for verification. This endpoint only works on failed domains; any other status returns a 409.',
     ],
     pathParams: [ID_PATH_PARAM],
     bodyParams: [],
-    responseDescription: 'The domain, back in pending with a new token and a new pendingExpiresAt.',
+    responseDescription:
+      'The domain, back in pending with a new pendingExpiresAt, alongside the record to publish for the freshly minted token.',
     responseExample: RESTART_DOMAIN_EXAMPLE,
     errors: [
       UNAUTHORIZED_ERROR,
@@ -202,7 +203,7 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     pathParams: [ID_PATH_PARAM],
     bodyParams: [],
     responseDescription:
-      'The domain with its new token, plus record instructions containing the new value — host fully qualified, name relative to the zone.',
+      'The domain with its new token, plus record instructions containing the new value: host fully qualified, name relative to the zone.',
     responseExample: REGENERATE_DOMAIN_EXAMPLE,
     errors: [UNAUTHORIZED_ERROR, NOT_FOUND_ERROR],
   },
@@ -215,7 +216,7 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     path: '/api/domains/:id',
     description: [
       'Removes the domain and its entire check history. This cannot be undone.',
-      'The TXT record at your DNS provider is yours to clean up — Domainify never touches your zone. You can re-add the same hostname later; it starts over as a new domain with a new token.',
+      'The TXT record at your DNS provider is yours to clean up, since Domainify never touches your zone. You can re-add the same hostname later; it starts over as a new domain with a new token.',
     ],
     pathParams: [ID_PATH_PARAM],
     bodyParams: [],

@@ -22,6 +22,9 @@ vi.mock('@/lib/auth/server/session', () => ({
 
 vi.mock('@/lib/domains/server/service', () => service)
 
+import type { VerificationCheckRow } from '@/db/schema'
+import { toApiCheck, toApiDomain } from '@/lib/apiSurface/domainPayload'
+import { makeDomain } from '@/lib/domains/domainFixture'
 import {
   DomainNotFoundError,
   DomainStateError,
@@ -38,6 +41,24 @@ const routeParams = { params: Promise.resolve({ id: DOMAIN_ID }) }
 
 const domainRequest = (): Request =>
   new Request(`https://domainify.test/api/domains/${DOMAIN_ID}`)
+
+const RECORD = {
+  type: 'TXT',
+  host: '_domainify-challenge.example.com',
+  name: '_domainify-challenge',
+  value: 'domainify-domain-verification=token',
+}
+
+const makeCheck = (): VerificationCheckRow => ({
+  id: 'check-1',
+  domainId: DOMAIN_ID,
+  checkedAt: new Date('2026-08-02T09:41:07.000Z'),
+  trigger: 'manual',
+  verdict: 'verified',
+  foundValues: [RECORD.value],
+  sources: [],
+  errorCode: null,
+})
 
 beforeEach(() => {
   mockState.sessionUser = SESSION_USER
@@ -68,13 +89,31 @@ describe('authentication', () => {
 
 describe('GET /api/domains/[id]', () => {
   it('returns the domain detail for the owner', async () => {
-    const detail = { domain: { id: DOMAIN_ID }, checks: [], record: { type: 'TXT' } }
-    service.getDomainDetail.mockResolvedValue(detail)
+    const domain = makeDomain()
+    const check = makeCheck()
+    service.getDomainDetail.mockResolvedValue({ domain, checks: [check], record: RECORD })
 
     const response = await getDomainRoute(domainRequest(), routeParams)
 
     expect(service.getDomainDetail).toHaveBeenCalledWith(SESSION_USER.id, DOMAIN_ID)
-    await expect(response.json()).resolves.toEqual(detail)
+    await expect(response.json()).resolves.toEqual({
+      domain: toApiDomain(domain),
+      checks: [toApiCheck(check)],
+      record: RECORD,
+    })
+  })
+
+  it('never leaks the owner id or the raw token in the detail payload', async () => {
+    service.getDomainDetail.mockResolvedValue({
+      domain: makeDomain({ verificationToken: 'secret-token' }),
+      checks: [],
+      record: RECORD,
+    })
+
+    const body = await (await getDomainRoute(domainRequest(), routeParams)).text()
+
+    expect(body).not.toContain('secret-token')
+    expect(body).not.toContain(SESSION_USER.id)
   })
 
   it('answers 404 for a domain the caller does not own', async () => {
@@ -111,12 +150,17 @@ describe('DELETE /api/domains/[id]', () => {
 
 describe('POST /api/domains/[id]/verify', () => {
   it('returns the check result', async () => {
-    service.verifyDomain.mockResolvedValue({ verdict: 'match' })
+    const domain = makeDomain({ status: 'verified' })
+    const check = makeCheck()
+    service.verifyDomain.mockResolvedValue({ domain, check })
 
     const response = await verifyDomainRoute(domainRequest(), routeParams)
 
     expect(service.verifyDomain).toHaveBeenCalledWith(SESSION_USER.id, DOMAIN_ID)
-    await expect(response.json()).resolves.toEqual({ verdict: 'match' })
+    await expect(response.json()).resolves.toEqual({
+      domain: toApiDomain(domain),
+      check: toApiCheck(check),
+    })
   })
 
   it('answers 429 with the wait time when the caller is on cooldown', async () => {
@@ -133,13 +177,17 @@ describe('POST /api/domains/[id]/verify', () => {
 })
 
 describe('POST /api/domains/[id]/restart', () => {
-  it('returns the reopened domain', async () => {
-    service.restartVerification.mockResolvedValue({ id: DOMAIN_ID, status: 'pending' })
+  it('returns the reopened domain alongside the record for its new token', async () => {
+    const domain = makeDomain({ status: 'pending' })
+    service.restartVerification.mockResolvedValue(domain)
+    service.buildRecordInstructions.mockReturnValue(RECORD)
 
     const response = await restartVerificationRoute(domainRequest(), routeParams)
 
+    expect(service.buildRecordInstructions).toHaveBeenCalledWith(domain)
     await expect(response.json()).resolves.toEqual({
-      domain: { id: DOMAIN_ID, status: 'pending' },
+      domain: toApiDomain(domain),
+      record: RECORD,
     })
   })
 
@@ -161,15 +209,17 @@ describe('POST /api/domains/[id]/restart', () => {
 })
 
 describe('POST /api/domains/[id]/regenerate', () => {
-  it('returns the new token alongside the record to publish', async () => {
-    const domain = { id: DOMAIN_ID, verificationToken: 'fresh-token' }
-    const record = { type: 'TXT', host: '_domainify-challenge.example.com', value: 'fresh' }
+  it('returns the record to publish rather than the raw token', async () => {
+    const domain = makeDomain({ verificationToken: 'fresh-token' })
     service.regenerateToken.mockResolvedValue(domain)
-    service.buildRecordInstructions.mockReturnValue(record)
+    service.buildRecordInstructions.mockReturnValue(RECORD)
 
     const response = await regenerateTokenRoute(domainRequest(), routeParams)
 
     expect(service.buildRecordInstructions).toHaveBeenCalledWith(domain)
-    await expect(response.json()).resolves.toEqual({ domain, record })
+    await expect(response.json()).resolves.toEqual({
+      domain: toApiDomain(domain),
+      record: RECORD,
+    })
   })
 })

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { toApiDomain } from '@/lib/apiSurface/domainPayload'
 import { invalidBodyResponse, serviceErrorResponse, unauthorizedResponse } from '@/lib/apiSurface/responses'
 import { getApiRequestUser } from '@/lib/auth/server/session'
 import { buildRecordInstructions, createDomain, listDomains } from '@/lib/domains/server/service'
@@ -12,7 +13,7 @@ export const GET = async () => {
   const sessionUser = await getApiRequestUser()
   if (!sessionUser) return unauthorizedResponse()
   const userDomains = await listDomains(sessionUser.id)
-  return NextResponse.json({ domains: userDomains })
+  return NextResponse.json({ domains: userDomains.map(toApiDomain) })
 }
 
 export const POST = async (request: Request) => {
@@ -26,7 +27,7 @@ export const POST = async (request: Request) => {
   try {
     const domain = await createDomain(sessionUser.id, parsedBody.data.name)
     return NextResponse.json(
-      { domain, record: buildRecordInstructions(domain) },
+      { domain: toApiDomain(domain), record: buildRecordInstructions(domain) },
       { status: HTTP_CREATED },
     )
   } catch (error) {

@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
+import { toApiDomain } from '@/lib/apiSurface/domainPayload'
 import { serviceErrorResponse, unauthorizedResponse } from '@/lib/apiSurface/responses'
 import { getApiRequestUser } from '@/lib/auth/server/session'
-import { restartVerification } from '@/lib/domains/server/service'
+import { buildRecordInstructions, restartVerification } from '@/lib/domains/server/service'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
@@ -11,7 +12,10 @@ export const POST = async (request: Request, { params }: RouteParams) => {
   const { id } = await params
   try {
     const domain = await restartVerification(sessionUser.id, id)
-    return NextResponse.json({ domain })
+    return NextResponse.json({
+      domain: toApiDomain(domain),
+      record: buildRecordInstructions(domain),
+    })
   } catch (error) {
     return serviceErrorResponse(error)
   }

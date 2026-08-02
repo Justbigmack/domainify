@@ -22,11 +22,12 @@ vi.mock('@/lib/auth/server/session', () => ({
 
 vi.mock('@/lib/domains/server/service', () => service)
 
+import { toApiDomain } from '@/lib/apiSurface/domainPayload'
+import { makeDomain } from '@/lib/domains/domainFixture'
 import { DomainInputInvalidError, DuplicateDomainError } from '@/lib/domains/model/errors'
 import { GET as listDomainsRoute, POST as createDomainRoute } from './route'
 
 const SESSION_USER: SessionUser = { id: 'user-1', email: 'owner@example.com' }
-const DOMAIN_ID = 'domain-1'
 const UNAUTHORIZED_BODY = {
   error: { code: 'unauthorized', message: 'Provide a valid API key or sign in.' },
 }
@@ -58,15 +59,23 @@ describe('GET /api/domains', () => {
   })
 
   it('lists only the caller’s domains', async () => {
-    service.listDomains.mockResolvedValue([{ id: DOMAIN_ID, hostname: 'example.com' }])
+    service.listDomains.mockResolvedValue([makeDomain()])
 
     const response = await listDomainsRoute()
 
     expect(service.listDomains).toHaveBeenCalledWith(SESSION_USER.id)
     expect(response.status).toBe(200)
-    await expect(response.json()).resolves.toEqual({
-      domains: [{ id: DOMAIN_ID, hostname: 'example.com' }],
-    })
+    await expect(response.json()).resolves.toEqual({ domains: [toApiDomain(makeDomain())] })
+  })
+
+  it('never leaks the owner id or the raw token to a list caller', async () => {
+    service.listDomains.mockResolvedValue([makeDomain({ verificationToken: 'secret-token' })])
+
+    const response = await listDomainsRoute()
+
+    const body = await response.text()
+    expect(body).not.toContain('secret-token')
+    expect(body).not.toContain(SESSION_USER.id)
   })
 })
 
@@ -82,7 +91,7 @@ describe('POST /api/domains', () => {
   })
 
   it('creates a domain and answers 201 with the record to publish', async () => {
-    const domain = { id: DOMAIN_ID, hostname: 'example.com' }
+    const domain = makeDomain()
     const record = {
       type: 'TXT',
       host: '_domainify-challenge.example.com',
@@ -97,7 +106,7 @@ describe('POST /api/domains', () => {
     expect(service.createDomain).toHaveBeenCalledWith(SESSION_USER.id, 'example.com')
     expect(service.buildRecordInstructions).toHaveBeenCalledWith(domain)
     expect(response.status).toBe(201)
-    await expect(response.json()).resolves.toEqual({ domain, record })
+    await expect(response.json()).resolves.toEqual({ domain: toApiDomain(domain), record })
   })
 
   it.each([
