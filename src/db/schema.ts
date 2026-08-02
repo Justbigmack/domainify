@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm'
 import { index, jsonb, pgEnum, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 import { CHECK_TRIGGERS, CHECK_VERDICTS } from '@/lib/dns/types'
 import type { CheckSourceSnapshot } from '@/lib/dns/types'
@@ -32,7 +33,12 @@ export const domains = pgTable(
     dnsProviderId: text('dns_provider_id'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
-  (table) => [uniqueIndex('domains_user_hostname_idx').on(table.userId, table.hostname)],
+  (table) => [
+    uniqueIndex('domains_user_hostname_idx').on(table.userId, table.hostname),
+    index('domains_due_check_idx')
+      .on(table.nextCheckAt)
+      .where(sql`${table.nextCheckAt} is not null`),
+  ],
 )
 
 export const verificationChecks = pgTable(
