@@ -2,12 +2,13 @@ import { Text } from '@/components/brand/Text'
 
 type FormErrorProps = {
   message: string | null
+  id?: string
 }
 
-export const FormError = ({ message }: FormErrorProps) => {
+export const FormError = ({ message, id }: FormErrorProps) => {
   if (message === null) return null
   return (
-    <Text role="alert" className="text-destructive">
+    <Text id={id} role="alert" className="text-destructive">
       {message}
     </Text>
   )

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import type { PropsWithChildren } from 'react'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/brand/ThemeProvider'
+import { SIDEBAR_COLLAPSED_SCRIPT } from '@/components/brand/Sidebar/sidebarCookie'
 import { THEME_STORAGE_KEY } from '@/lib/theme'
 import './globals.css'
 
@@ -25,6 +26,9 @@ const RootLayout = ({ children }: PropsWithChildren) => (
     suppressHydrationWarning
     className={`${inter.variable} h-full antialiased`}
   >
+    <head>
+      <script dangerouslySetInnerHTML={{ __html: SIDEBAR_COLLAPSED_SCRIPT }} />
+    </head>
     <body className="min-h-dvh font-sans">
       <ThemeProvider
         attribute="data-theme"

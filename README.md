@@ -59,7 +59,8 @@ daily cron sweep with capped-exponential backoff.
 
 - Next.js (App Router) on Vercel
 - Neon Postgres + Drizzle ORM
-- Better Auth magic-link sign-in, emails via Resend + React Email
+- Better Auth password and magic-link sign-in with mandatory email verification, emails
+  via Resend + React Email
 - `node:dns` + DNS-over-HTTPS for lookups, `tldts` for public-suffix validation
 
 ## Local development
@@ -86,8 +87,10 @@ CI runs the same three commands on every push (`.github/workflows/ci.yml`).
 
 ### Authentication
 
-The API authenticates with your session cookie. Sign in once in the browser
-(magic link), then either:
+The API authenticates with your session cookie. Sign in once in the browser — with a
+password, or with a magic link. New accounts must confirm their email address before a
+password sign-in will succeed; the confirmation link is emailed at sign-up and re-sent on
+any blocked sign-in attempt. Once signed in, either:
 
 - **Browser console** — `fetch` calls from the app's own tab send the cookie
   automatically; the `</>` panels in the app generate ready-to-paste snippets.
@@ -175,6 +178,9 @@ Each diagnostic path can be exercised deliberately:
   inherited from validating resolvers (bogus zones fail closed).
 - Better Auth hardening: hashed magic-link tokens, database-backed rate limiting,
   5-minute single-use links, origin checks against `BETTER_AUTH_URL`.
+- Password sign-in is blocked until the address is confirmed, so an unverified sign-up
+  never yields a session. Sign-up responses are identical whether or not the address is
+  already registered.
 - Zod on every input; domains validated before any DNS query; DoH query names
   URL-encoded.
 - Manual-verify cooldown per domain; cron behind a bearer secret.

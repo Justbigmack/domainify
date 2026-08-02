@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { BackToAppLink } from '@/components/brand/BackToAppLink'
 import { LoginCard } from '@/app/(auth)/_components/LoginCard'
+import { resolveVerificationNotice } from '@/app/(auth)/_components/verificationNotice'
 import { getSessionUser } from '@/lib/auth/session'
 
 export const metadata: Metadata = {
@@ -9,21 +10,27 @@ export const metadata: Metadata = {
 }
 
 type LoginPageProps = {
-  searchParams: Promise<{ add?: string }>
+  searchParams: Promise<{ add?: string; verified?: string; error?: string }>
 }
 
 const LoginPage = async ({ searchParams }: LoginPageProps) => {
-  const { add } = await searchParams
+  const { add, verified, error } = await searchParams
   const sessionUser = await getSessionUser()
   const isSignedIn = sessionUser !== null
   const hasAddAccountParam = add !== undefined
   const isAddingAccount = isSignedIn && hasAddAccountParam
   if (isSignedIn && !isAddingAccount) redirect('/domains')
 
+  const verificationNotice = resolveVerificationNotice({ verified, error })
+
   return (
     <>
-      <LoginCard isAddingAccount={isAddingAccount} />
-      {isAddingAccount ? <BackToAppLink /> : null}
+      <LoginCard isAddingAccount={isAddingAccount} verificationNotice={verificationNotice} />
+      {isAddingAccount ? (
+        <div className="mt-7 flex justify-center">
+          <BackToAppLink />
+        </div>
+      ) : null}
     </>
   )
 }

@@ -3,8 +3,8 @@
 import { useTransition } from 'react'
 import { RotateCwIcon, TriangleAlertIcon } from 'lucide-react'
 import { PageState } from '@/components/brand/PageState'
+import { PrimaryButton } from '@/components/brand/PrimaryButton'
 import { Text } from '@/components/brand/Text'
-import { Button } from '@/components/ui/button'
 import './globals.css'
 
 type GlobalErrorProps = {
@@ -26,10 +26,9 @@ const GlobalError = ({ error, unstable_retry }: GlobalErrorProps) => {
           tone="destructive"
           title="Something went wrong"
           action={
-            <Button onClick={handleRetry} loading={isRetrying}>
-              <RotateCwIcon data-icon="inline-start" />
+            <PrimaryButton icon={RotateCwIcon} onClick={handleRetry} loading={isRetrying}>
               Try again
-            </Button>
+            </PrimaryButton>
           }
           footer={
             error.digest && (

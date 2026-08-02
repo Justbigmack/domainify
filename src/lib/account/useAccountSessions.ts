@@ -5,21 +5,29 @@ import { loadAccountSessions } from '@/lib/account/sessionActions'
 import type { AccountSession } from '@/lib/auth/session'
 
 export const useAccountSessions = (userEmail?: string) => {
-  const hasInitialAccount = userEmail !== undefined
-  const initialAccounts: AccountSession[] = hasInitialAccount
-    ? [{ sessionToken: '', email: userEmail, isCurrent: true }]
-    : []
-  const [accounts, setAccounts] = useState<AccountSession[]>(initialAccounts)
-  const [hasRequested, setHasRequested] = useState(false)
+  const [loadedAccounts, setLoadedAccounts] = useState<AccountSession[] | null>(null)
+  const [loadedForEmail, setLoadedForEmail] = useState(userEmail)
   const [isLoadingSessions, setIsLoadingSessions] = useState(false)
 
+  const hasSignedInAccountChanged = userEmail !== loadedForEmail
+  if (hasSignedInAccountChanged) {
+    setLoadedForEmail(userEmail)
+    setLoadedAccounts(null)
+  }
+
+  const hasInitialAccount = userEmail !== undefined
+  const fallbackAccounts: AccountSession[] = hasInitialAccount
+    ? [{ sessionToken: '', email: userEmail, isCurrent: true }]
+    : []
+  const hasLoadedAccounts = loadedAccounts !== null && !hasSignedInAccountChanged
+  const accounts = hasLoadedAccounts ? loadedAccounts : fallbackAccounts
+
   const handleMenuOpen = () => {
-    if (hasRequested) return
-    setHasRequested(true)
+    if (hasLoadedAccounts || isLoadingSessions) return
     setIsLoadingSessions(true)
     void loadAccountSessions()
       .then((sessions) => {
-        if (sessions.length > 0) setAccounts(sessions)
+        if (sessions.length > 0) setLoadedAccounts(sessions)
       })
       .finally(() => setIsLoadingSessions(false))
   }

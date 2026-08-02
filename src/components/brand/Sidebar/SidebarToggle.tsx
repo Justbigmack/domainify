@@ -15,8 +15,7 @@ export const SidebarToggle = () => {
         onClick={toggleSidebar}
         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         className={cn(
-          'absolute top-0 right-0 flex h-9 items-center justify-center rounded-md text-muted-foreground outline-none transition-[translate,width,color,background-color] duration-200 ease-in-out hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 motion-reduce:transition-none',
-          { 'w-10 translate-y-10': isCollapsed, 'w-9 translate-y-0': !isCollapsed },
+          'absolute top-0 right-0 flex size-9 translate-y-0 items-center justify-center rounded-md text-muted-foreground outline-none transition-[translate,color,background-color] duration-200 ease-in-out hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 sidebar-collapsed:-translate-x-px sidebar-collapsed:translate-y-10 motion-reduce:transition-none',
         )}
       >
         <PanelLeftIcon className="size-4" />

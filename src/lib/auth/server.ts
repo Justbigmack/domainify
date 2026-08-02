@@ -7,10 +7,12 @@ import { multiSession } from 'better-auth/plugins/multi-session'
 import { db } from '@/db'
 import {
   API_KEY_PREFIX,
+  EMAIL_VERIFICATION_TOKEN_TTL_SECONDS,
   PASSWORD_MIN_LENGTH,
   SESSION_COOKIE_CACHE_MAX_AGE_SECONDS,
 } from '@/lib/auth/policy'
-import { sendMagicLinkEmail } from '@/lib/emails/sendMagicLink'
+import { deliverEmailVerification } from '@/lib/auth/emailVerification'
+import { deliverMagicLinkToExistingUser } from '@/lib/auth/magicLinkDelivery'
 import { sendResetPasswordEmail } from '@/lib/emails/sendResetPassword'
 
 export const auth = betterAuth({
@@ -27,9 +29,18 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: PASSWORD_MIN_LENGTH,
+    requireEmailVerification: true,
     revokeSessionsOnPasswordReset: true,
     sendResetPassword: async ({ user, url }) => {
       await sendResetPasswordEmail({ recipientEmail: user.email, resetUrl: url })
+    },
+  },
+  emailVerification: {
+    expiresIn: EMAIL_VERIFICATION_TOKEN_TTL_SECONDS,
+    sendOnSignUp: true,
+    sendOnSignIn: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      await deliverEmailVerification({ recipientEmail: user.email, verificationUrl: url })
     },
   },
   plugins: [
@@ -40,8 +51,9 @@ export const auth = betterAuth({
     }),
     magicLink({
       storeToken: 'hashed',
+      disableSignUp: true,
       sendMagicLink: async ({ email, url }) => {
-        await sendMagicLinkEmail({ recipientEmail: email, magicLinkUrl: url })
+        await deliverMagicLinkToExistingUser({ email, magicLinkUrl: url })
       },
     }),
     multiSession(),

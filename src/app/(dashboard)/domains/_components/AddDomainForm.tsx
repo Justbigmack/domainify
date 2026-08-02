@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from 'react'
 import type { ChangeEvent } from 'react'
+import { PrimaryButton } from '@/components/brand/PrimaryButton'
 import { Text } from '@/components/brand/Text'
 import { Button } from '@/components/ui/button'
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
@@ -98,9 +99,9 @@ export const AddDomainForm = () => {
             {activeError.message}
           </Text>
         )}
-        <Button type="submit" loading={isPending} className="ml-auto">
+        <PrimaryButton type="submit" loading={isPending} className="ml-auto">
           Add domain
-        </Button>
+        </PrimaryButton>
       </div>
     </form>
   )

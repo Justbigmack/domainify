@@ -24,7 +24,11 @@ const SignUpPage = async ({ searchParams }: SignUpPageProps) => {
   return (
     <>
       <SignUpCard isAddingAccount={isAddingAccount} />
-      {isAddingAccount ? <BackToAppLink /> : null}
+      {isAddingAccount ? (
+        <div className="mt-7 flex justify-center">
+          <BackToAppLink />
+        </div>
+      ) : null}
     </>
   )
 }

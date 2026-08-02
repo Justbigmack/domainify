@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { CodeIcon } from 'lucide-react'
 import { ApiOperationBlock } from '@/app/(dashboard)/domains/_components/ApiOperationBlock'
+import { TextLink } from '@/components/brand/TextLink'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -13,28 +14,25 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import Link from 'next/link'
 import { buildCollectionOperations, buildDomainOperations } from '@/lib/domains/apiSnippets'
-import type { ApiSnippetKind, ApiTarget } from '@/lib/domains/apiSnippets'
+import type { ApiSnippetKind } from '@/lib/domains/apiSnippets'
 
 const SNIPPET_KIND_LABELS: Record<ApiSnippetKind, string> = {
   curl: 'cURL',
   fetch: 'fetch',
 }
 
-type ApiViewPanelProps =
-  | { scope: 'collection'; target: ApiTarget | null }
-  | { scope: 'domain'; target: ApiTarget }
+type ApiViewPanelProps = { scope: 'collection' } | { scope: 'domain'; domainId: string }
 
-export const ApiViewPanel = ({ scope, target }: ApiViewPanelProps) => {
+export const ApiViewPanel = (props: ApiViewPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [origin, setOrigin] = useState('')
   const [snippetKind, setSnippetKind] = useState<ApiSnippetKind>('curl')
 
   const operations =
-    scope === 'collection'
-      ? buildCollectionOperations(origin, target)
-      : buildDomainOperations(origin, target)
+    props.scope === 'collection'
+      ? buildCollectionOperations(origin)
+      : buildDomainOperations(origin, props.domainId)
 
   const handleOpenChange = (open: boolean) => {
     if (open) setOrigin(window.location.origin)
@@ -75,12 +73,7 @@ export const ApiViewPanel = ({ scope, target }: ApiViewPanelProps) => {
             </ToggleGroup>
             <p className="rounded-lg border bg-card px-3 py-2.5 text-xs leading-5 text-muted-foreground">
               Snippets authenticate with an API key. Create one on the{' '}
-              <Link
-                href="/settings/api-keys"
-                className="font-medium text-foreground underline underline-offset-2"
-              >
-                API keys
-              </Link>{' '}
+              <TextLink href="/settings/api-keys">API keys</TextLink>{' '}
               page and replace {'<api-key>'}.
             </p>
           </div>

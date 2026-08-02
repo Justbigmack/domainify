@@ -104,20 +104,25 @@ const isStale = (domain: DomainRow, now: Date): boolean =>
   (domain.lastCheckedAt === null ||
     now.getTime() - domain.lastCheckedAt.getTime() > STALE_CHECK_THRESHOLD_MS)
 
+const getRecentChecks = (domainId: string): Promise<VerificationCheckRow[]> =>
+  db
+    .select()
+    .from(verificationChecks)
+    .where(eq(verificationChecks.domainId, domainId))
+    .orderBy(desc(verificationChecks.checkedAt))
+    .limit(RECENT_CHECKS_LIMIT)
+
 export const getDomainDetail = async (
   userId: string,
   domainId: string,
 ): Promise<DomainDetail> => {
-  const domain = await getOwnedDomain(userId, domainId)
+  const [domain, checks] = await Promise.all([
+    getOwnedDomain(userId, domainId),
+    getRecentChecks(domainId),
+  ])
   if (isStale(domain, new Date())) {
     after(() => runCheck(domain, 'on_read').catch(() => undefined))
   }
-  const checks = await db
-    .select()
-    .from(verificationChecks)
-    .where(eq(verificationChecks.domainId, domain.id))
-    .orderBy(desc(verificationChecks.checkedAt))
-    .limit(RECENT_CHECKS_LIMIT)
   return { domain, checks, record: buildRecordInstructions(domain) }
 }
 
@@ -140,14 +145,7 @@ export const pollDomain = async (userId: string, domainId: string): Promise<Chec
   return runCheck(domain, 'poll')
 }
 
-export const restartVerification = async (
-  userId: string,
-  domainId: string,
-): Promise<DomainRow> => {
-  const domain = await getOwnedDomain(userId, domainId)
-  if (domain.status !== 'failed') {
-    throw new DomainStateError('Verification can only be restarted for failed domains.')
-  }
+const mintTokenAndReopenWindow = async (domainId: string): Promise<DomainRow> => {
   const now = new Date()
   const [updated] = await db
     .update(domains)
@@ -160,31 +158,25 @@ export const restartVerification = async (
       graceExpiresAt: null,
       nextCheckAt: now,
     })
-    .where(eq(domains.id, domain.id))
+    .where(eq(domains.id, domainId))
     .returning()
   return updated
 }
 
+export const restartVerification = async (
+  userId: string,
+  domainId: string,
+): Promise<DomainRow> => {
+  const domain = await getOwnedDomain(userId, domainId)
+  if (domain.status !== 'failed') {
+    throw new DomainStateError('Verification can only be restarted for failed domains.')
+  }
+  return mintTokenAndReopenWindow(domain.id)
+}
+
 export const regenerateToken = async (userId: string, domainId: string): Promise<DomainRow> => {
   const domain = await getOwnedDomain(userId, domainId)
-  const now = new Date()
-  const revertsToPending = domain.status === 'verified' || domain.status === 'temporary_failure'
-  const [updated] = await db
-    .update(domains)
-    .set({
-      verificationToken: generateVerificationToken(),
-      tokenGeneratedAt: now,
-      status: revertsToPending ? 'pending' : domain.status,
-      pendingExpiresAt: revertsToPending
-        ? new Date(now.getTime() + PENDING_WINDOW_MS)
-        : domain.pendingExpiresAt,
-      verifiedAt: revertsToPending ? null : domain.verifiedAt,
-      graceExpiresAt: revertsToPending ? null : domain.graceExpiresAt,
-      nextCheckAt: domain.status === 'failed' ? domain.nextCheckAt : now,
-    })
-    .where(eq(domains.id, domain.id))
-    .returning()
-  return updated
+  return mintTokenAndReopenWindow(domain.id)
 }
 
 export const deleteDomain = async (userId: string, domainId: string): Promise<void> => {
@@ -196,6 +188,7 @@ export type SweepResult = {
   checked: number
   failed: number
   remaining: number
+  affectedUserIds: string[]
 }
 
 export const sweepDueDomains = async (now: Date): Promise<SweepResult> => {
@@ -218,5 +211,7 @@ export const sweepDueDomains = async (now: Date): Promise<SweepResult> => {
     failed += results.filter((result) => result.status === 'rejected').length
     nextIndex += chunk.length
   }
-  return { checked, failed, remaining: dueDomains.length - nextIndex }
+  const processedDomains = dueDomains.slice(0, nextIndex)
+  const affectedUserIds = [...new Set(processedDomains.map((domain) => domain.userId))]
+  return { checked, failed, remaining: dueDomains.length - nextIndex, affectedUserIds }
 }

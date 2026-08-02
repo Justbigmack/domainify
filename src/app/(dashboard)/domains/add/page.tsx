@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 const AddDomainPage = () => (
   <PageContainer>
     <header className="flex flex-col gap-1 pr-5 pl-17">
-      <div>
+      <div className="flex min-h-9 items-center">
         <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
       </div>
       <Heading as="h1">Add domain</Heading>

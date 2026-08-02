@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Text } from '@/components/brand/Text'
-import { usePathname, useSelectedLayoutSegment } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import {
   BookOpenIcon,
@@ -23,6 +23,8 @@ import type { AccountSession } from '@/lib/auth/session'
 import { cn } from '@/lib/utils'
 import { useAccountActions } from '@/lib/account/useAccountActions'
 import { useAccountSessions } from '@/lib/account/useAccountSessions'
+
+const SETTINGS_PATH_PREFIX = '/settings'
 
 export const MENU_ROW_CLASS =
   'flex h-11 touch-manipulation items-center gap-3 rounded-lg px-3 text-sm font-medium text-muted-foreground transition-colors outline-none hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4 [&_svg]:shrink-0'
@@ -57,11 +59,10 @@ const SETTINGS_LINKS = [
 export const MobileNav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
-  const activeSegment = useSelectedLayoutSegment()
   const { handleSignOut, handleAddAccount, handleAccountSwitch } = useAccountActions()
   const { accounts, handleMenuOpen, isLoadingSessions } = useAccountSessions()
 
-  const isSettingsSection = activeSegment === 'settings'
+  const isSettingsSection = pathname.startsWith(SETTINGS_PATH_PREFIX)
   const isDomainsActive = pathname === '/domains' || pathname.startsWith('/domains/')
   const hasMultipleAccounts = accounts.length > 1
   const handleMenuClose = () => setIsMenuOpen(false)

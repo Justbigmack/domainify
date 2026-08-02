@@ -1,21 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { Heading } from '@/components/brand/Heading'
-import { Text } from '@/components/brand/Text'
 import type { ChangeEvent, FormEvent } from 'react'
-import Link from 'next/link'
-import { CircleCheckIcon, CircleAlertIcon } from 'lucide-react'
+import { CircleAlertIcon, CircleCheckIcon } from 'lucide-react'
+import { GhostButton } from '@/components/brand/GhostButton'
+import { PrimaryButton } from '@/components/brand/PrimaryButton'
 import { FormError } from '@/app/(auth)/_components/FormError'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { AuthHeadline } from '@/app/(auth)/_components/AuthHeadline'
+import { AuthNotice } from '@/app/(auth)/_components/AuthNotice'
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
+  AUTH_CONTROL_CLASSES,
+  AUTH_FORM_CLASSES,
+} from '@/app/(auth)/_components/authControls'
+import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { authClient } from '@/lib/auth/client'
 import { PASSWORD_MIN_LENGTH } from '@/lib/auth/policy'
@@ -55,84 +52,72 @@ export const ResetPasswordCard = ({ token }: ResetPasswordCardProps) => {
 
   if (token === null) {
     return (
-      <Card className="w-full max-w-sm text-center">
-        <CardContent className="flex flex-col items-center">
-          <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-            <CircleAlertIcon className="size-5" />
-          </div>
-          <Heading as="h1" size="h2" className="mt-4">
-            This link is invalid or expired
-          </Heading>
-          <Text className="mt-2 leading-6 text-muted-foreground">
-            Password reset links can only be used once and expire after one hour. Request a
-            new one to continue.
-          </Text>
-          <div className="mt-6 flex w-full flex-col gap-2">
-            <Link href="/forgot-password" className={cn(buttonVariants({ variant: 'default' }))}>
-              Request a new link
-            </Link>
-            <Link href="/login" className={cn(buttonVariants({ variant: 'ghost' }))}>
-              Back to sign in
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+      <AuthNotice
+        icon={CircleAlertIcon}
+        title="This link is invalid or expired"
+        description="Password reset links can only be used once and expire after one hour. Request a new one to continue."
+      >
+        <PrimaryButton href="/forgot-password" className={AUTH_CONTROL_CLASSES}>
+          Request a new link
+        </PrimaryButton>
+        <GhostButton
+          href="/login"
+          size="default"
+          className={cn(AUTH_CONTROL_CLASSES, 'font-medium text-foreground')}
+        >
+          Back to sign in
+        </GhostButton>
+      </AuthNotice>
     )
   }
 
   if (hasReset) {
     return (
-      <Card className="w-full max-w-sm text-center">
-        <CardContent className="flex flex-col items-center">
-          <div className="flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-            <CircleCheckIcon className="size-5" />
-          </div>
-          <Heading as="h1" size="h2" className="mt-4">
-            Password updated
-          </Heading>
-          <Text className="mt-2 leading-6 text-muted-foreground">
-            Your password has been changed and existing sessions were signed out. Sign in with
-            your new password to continue.
-          </Text>
-          <div className="mt-6 flex w-full flex-col gap-2">
-            <Link href="/login" className={cn(buttonVariants({ variant: 'default' }))}>
-              Sign in
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+      <AuthNotice
+        icon={CircleCheckIcon}
+        title="Password updated"
+        description="Your password has been changed and existing sessions were signed out. Sign in with your new password to continue."
+      >
+        <PrimaryButton href="/login" className={AUTH_CONTROL_CLASSES}>
+          Sign in
+        </PrimaryButton>
+      </AuthNotice>
     )
   }
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle>Choose a new password</CardTitle>
-        <CardDescription>You&apos;ll use it the next time you sign in.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <Field>
-            <FieldLabel htmlFor="new-password">New password</FieldLabel>
-            <Input
-              id="new-password"
-              type="password"
-              required
-              autoFocus
-              autoComplete="new-password"
-              minLength={PASSWORD_MIN_LENGTH}
-              value={newPassword}
-              onChange={handlePasswordChange}
-              className="h-11"
-            />
-            <FieldDescription>At least {PASSWORD_MIN_LENGTH} characters.</FieldDescription>
-          </Field>
-          <FormError message={errorMessage} />
-          <Button type="submit" loading={isSubmitting}>
-            Update password
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <>
+      <AuthHeadline
+        title="Choose a new password"
+        description="You’ll use it the next time you sign in."
+      />
+      <form onSubmit={handleSubmit} className={AUTH_FORM_CLASSES}>
+        <Field>
+          <FieldLabel htmlFor="new-password" className="sr-only">
+            New password
+          </FieldLabel>
+          <Input
+            id="new-password"
+            type="password"
+            required
+            autoFocus
+            autoComplete="new-password"
+            minLength={PASSWORD_MIN_LENGTH}
+            placeholder={`New password — at least ${PASSWORD_MIN_LENGTH} characters`}
+            value={newPassword}
+            onChange={handlePasswordChange}
+            className={AUTH_CONTROL_CLASSES}
+          />
+        </Field>
+        <FormError message={errorMessage} />
+        <PrimaryButton
+          type="submit"
+          loading={isSubmitting}
+          className={cn(AUTH_CONTROL_CLASSES, 'mt-1')}
+        >
+          Update password
+        </PrimaryButton>
+      </form>
+    </>
   )
 }

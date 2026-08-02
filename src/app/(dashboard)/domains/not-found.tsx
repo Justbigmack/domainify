@@ -1,16 +1,13 @@
-import Link from 'next/link'
 import { SearchXIcon } from 'lucide-react'
 import { PageState } from '@/components/brand/PageState'
-import { Button } from '@/components/ui/button'
+import { PrimaryButton } from '@/components/brand/PrimaryButton'
 
 const DomainNotFound = () => (
   <PageState
     icon={SearchXIcon}
     title="Domain not found"
     action={
-      <Button nativeButton={false} render={<Link href="/domains" />}>
-        Back to domains
-      </Button>
+      <PrimaryButton href="/domains">Back to domains</PrimaryButton>
     }
   >
     That domain doesn’t exist, or it belongs to a different account.

@@ -4,14 +4,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { PropsWithChildren } from 'react'
 import { cn } from '@/lib/utils'
-import { useSidebar } from './SidebarProvider'
 import { SidebarTooltip } from './SidebarTooltip'
 
 export const SIDEBAR_ROW_CLASS =
   'flex h-9 items-center gap-2.5 overflow-hidden rounded-md px-3 text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:size-4 [&_svg]:shrink-0'
 
 export const SIDEBAR_LABEL_CLASS =
-  'truncate transition-opacity duration-200 ease-in-out motion-reduce:transition-none'
+  'truncate opacity-100 transition-opacity duration-200 ease-in-out sidebar-collapsed:opacity-0 motion-reduce:transition-none'
 
 type NavLinkProps = PropsWithChildren<{
   href: string
@@ -20,7 +19,6 @@ type NavLinkProps = PropsWithChildren<{
 
 export const NavLink = ({ href, label, children }: NavLinkProps) => {
   const pathname = usePathname()
-  const { isCollapsed } = useSidebar()
   const isActive = pathname === href || pathname.startsWith(`${href}/`)
 
   return (
@@ -35,7 +33,7 @@ export const NavLink = ({ href, label, children }: NavLinkProps) => {
         })}
       >
         {children}
-        <span className={cn(SIDEBAR_LABEL_CLASS, { 'opacity-0': isCollapsed })}>{label}</span>
+        <span className={SIDEBAR_LABEL_CLASS}>{label}</span>
       </Link>
     </SidebarTooltip>
   )

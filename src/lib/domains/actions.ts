@@ -1,8 +1,9 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
+import { updateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { getSessionUser } from '@/lib/auth/session'
+import { domainsCacheTag } from './cache'
 import {
   DomainInputInvalidError,
   DuplicateDomainError,
@@ -33,10 +34,8 @@ const requireSessionUser = async () => {
   return sessionUser
 }
 
-const revalidateDomainPaths = (domainId: string): void => {
-  revalidatePath('/domains')
-  revalidatePath(`/domains/${domainId}`)
-  revalidatePath(`/domains/add/${domainId}`)
+const revalidateDomainCache = (userId: string): void => {
+  updateTag(domainsCacheTag(userId))
 }
 
 const toActionFailure = (error: unknown): ActionResult => {
@@ -68,7 +67,7 @@ export const createDomainAction = async (
     }
     throw error
   }
-  revalidatePath('/domains')
+  revalidateDomainCache(sessionUser.id)
   redirect(`/domains/add/${createdId}`)
 }
 
@@ -79,7 +78,7 @@ export const verifyDomainAction = async (domainId: string): Promise<ActionResult
   } catch (error) {
     return toActionFailure(error)
   }
-  revalidateDomainPaths(domainId)
+  revalidateDomainCache(sessionUser.id)
   return { ok: true }
 }
 
@@ -90,7 +89,7 @@ export const pollDomainAction = async (domainId: string): Promise<ActionResult> 
   } catch (error) {
     return toActionFailure(error)
   }
-  revalidateDomainPaths(domainId)
+  revalidateDomainCache(sessionUser.id)
   return { ok: true }
 }
 
@@ -101,7 +100,7 @@ export const restartVerificationAction = async (domainId: string): Promise<Actio
   } catch (error) {
     return toActionFailure(error)
   }
-  revalidateDomainPaths(domainId)
+  revalidateDomainCache(sessionUser.id)
   return { ok: true }
 }
 
@@ -112,7 +111,7 @@ export const regenerateTokenAction = async (domainId: string): Promise<ActionRes
   } catch (error) {
     return toActionFailure(error)
   }
-  revalidateDomainPaths(domainId)
+  revalidateDomainCache(sessionUser.id)
   return { ok: true }
 }
 
@@ -123,6 +122,6 @@ export const deleteDomainAction = async (domainId: string): Promise<ActionResult
   } catch (error) {
     return toActionFailure(error)
   }
-  revalidatePath('/domains')
+  revalidateDomainCache(sessionUser.id)
   redirect('/domains')
 }

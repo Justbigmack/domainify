@@ -55,7 +55,7 @@ export const DomainHeader = ({ domain }: DomainHeaderProps) => {
   const deadline = deadlineFor(domain, nowMs)
   return (
     <header className="flex flex-col px-5">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex min-h-9 items-center justify-between gap-4">
         <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-1.5">
           <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
           <Text as="span" className="text-[0.8125rem] text-muted-foreground/60" aria-hidden>
@@ -70,7 +70,7 @@ export const DomainHeader = ({ domain }: DomainHeaderProps) => {
           </Text>
         </nav>
         <div className="-mr-3.5 shrink-0">
-          <ApiViewPanel scope="domain" target={{ id: domain.id, hostname: domain.hostname }} />
+          <ApiViewPanel scope="domain" domainId={domain.id} />
         </div>
       </div>
       <div className="mt-6">

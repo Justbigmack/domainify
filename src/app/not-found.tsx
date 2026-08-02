@@ -1,7 +1,6 @@
-import Link from 'next/link'
 import { FileQuestionMarkIcon } from 'lucide-react'
 import { PageState } from '@/components/brand/PageState'
-import { Button } from '@/components/ui/button'
+import { PrimaryButton } from '@/components/brand/PrimaryButton'
 
 const NotFound = () => (
   <PageState
@@ -9,9 +8,7 @@ const NotFound = () => (
     icon={FileQuestionMarkIcon}
     title="Page not found"
     action={
-      <Button nativeButton={false} render={<Link href="/domains" />}>
-        Go to domains
-      </Button>
+      <PrimaryButton href="/domains">Go to domains</PrimaryButton>
     }
   >
     This page doesn’t exist. It may have been moved, or the link that brought you here is out of

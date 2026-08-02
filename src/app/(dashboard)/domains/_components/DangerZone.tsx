@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { Suspense, use, useState, useTransition } from 'react'
 import { RefreshCwIcon, Trash2Icon } from 'lucide-react'
 import { GhostButton } from '@/components/brand/GhostButton'
 import { Text } from '@/components/brand/Text'
@@ -23,35 +23,31 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { deleteDomainAction, regenerateTokenAction } from '@/lib/domains/actions'
-import type { DomainStatus } from '@/lib/domains/status'
 
 type PendingAction = 'regenerate' | 'remove' | null
 
-const TruncatedHostname = ({ hostname }: { hostname: string }) => (
-  <span className="inline-block max-w-full truncate align-bottom" title={hostname}>
-    {hostname}
-  </span>
-)
+const REGENERATE_WARNING =
+  'Issues a new record value and restarts verification. Your DNS record must be updated to match it.'
+const REMOVE_FALLBACK_LABEL = 'this domain'
 
-type DangerZoneProps = {
-  domainId: string
-  hostname: string
-  status: DomainStatus
+const ResolvedHostname = ({ hostname }: { hostname: Promise<string | null> }) => {
+  const resolvedHostname = use(hostname)
+  if (!resolvedHostname) return REMOVE_FALLBACK_LABEL
+  return (
+    <Text as="span" className="font-medium">
+      {resolvedHostname}
+    </Text>
+  )
 }
 
-export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
+type DangerZoneProps = {
+  hostname: Promise<string | null>
+  domainId?: string
+}
+
+export const DangerZone = ({ hostname, domainId }: DangerZoneProps) => {
   const [pendingAction, setPendingAction] = useState<PendingAction>(null)
   const [isWorking, startTransition] = useTransition()
-
-  const revertsToPending = status === 'verified' || status === 'temporary_failure'
-  const regenerateWarning = revertsToPending ? (
-    <>
-      <TruncatedHostname hostname={hostname} /> goes back to pending until the new record is in
-      place.
-    </>
-  ) : (
-    'The record value changes. Update your DNS record with the new value.'
-  )
 
   const handleRequestRegenerate = () => {
     setPendingAction('regenerate')
@@ -67,6 +63,7 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
   }
 
   const handleRegenerate = () => {
+    if (!domainId) return
     startTransition(async () => {
       await regenerateTokenAction(domainId)
       setPendingAction(null)
@@ -74,10 +71,13 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
   }
 
   const handleRemove = () => {
+    if (!domainId) return
     startTransition(async () => {
       await deleteDomainAction(domainId)
     })
   }
+
+  const isConfirmDisabled = isWorking || !domainId
 
   return (
     <>
@@ -85,7 +85,7 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
         <SectionRow>
           <SectionRowText>
             <SectionLabel>Regenerate token</SectionLabel>
-            <SectionDescription className="mt-0.5">{regenerateWarning}</SectionDescription>
+            <SectionDescription className="mt-0.5">{REGENERATE_WARNING}</SectionDescription>
           </SectionRowText>
           <GhostButton icon={RefreshCwIcon} className="-mr-2.5" onClick={handleRequestRegenerate}>
             Regenerate
@@ -96,8 +96,7 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
           <SectionRowText>
             <SectionLabel>Remove domain</SectionLabel>
             <SectionDescription className="mt-0.5">
-              Deletes <TruncatedHostname hostname={hostname} /> and its full check history. This
-              cannot be undone.
+              Deletes this domain and its full check history. This cannot be undone.
             </SectionDescription>
           </SectionRowText>
           <GhostButton
@@ -114,11 +113,11 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Regenerate token?</AlertDialogTitle>
-            <AlertDialogDescription>{regenerateWarning}</AlertDialogDescription>
+            <AlertDialogDescription>{REGENERATE_WARNING}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isWorking}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRegenerate} disabled={isWorking}>
+            <AlertDialogAction onClick={handleRegenerate} disabled={isConfirmDisabled}>
               {isWorking ? 'Regenerating…' : 'Regenerate token'}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -130,16 +129,19 @@ export const DangerZone = ({ domainId, hostname, status }: DangerZoneProps) => {
             <AlertDialogTitle>Remove domain</AlertDialogTitle>
             <AlertDialogDescription>
               Deletes{' '}
-              <Text as="span" className="font-medium">
-                {hostname}
-              </Text>{' '}
-              and its full
-              check history. This cannot be undone.
+              <Suspense fallback={REMOVE_FALLBACK_LABEL}>
+                <ResolvedHostname hostname={hostname} />
+              </Suspense>{' '}
+              and its full check history. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isWorking}>Cancel</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={handleRemove} disabled={isWorking}>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={handleRemove}
+              disabled={isConfirmDisabled}
+            >
               {isWorking ? 'Removing…' : 'Remove domain'}
             </AlertDialogAction>
           </AlertDialogFooter>

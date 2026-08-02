@@ -195,7 +195,7 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     path: '/api/domains/:id/regenerate',
     description: [
       'Rotates the verification token, for example after the old value leaked or you want to re-prove control. The response includes the updated record instructions with the new value.',
-      'A verified domain drops back to pending until the new record is found, so treat this as a deliberate re-verification, not a routine refresh.',
+      'Whatever the current status, the domain drops back to pending with a fresh 72-hour window until the new record is found, so treat this as a deliberate re-verification, not a routine refresh.',
     ],
     pathParams: [ID_PATH_PARAM],
     bodyParams: [],

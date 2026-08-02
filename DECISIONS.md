@@ -172,6 +172,38 @@ Hardening applied from Better Auth's own security history (2025 open-redirect on
 magic-link tokens **in plaintext**), strict `trustedOrigins` at deploy time, built-in
 rate limits left on (5 requests/60s on magic-link routes), 5-minute single-use tokens.
 
+### 9a. Email verification: `requireEmailVerification`, not a hand-rolled gate
+
+Sign-up originally minted a session immediately, so any typed-in address became a working
+account. Fixed with `emailAndPassword.requireEmailVerification: true` plus an
+`emailVerification` block, rather than a custom gate, for three reasons that are properties
+of the library rather than of our code:
+
+- Sign-up stops returning a session (`token: null`) **and** collapses the duplicate-email
+  response into a generic success — enumeration resistance we would otherwise hand-write.
+- The unverified check runs *after* password verification, so the `sendOnSignIn` re-send is
+  credential-gated. A hand-rolled "resend" endpoint keyed on email alone is an email-bombing
+  vector; this one is not. `/send-verification-email` additionally carries a built-in
+  3-per-60s limit, persisted through our existing `rateLimit: { storage: 'database' }`.
+- The verification token is a **stateless signed JWT**, not a row, and an already-verified
+  user is short-circuited straight to the callback. That makes the flow immune to the
+  scanner-prefetch hazard listed above as an argument against rolling our own: Outlook Safe
+  Links can GET the link first and the recipient's real click still lands correctly. It is
+  also why we did not reach for single-use tokens here — replay within the TTL is the
+  feature, not a gap.
+
+| Choice | Why |
+|---|---|
+| TTL 1 hour | Framework default; matches the password-reset copy already shipped. A dead link costs one click to replace, since sign-in re-sends. |
+| No backfill of existing rows ✅ | Every pre-existing account has `email_verified = false` and must confirm. They are never stuck: a blocked sign-in auto-sends a fresh link, and the magic-link flow sets `emailVerified = true` on use, so `/login/link` is always an escape hatch. |
+| Land on `/login?verified=1`, no `autoSignInAfterVerification` | Verification usually completes in whatever browser the mail client opened — often not the one holding the session. Confirming and then asking for credentials is the honest sequence. |
+| Rewrite `callbackURL` server-side | Three call sites trigger a send (sign-up, blocked sign-in, manual re-send) and only one can pass a `callbackURL` cleanly — passing it to `signIn.email` would also set a `Location` header on *successful* sign-in and fight the client-side redirect. `src/lib/auth/emailVerification.ts` rewrites the URL Better Auth hands us, so the destination is defined exactly once and needs no extra env var. |
+
+Known gap: without `advanced.backgroundTasks.handler`, Better Auth awaits the send inline
+and swallows its error, so a Resend outage means sign-up succeeds with no email and no log.
+The re-send control on `/verify-email` is the user-facing mitigation; email-send logging
+across the whole app remains unbuilt (see §10 notes on silent notification failures).
+
 ## 10. Re-checks and lifecycle
 
 Industry pattern (Google Search Console, GitHub Pages, AWS SES): verification is not

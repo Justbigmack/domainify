@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { serviceErrorResponse, unauthorizedResponse } from '@/lib/http/responses'
-import { getSessionUser } from '@/lib/auth/session'
+import { getApiRequestUser } from '@/lib/auth/session'
 import { deleteDomain, getDomainDetail } from '@/lib/domains/service'
 
 type RouteParams = { params: Promise<{ id: string }> }
@@ -8,7 +8,7 @@ type RouteParams = { params: Promise<{ id: string }> }
 const HTTP_NO_CONTENT = 204
 
 export const GET = async (request: Request, { params }: RouteParams) => {
-  const sessionUser = await getSessionUser()
+  const sessionUser = await getApiRequestUser()
   if (!sessionUser) return unauthorizedResponse()
   const { id } = await params
   try {
@@ -20,7 +20,7 @@ export const GET = async (request: Request, { params }: RouteParams) => {
 }
 
 export const DELETE = async (request: Request, { params }: RouteParams) => {
-  const sessionUser = await getSessionUser()
+  const sessionUser = await getApiRequestUser()
   if (!sessionUser) return unauthorizedResponse()
   const { id } = await params
   try {

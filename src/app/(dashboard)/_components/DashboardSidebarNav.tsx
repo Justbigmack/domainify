@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useSelectedLayoutSegment } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import {
   BookOpenIcon,
   ChevronLeftIcon,
@@ -11,6 +11,8 @@ import {
 } from 'lucide-react'
 import { NavLink, SidebarNav, SidebarTooltip, useSidebar } from '@/components/brand/Sidebar'
 import { cn } from '@/lib/utils'
+
+const SETTINGS_PATH_PREFIX = '/settings'
 
 const SettingsBackLink = () => {
   const { isCollapsed } = useSidebar()
@@ -36,8 +38,8 @@ const SettingsBackLink = () => {
 }
 
 export const DashboardSidebarNav = () => {
-  const activeSegment = useSelectedLayoutSegment()
-  const isSettingsSection = activeSegment === 'settings'
+  const pathname = usePathname()
+  const isSettingsSection = pathname.startsWith(SETTINGS_PATH_PREFIX)
 
   if (isSettingsSection) {
     return (

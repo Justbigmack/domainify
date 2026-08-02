@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const GeneralSettingsPage = () => (
   <>
-    <header className="pl-5">
+    <header className="flex min-h-9 items-center pl-5">
       <Heading as="h1">General</Heading>
     </header>
     <SettingsSection

@@ -23,7 +23,11 @@ const MagicLinkPage = async ({ searchParams }: MagicLinkPageProps) => {
   return (
     <>
       <MagicLinkCard isAddingAccount={isAddingAccount} />
-      {isAddingAccount ? <BackToAppLink /> : null}
+      {isAddingAccount ? (
+        <div className="mt-7 flex justify-center">
+          <BackToAppLink />
+        </div>
+      ) : null}
     </>
   )
 }

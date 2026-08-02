@@ -3,8 +3,8 @@
 import { useTransition } from 'react'
 import { RotateCwIcon, TriangleAlertIcon } from 'lucide-react'
 import { PageState } from '@/components/brand/PageState'
+import { PrimaryButton } from '@/components/brand/PrimaryButton'
 import { Text } from '@/components/brand/Text'
-import { Button } from '@/components/ui/button'
 
 type RouteErrorProps = {
   onRetry: () => void
@@ -22,10 +22,9 @@ export const RouteError = ({ onRetry, digest }: RouteErrorProps) => {
       tone="destructive"
       title="This page didn’t load"
       action={
-        <Button onClick={handleRetry} loading={isRetrying}>
-          <RotateCwIcon data-icon="inline-start" />
+        <PrimaryButton icon={RotateCwIcon} onClick={handleRetry} loading={isRetrying}>
           Try again
-        </Button>
+        </PrimaryButton>
       }
       footer={
         digest && (

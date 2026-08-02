@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { GlobeIcon } from 'lucide-react'
@@ -15,6 +16,7 @@ import { Heading } from '@/components/brand/Heading'
 import { PageContainer } from '@/components/brand/PageContainer'
 import { Text } from '@/components/brand/Text'
 import { BreadcrumbLink } from '@/components/brand/BreadcrumbLink'
+import { Skeleton } from '@/components/ui/skeleton'
 import { getSessionUser } from '@/lib/auth/session'
 import { challengeRecordName } from '@/lib/dns/normalize'
 import { loadDomainPageData } from '@/lib/domains/pageData'
@@ -27,7 +29,7 @@ type AddDomainRecordPageProps = {
   params: Promise<{ id: string }>
 }
 
-const AddDomainRecordPage = async ({ params }: AddDomainRecordPageProps) => {
+const AddDomainRecordSteps = async ({ params }: AddDomainRecordPageProps) => {
   const { id } = await params
   const sessionUser = await getSessionUser()
   if (!sessionUser) redirect('/login')
@@ -40,14 +42,7 @@ const AddDomainRecordPage = async ({ params }: AddDomainRecordPageProps) => {
   const isVerified = domain.status === 'verified'
 
   return (
-    <PageContainer>
-      <header className="flex flex-col gap-1 pr-5 pl-17">
-        <div>
-          <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
-        </div>
-        <Heading as="h1">Add domain</Heading>
-      </header>
-      <Stepper>
+    <Stepper>
         <StepperStep index={1} state="done">
           <StepperHeader>
             <StepperTitle>Domain</StepperTitle>
@@ -85,8 +80,21 @@ const AddDomainRecordPage = async ({ params }: AddDomainRecordPageProps) => {
           </StepperContent>
         </StepperStep>
       </Stepper>
-    </PageContainer>
   )
 }
+
+const AddDomainRecordPage = ({ params }: AddDomainRecordPageProps) => (
+  <PageContainer>
+    <header className="flex flex-col gap-1 pr-5 pl-17">
+      <div className="flex min-h-9 items-center">
+        <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
+      </div>
+      <Heading as="h1">Add domain</Heading>
+    </header>
+    <Suspense fallback={<Skeleton aria-busy className="h-64 rounded-xl" />}>
+      <AddDomainRecordSteps params={params} />
+    </Suspense>
+  </PageContainer>
+)
 
 export default AddDomainRecordPage

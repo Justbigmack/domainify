@@ -7,9 +7,9 @@ import { KeyRoundIcon } from 'lucide-react'
 import { z } from 'zod'
 import { AlertBanner, AlertBannerAction } from '@/components/brand/AlertBanner'
 import { CopyButton } from '@/components/brand/CopyButton'
+import { PrimaryButton } from '@/components/brand/PrimaryButton'
 import { Section, SectionContent } from '@/components/brand/Section'
 import { Text } from '@/components/brand/Text'
-import { Button } from '@/components/ui/button'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { authClient } from '@/lib/auth/client'
@@ -114,14 +114,14 @@ export const CreateApiKeyForm = () => {
                 {activeError}
               </Text>
             )}
-            <Button
+            <PrimaryButton
               type="submit"
               loading={isCreating}
               disabled={!hasInput}
               className="ml-auto"
             >
               Create key
-            </Button>
+            </PrimaryButton>
           </div>
         </form>
       </SectionContent>

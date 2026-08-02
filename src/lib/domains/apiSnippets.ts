@@ -2,11 +2,6 @@ export type ApiMethod = 'GET' | 'POST' | 'DELETE'
 
 export type ApiSnippetKind = 'curl' | 'fetch'
 
-export type ApiTarget = {
-  id: string
-  hostname: string
-}
-
 export type ApiOperation = {
   key: string
   method: ApiMethod
@@ -15,7 +10,8 @@ export type ApiOperation = {
   snippets: Record<ApiSnippetKind, string>
 }
 
-const PLACEHOLDER_TARGET: ApiTarget = { id: '<domain-id>', hostname: 'example.com' }
+const PLACEHOLDER_DOMAIN_ID = '<domain-id>'
+const PLACEHOLDER_HOSTNAME = 'example.com'
 
 export const API_KEY_PLACEHOLDER = '<api-key>'
 
@@ -100,11 +96,11 @@ const buildOperation = (input: OperationInput): ApiOperation => ({
   },
 })
 
-const domainOperationInputs = (origin: string, target: ApiTarget): OperationInput[] => [
+const domainOperationInputs = (origin: string, domainId: string): OperationInput[] => [
   {
     key: 'get',
     method: 'GET',
-    path: `/api/domains/${target.id}`,
+    path: `/api/domains/${domainId}`,
     origin,
     summary:
       'Domain, record instructions, and the latest checks. Reading a stale domain also re-checks it.',
@@ -112,7 +108,7 @@ const domainOperationInputs = (origin: string, target: ApiTarget): OperationInpu
   {
     key: 'verify',
     method: 'POST',
-    path: `/api/domains/${target.id}/verify`,
+    path: `/api/domains/${domainId}/verify`,
     origin,
     summary:
       'Runs a live DNS check right now. One check per 5 seconds; beyond that you get a 429 with retryAfterMs.',
@@ -120,7 +116,7 @@ const domainOperationInputs = (origin: string, target: ApiTarget): OperationInpu
   {
     key: 'restart',
     method: 'POST',
-    path: `/api/domains/${target.id}/restart`,
+    path: `/api/domains/${domainId}/restart`,
     origin,
     summary:
       'Failed domains only: mints a fresh token and opens a new 72-hour window. Any other status returns 409.',
@@ -128,25 +124,21 @@ const domainOperationInputs = (origin: string, target: ApiTarget): OperationInpu
   {
     key: 'regenerate',
     method: 'POST',
-    path: `/api/domains/${target.id}/regenerate`,
+    path: `/api/domains/${domainId}/regenerate`,
     origin,
     summary:
-      'Rotates the record value. A verified domain goes back to pending until the new record is found.',
+      'Rotates the record value. The domain goes back to pending with a fresh 72-hour window until the new record is found.',
   },
   {
     key: 'delete',
     method: 'DELETE',
-    path: `/api/domains/${target.id}`,
+    path: `/api/domains/${domainId}`,
     origin,
     summary: 'Removes the domain and its check history. Returns 204 with no body.',
   },
 ]
 
-export const buildCollectionOperations = (
-  origin: string,
-  target: ApiTarget | null,
-): ApiOperation[] => {
-  const resolvedTarget = target ?? PLACEHOLDER_TARGET
+export const buildCollectionOperations = (origin: string): ApiOperation[] => {
   const inputs: OperationInput[] = [
     {
       key: 'list',
@@ -160,14 +152,14 @@ export const buildCollectionOperations = (
       method: 'POST',
       path: '/api/domains',
       origin,
-      body: { name: resolvedTarget.hostname },
+      body: { name: PLACEHOLDER_HOSTNAME },
       summary:
         'Same normalization as the form: a full URL works, and validation errors come back as {error: {code, message}}.',
     },
-    ...domainOperationInputs(origin, resolvedTarget),
+    ...domainOperationInputs(origin, PLACEHOLDER_DOMAIN_ID),
   ]
   return inputs.map(buildOperation)
 }
 
-export const buildDomainOperations = (origin: string, target: ApiTarget): ApiOperation[] =>
-  domainOperationInputs(origin, target).map(buildOperation)
+export const buildDomainOperations = (origin: string, domainId: string): ApiOperation[] =>
+  domainOperationInputs(origin, domainId).map(buildOperation)

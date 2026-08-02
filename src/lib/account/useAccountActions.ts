@@ -4,14 +4,15 @@ import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth/client'
 
 const ADD_ACCOUNT_PATH = '/login?add=1'
+const LOGIN_PATH = '/login'
+const DOMAINS_PATH = '/domains'
 
 export const useAccountActions = () => {
   const router = useRouter()
 
   const handleSignOut = async () => {
     await authClient.signOut()
-    router.push('/login')
-    router.refresh()
+    window.location.href = LOGIN_PATH
   }
 
   const handleAddAccount = () => {
@@ -24,8 +25,7 @@ export const useAccountActions = () => {
       router.push(ADD_ACCOUNT_PATH)
       return
     }
-    router.push('/domains')
-    router.refresh()
+    window.location.href = DOMAINS_PATH
   }
 
   return { handleSignOut, handleAddAccount, handleAccountSwitch }

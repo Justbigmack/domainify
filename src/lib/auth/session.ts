@@ -29,12 +29,15 @@ const getApiKeyUser = async (requestHeaders: Headers): Promise<SessionUser | nul
 }
 
 export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
-  const requestHeaders = await headers()
-  const apiKeyUser = await getApiKeyUser(requestHeaders)
-  if (apiKeyUser) return apiKeyUser
-  const session = await auth.api.getSession({ headers: requestHeaders })
+  const session = await auth.api.getSession({ headers: await headers() })
   if (!session) return null
   return { id: session.user.id, email: session.user.email }
+})
+
+export const getApiRequestUser = cache(async (): Promise<SessionUser | null> => {
+  const apiKeyUser = await getApiKeyUser(await headers())
+  if (apiKeyUser) return apiKeyUser
+  return getSessionUser()
 })
 
 export type AccountSession = {

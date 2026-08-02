@@ -1,6 +1,5 @@
-import Link from 'next/link'
 import { GlobeIcon, PlusIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { PrimaryButton } from '@/components/brand/PrimaryButton'
 import {
   Empty,
   EmptyContent,
@@ -22,10 +21,9 @@ export const EmptyState = () => (
       </EmptyDescription>
     </EmptyHeader>
     <EmptyContent>
-      <Button nativeButton={false} render={<Link href="/domains/add" />}>
-        <PlusIcon data-icon="inline-start" />
+      <PrimaryButton icon={PlusIcon} href="/domains/add">
         Add domain
-      </Button>
+      </PrimaryButton>
     </EmptyContent>
   </Empty>
 )

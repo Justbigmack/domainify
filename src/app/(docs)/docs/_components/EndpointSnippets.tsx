@@ -1,9 +1,9 @@
 'use client'
 
-import Link from 'next/link'
 import { Text } from '@/components/brand/Text'
 import { useState } from 'react'
 import { CopyButton } from '@/components/brand/CopyButton'
+import { TextLink } from '@/components/brand/TextLink'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { buildCollectionOperations } from '@/lib/domains/apiSnippets'
 import type { ApiSnippetKind } from '@/lib/domains/apiSnippets'
@@ -21,7 +21,7 @@ type EndpointSnippetsProps = {
 export const EndpointSnippets = ({ operationKey }: EndpointSnippetsProps) => {
   const [snippetKind, setSnippetKind] = useState<ApiSnippetKind>('curl')
 
-  const operation = buildCollectionOperations(DOCS_API_ORIGIN, null).find(
+  const operation = buildCollectionOperations(DOCS_API_ORIGIN).find(
     (candidate) => candidate.key === operationKey,
   )
   if (!operation) return null
@@ -57,12 +57,7 @@ export const EndpointSnippets = ({ operationKey }: EndpointSnippetsProps) => {
       </div>
       <Text variant="caption" className="leading-5">
         Replace {'<api-key>'} with a key from{' '}
-        <Link
-          href="/settings/api-keys"
-          className="font-medium text-foreground underline underline-offset-2"
-        >
-          Settings → API keys
-        </Link>
+        <TextLink href="/settings/api-keys">Settings → API keys</TextLink>
         .
       </Text>
     </div>

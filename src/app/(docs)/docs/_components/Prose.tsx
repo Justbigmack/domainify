@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import type { PropsWithChildren } from 'react'
+import { TextLink } from '@/components/brand/TextLink'
 import { cn } from '@/lib/utils'
 
 type ProseProps = PropsWithChildren<{ className?: string }>
@@ -43,10 +43,5 @@ export const DocsOl = ({ className, children }: ProseProps) => (
 type DocsLinkProps = PropsWithChildren<{ href: string }>
 
 export const DocsLink = ({ href, children }: DocsLinkProps) => (
-  <Link
-    href={href}
-    className="font-medium text-foreground underline decoration-border underline-offset-2 transition-colors outline-none hover:decoration-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-  >
-    {children}
-  </Link>
+  <TextLink href={href}>{children}</TextLink>
 )

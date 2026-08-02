@@ -123,11 +123,11 @@ const TroubleshootingPage = () => (
       <DocsP>
         A domain fails only by running out of time: 72 hours pending without the record being
         found, or 72 hours of grace after a verified domain&apos;s record disappeared. Failed is
-        terminal on purpose — nothing moves it except an explicit{' '}
-        <DocsStrong>Restart verification</DocsStrong>.
+        terminal on purpose — checks stop until you explicitly{' '}
+        <DocsStrong>Restart verification</DocsStrong> or regenerate the token.
       </DocsP>
       <DocsP>
-        Restarting mints a <DocsStrong>new token</DocsStrong> and opens a fresh 72-hour window.
+        Either one mints a <DocsStrong>new token</DocsStrong> and opens a fresh 72-hour window.
         Because the token changed, update the TXT record&apos;s value before waiting — the old
         record now produces <DocsCode>wrong_value</DocsCode>, which is your confirmation the new
         value has not landed yet.
