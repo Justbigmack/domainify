@@ -7,7 +7,6 @@ import { useState } from 'react'
 import {
   BookOpenIcon,
   CheckIcon,
-  ChevronLeftIcon,
   GlobeIcon,
   KeyRoundIcon,
   LogOutIcon,
@@ -17,7 +16,7 @@ import {
 } from 'lucide-react'
 import { BackToAppLink } from '@/components/brand/BackToAppLink'
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { AccountSession } from '@/lib/auth/server/session'
 import { cn } from '@/lib/utils'
@@ -118,21 +117,7 @@ export const MobileNav = () => {
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <div className="flex flex-1 flex-col overflow-y-auto">
             <div className="flex h-14 shrink-0 items-center px-6">
-              {isSettingsSection ? (
-                <BackToAppLink onNavigate={handleMenuClose} />
-              ) : (
-                <SheetClose
-                  render={
-                    <button
-                      type="button"
-                      className="-ml-2.5 inline-flex h-8 w-fit touch-manipulation items-center gap-1 rounded-[min(var(--radius-md),10px)] px-2.5 text-[0.8125rem] font-normal text-muted-foreground transition-colors outline-none hover:bg-sidebar-accent/60 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-                    />
-                  }
-                >
-                  <ChevronLeftIcon aria-hidden strokeWidth={1.5} className="size-3.5 shrink-0" />
-                  Back to app
-                </SheetClose>
-              )}
+              <BackToAppLink onNavigate={handleMenuClose} />
             </div>
             {isSettingsSection ? (
               <nav aria-label="Settings" className="flex flex-col gap-0.5 px-3 pt-1">
