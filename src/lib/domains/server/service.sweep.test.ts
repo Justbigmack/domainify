@@ -4,17 +4,36 @@ import { FIXTURE_NOW, makeDomain } from '@/lib/domains/domainFixture'
 
 const mockState = vi.hoisted(() => ({
   dueDomains: [] as DomainRow[],
+  claimedLease: null as Date | null,
+  lockConfig: null as { skipLocked?: true } | null,
 }))
 
 const runCheck = vi.hoisted(() => vi.fn(() => Promise.resolve({ verdict: 'no_record' })))
 
 vi.mock('@/db', () => {
-  const chain = {
-    where: () => chain,
-    orderBy: () => chain,
-    limit: () => Promise.resolve(mockState.dueDomains),
+  const selectChain = {
+    where: () => selectChain,
+    orderBy: () => selectChain,
+    limit: () => selectChain,
+    for: (_strength: string, config: { skipLocked?: true }) => {
+      mockState.lockConfig = config
+      return selectChain
+    },
   }
-  return { db: { select: () => ({ from: () => chain }) } }
+  const updateChain = {
+    set: (values: { nextCheckAt: Date }) => {
+      mockState.claimedLease = values.nextCheckAt
+      return updateChain
+    },
+    where: () => updateChain,
+    returning: () => Promise.resolve(mockState.dueDomains),
+  }
+  return {
+    db: {
+      select: () => ({ from: () => selectChain }),
+      update: () => updateChain,
+    },
+  }
 })
 
 vi.mock('next/server', () => ({ after: vi.fn() }))
@@ -25,6 +44,7 @@ import { sweepDueDomains } from './service'
 const CRON_CONCURRENCY = 5
 const CRON_BATCH_SIZE = 25
 const SWEEP_DEADLINE_MS = 250 * 1000
+const CLAIM_LEASE_MS = 5 * 60 * 1000
 const PER_CHECK_ELAPSED_MS = (SWEEP_DEADLINE_MS / CRON_CONCURRENCY) * 0.4
 
 const makeDueDomains = (count: number, userIdFor: (index: number) => string): DomainRow[] =>
@@ -36,6 +56,8 @@ beforeEach(() => {
   vi.useFakeTimers()
   vi.setSystemTime(FIXTURE_NOW)
   mockState.dueDomains = []
+  mockState.claimedLease = null
+  mockState.lockConfig = null
   runCheck.mockReset()
   runCheck.mockResolvedValue({ verdict: 'no_record' })
 })
@@ -53,6 +75,15 @@ describe('sweepDueDomains', () => {
       affectedUserIds: [],
     })
     expect(runCheck).not.toHaveBeenCalled()
+  })
+
+  it('claims due domains by leasing them forward so a parallel sweep skips them', async () => {
+    mockState.dueDomains = makeDueDomains(1, () => 'user-1')
+
+    await sweepDueDomains(FIXTURE_NOW)
+
+    expect(mockState.claimedLease).toEqual(new Date(FIXTURE_NOW.getTime() + CLAIM_LEASE_MS))
+    expect(mockState.lockConfig).toEqual({ skipLocked: true })
   })
 
   it('checks every due domain with the cron trigger', async () => {

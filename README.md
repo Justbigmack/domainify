@@ -44,7 +44,7 @@ flowchart LR
   SVC --> MAIL["React Email<br/>via Resend"]
   CHECK --> AUTHNS["Authoritative NS<br/>(node:dns, 2-server agreement)"]
   CHECK --> DOH["Cloudflare + Google<br/>DNS-over-HTTPS"]
-  CRON["Daily Vercel cron"] --> SVC
+  CRON["External 5-min scheduler<br/>+ daily Vercel cron backstop"] --> SVC
 ```
 
 One rule keeps the two surfaces honest: Server Actions (UI mutations) and route
@@ -53,7 +53,9 @@ one implementation of every operation, so the API can't drift from the UI.
 
 Checks run through a single entry point regardless of trigger — manual button, 30-second
 client polling while a page is open, check-on-read when a domain is viewed stale, or the
-daily cron sweep with capped-exponential backoff.
+background sweep with capped-exponential backoff. The sweep runs every 5 minutes from an
+external scheduler, with the platform's daily cron as a backstop; each run claims its
+batch atomically, so overlapping triggers never check the same domain twice.
 
 ## Stack
 
@@ -122,7 +124,7 @@ another account holds a domain.
 | `POST`   | `/api/domains/:id/restart`        | `200 {domain}`                             | `409 invalid_state` (only `failed` restarts), `404` |
 | `POST`   | `/api/domains/:id/regenerate`     | `200 {domain, record}`                     | `404` |
 | `DELETE` | `/api/domains/:id`                | `204` (no body)                            | `404` |
-| `GET`    | `/api/cron/revalidate`            | `200 {checkedDomains}`                     | `401` without `Authorization: Bearer <CRON_SECRET>` |
+| `GET`    | `/api/cron/revalidate`            | `202 {started}` (sweep runs after the response) | `401` without `Authorization: Bearer <CRON_SECRET>` |
 
 Notes:
 
@@ -200,4 +202,4 @@ Documented, deliberately not built:
   records) or the Domain Connect standard, writing the TXT record for the user with a
   scoped grant. v1 ships provider detection + deep links instead of a dead button.
 - **Webhooks** (`domain.verified`, `domain.failed`) and a durable job queue for
-  check scheduling beyond the daily cron.
+  check scheduling beyond the external 5-minute sweep.

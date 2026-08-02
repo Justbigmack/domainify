@@ -65,7 +65,8 @@ const DocsHomePage = () => (
         <li>
           <DocsStrong>We spot it.</DocsStrong> Checks run automatically against your authoritative
           nameservers and two public resolvers. The moment they agree the record is there, the
-          domain flips to verified — and we keep re-checking daily to make sure it stays true.
+          domain flips to verified — and we keep re-checking automatically to make sure it stays
+          true.
         </li>
       </DocsOl>
     </DocsSection>
