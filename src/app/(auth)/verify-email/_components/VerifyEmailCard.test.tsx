@@ -56,7 +56,7 @@ describe('VerifyEmailCard', () => {
 
     expect(sendVerificationEmailMock).toHaveBeenCalledWith({ email: OWNER_EMAIL })
     expect(
-      screen.getByRole('button', { name: `Resend in ${RESEND_COOLDOWN_SECONDS}s` }),
+      await screen.findByRole('button', { name: `Resend in ${RESEND_COOLDOWN_SECONDS}s` }),
     ).toBeDisabled()
   })
 
@@ -77,7 +77,7 @@ describe('VerifyEmailCard', () => {
 
     await user.click(screen.getByRole('button', { name: 'Resend link' }))
 
-    expect(screen.getByRole('alert')).toHaveTextContent('Too many requests')
+    expect(await screen.findByRole('alert')).toHaveTextContent('Too many requests')
     expect(screen.getByRole('button', { name: 'Resend link' })).toBeEnabled()
   })
 })
