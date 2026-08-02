@@ -49,8 +49,8 @@ export const RevokeKeyDialog = ({ keyId, keyName, open, onOpenChange }: RevokeKe
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isRevoking}>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={handleRevoke} disabled={isRevoking}>
-            {isRevoking ? 'Revoking…' : 'Revoke key'}
+          <AlertDialogAction variant="destructive" onClick={handleRevoke} loading={isRevoking}>
+            Revoke key
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

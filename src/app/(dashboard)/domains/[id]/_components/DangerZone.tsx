@@ -77,7 +77,7 @@ export const DangerZone = ({ hostname, domainId }: DangerZoneProps) => {
     })
   }
 
-  const isConfirmDisabled = isWorking || !domainId
+  const isConfirmDisabled = !domainId
 
   return (
     <>
@@ -117,8 +117,12 @@ export const DangerZone = ({ hostname, domainId }: DangerZoneProps) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isWorking}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRegenerate} disabled={isConfirmDisabled}>
-              {isWorking ? 'Regenerating…' : 'Regenerate token'}
+            <AlertDialogAction
+              onClick={handleRegenerate}
+              loading={isWorking}
+              disabled={isConfirmDisabled}
+            >
+              Regenerate token
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -140,9 +144,10 @@ export const DangerZone = ({ hostname, domainId }: DangerZoneProps) => {
             <AlertDialogAction
               variant="destructive"
               onClick={handleRemove}
+              loading={isWorking}
               disabled={isConfirmDisabled}
             >
-              {isWorking ? 'Removing…' : 'Remove domain'}
+              Remove domain
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

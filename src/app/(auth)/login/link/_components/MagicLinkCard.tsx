@@ -23,15 +23,14 @@ import { useFormValidation } from '@/lib/auth/client/useFormValidation'
 import { useResendCooldown } from '@/lib/auth/client/useResendCooldown'
 import { cn } from '@/lib/utils'
 
-type SendStatus = 'idle' | 'sending' | 'sent'
-
 type MagicLinkCardProps = {
   isAddingAccount?: boolean
 }
 
 export const MagicLinkCard = ({ isAddingAccount = false }: MagicLinkCardProps) => {
   const [email, setEmail] = useState('')
-  const [sendStatus, setSendStatus] = useState<SendStatus>('idle')
+  const [isSending, setIsSending] = useState(false)
+  const [hasSentLink, setHasSentLink] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { cooldownSeconds, isCoolingDown, startCooldown, clearCooldown } = useResendCooldown()
   const { parsed, errorFor, revealErrors } = useFormValidation(magicLinkFormSchema, { email })
@@ -39,18 +38,18 @@ export const MagicLinkCard = ({ isAddingAccount = false }: MagicLinkCardProps) =
   const emailError = errorFor('email')
 
   const sendMagicLink = async (emailAddress: string) => {
-    setSendStatus('sending')
+    setIsSending(true)
     setErrorMessage(null)
     const { error } = await authClient.signIn.magicLink({
       email: emailAddress,
       callbackURL: '/domains',
     })
+    setIsSending(false)
     if (error) {
-      setSendStatus('idle')
       setErrorMessage(error.message ?? 'Could not send the sign-in link. Please try again.')
       return
     }
-    setSendStatus('sent')
+    setHasSentLink(true)
     startCooldown()
   }
 
@@ -74,7 +73,7 @@ export const MagicLinkCard = ({ isAddingAccount = false }: MagicLinkCardProps) =
   }
 
   const handleUseDifferentEmail = () => {
-    setSendStatus('idle')
+    setHasSentLink(false)
     clearCooldown()
     setErrorMessage(null)
   }
@@ -82,7 +81,7 @@ export const MagicLinkCard = ({ isAddingAccount = false }: MagicLinkCardProps) =
   const title = isAddingAccount ? 'Add an account' : 'Sign in with an email link'
   const passwordLoginHref = isAddingAccount ? '/login?add=1' : '/login'
 
-  if (sendStatus === 'sent') {
+  if (hasSentLink) {
     return (
       <AuthNotice
         icon={MailIcon}
@@ -97,8 +96,10 @@ export const MagicLinkCard = ({ isAddingAccount = false }: MagicLinkCardProps) =
           </>
         }
       >
+        <FormError message={errorMessage} />
         <SecondaryButton
           onClick={handleResend}
+          loading={isSending}
           disabled={isCoolingDown}
           className={cn(AUTH_CONTROL_CLASSES, 'tabular-nums')}
         >
@@ -143,7 +144,7 @@ export const MagicLinkCard = ({ isAddingAccount = false }: MagicLinkCardProps) =
         <FormError message={errorMessage} />
         <PrimaryButton
           type="submit"
-          loading={sendStatus === 'sending'}
+          loading={isSending}
           className={cn(AUTH_CONTROL_CLASSES, 'mt-1')}
         >
           Send sign-in link

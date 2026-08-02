@@ -51,8 +51,8 @@ export const RemoveDomainDialog = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isRemoving}>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={handleRemove} disabled={isRemoving}>
-            {isRemoving ? 'Removing…' : 'Remove domain'}
+          <AlertDialogAction variant="destructive" onClick={handleRemove} loading={isRemoving}>
+            Remove domain
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
