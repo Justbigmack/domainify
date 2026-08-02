@@ -16,6 +16,7 @@ import {
 import { DangerZone } from '@/app/(dashboard)/domains/[id]/_components/DangerZone'
 import { DiagnosisCard } from '@/lib/domains/_components/DiagnosisCard'
 import { DomainHeader } from '@/app/(dashboard)/domains/[id]/_components/DomainHeader'
+import { deadlineAtFor } from '@/lib/domains/model/view'
 import { DomainHeaderSkeleton } from '@/app/(dashboard)/domains/[id]/_components/DomainHeaderSkeleton'
 import { RecordCard } from '@/lib/domains/_components/RecordCard'
 import { RestartButton } from '@/app/(dashboard)/domains/[id]/_components/RestartButton'
@@ -58,7 +59,7 @@ const DomainIdentity = async ({ params }: DomainDetailPageProps) => {
 
   return (
     <>
-      <DomainHeader domain={domain} />
+      <DomainHeader key={deadlineAtFor(domain) ?? 'no-deadline'} domain={domain} />
       {domain.status === 'verified' && (
         <AlertBanner tone="success" icon={CircleCheckIcon}>
           <Text className="font-medium text-inherit">

@@ -16,6 +16,12 @@ export type DomainView = {
   dnsProviderId: string | null
 }
 
+export const deadlineAtFor = (domain: DomainView): string | null => {
+  if (domain.status === 'pending') return domain.pendingExpiresAt
+  if (domain.status === 'temporary_failure') return domain.graceExpiresAt
+  return null
+}
+
 export type CheckView = {
   id: string
   checkedAt: string

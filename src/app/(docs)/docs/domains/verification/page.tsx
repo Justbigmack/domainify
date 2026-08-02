@@ -164,20 +164,19 @@ const VerificationPage = () => (
         </li>
       </DocsUl>
       <DocsP>
-        Public resolvers cache answers up to the record&apos;s TTL. The domain page shows each
-        source&apos;s view, including how long a cached answer may persist — so a{' '}
-        <DocsStrong>match at your nameservers</DocsStrong> with{' '}
-        <DocsStrong>stale public resolvers</DocsStrong> is visible at a glance rather than a
-        mystery.
+        Public resolvers cache answers up to the record&apos;s TTL, so a{' '}
+        <DocsStrong>match at your nameservers</DocsStrong> can coexist with{' '}
+        <DocsStrong>stale public resolvers</DocsStrong> for a while. Authoritative agreement alone
+        is enough to verify, so this resolves itself without any action from you.
       </DocsP>
     </DocsSection>
     <DocsSection id="history" title="Check history">
       <DocsP>
         Every check is recorded with its trigger (<DocsCode>manual</DocsCode>,{' '}
         <DocsCode>poll</DocsCode>, <DocsCode>cron</DocsCode>, or <DocsCode>on_read</DocsCode>),
-        verdict, the values found, and a per-source snapshot. The domain page shows this as a
-        timeline, and <DocsLink href="/docs/api/get-domain">Get domain</DocsLink> returns the 20
-        most recent checks so you can build your own.
+        verdict, the values found, and a per-source snapshot.{' '}
+        <DocsLink href="/docs/api/get-domain">Get domain</DocsLink> returns the 20 most recent
+        checks, so you can read the full history over the API.
       </DocsP>
     </DocsSection>
   </DocsArticle>

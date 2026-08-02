@@ -68,22 +68,26 @@ const DomainsOverviewPage = () => (
     </DocsSection>
     <DocsSection id="statuses" title="Domain statuses">
       <DocsTable
-        columns={['Status', 'Meaning']}
+        columns={['Status', 'Shown in the app as', 'Meaning']}
         rows={[
           [
             <DocsCode key="pending">pending</DocsCode>,
+            'Pending',
             'Waiting for the record to appear. The domain has 72 hours from creation (or restart) to verify before it fails.',
           ],
           [
             <DocsCode key="verified">verified</DocsCode>,
+            'Verified',
             'The record was found and matched. Domainify re-checks about once a day to confirm it is still there.',
           ],
           [
             <DocsCode key="temporary_failure">temporary_failure</DocsCode>,
+            'Record missing',
             'A previously verified domain no longer shows the record. A 72-hour grace window is open; if the record comes back, the domain returns to verified.',
           ],
           [
             <DocsCode key="failed">failed</DocsCode>,
+            'Failed',
             'The pending window or grace window ran out. Terminal until you explicitly restart verification, which mints a new token.',
           ],
         ]}
@@ -143,7 +147,7 @@ const DomainsOverviewPage = () => (
           ],
           [
             <DocsCode key="manual">manual</DocsCode>,
-            'You pressed Verify now or called the verify endpoint. Limited to one per domain every 5 seconds.',
+            'You pressed Check now or called the verify endpoint. Limited to one per domain every 5 seconds.',
           ],
           [
             <DocsCode key="on_read">on_read</DocsCode>,

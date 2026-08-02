@@ -20,7 +20,7 @@ Andrei's decision; the plans use free substitutes.
 | 002  | Harden the verification polling loop | P1 | M | 001 | DONE (executed + reviewed 2026-08-01; browser checks pending) |
 | 003  | Bound the cron sweep | P1 | S | 001 | DONE (executed + reviewed 2026-08-01) |
 | 004  | Unify the domain error contract and add route error boundaries | P2 | M | 001 (order after 002) | DONE (executed + reviewed 2026-08-01; browser smoke of boundaries pending) |
-| 005  | Make the backoff schedule real with a free external cron scheduler | P1 | S | — | TODO |
+| 005  | Make the backoff schedule real with a free external cron scheduler | P1 | S | — | DONE (executed + prod-verified 2026-08-02; cron-job.org job 8203971 live) |
 | 006  | README & docs truthfulness pass (API keys shipped, cadence claims) | P1 | S | 005 (soft — cadence wording) | TODO |
 | 007  | Manual verify resets the automatic backoff clock | P2 | S | — (compounds with 005) | TODO |
 | 008  | API key scopes (read/write) and explicit per-key rate limits | P2 | M | — (006 cross-references) | TODO |
