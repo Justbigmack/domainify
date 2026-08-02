@@ -39,7 +39,7 @@ const ProviderLogo = ({ provider }: { provider: DnsProvider | null }) => {
   )
 }
 
-type ProviderSelectProps = {
+export type ProviderSelectProps = {
   value: string
   onValueChange: (providerId: string) => void
   id?: string

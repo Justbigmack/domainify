@@ -108,7 +108,8 @@ export const VerifySteps = ({
   const [failureCount, setFailureCount] = useState(0)
   const [phaseIndex, setPhaseIndex] = useState(0)
   const [cooldownMessage, setCooldownMessage] = useState<string | null>(null)
-  const [providerId, setProviderId] = useState(detectedProviderId ?? OTHER_PROVIDER_ID)
+  const [chosenProviderId, setChosenProviderId] = useState<string | null>(null)
+  const providerId = chosenProviderId ?? detectedProviderId ?? OTHER_PROVIDER_ID
   const provider = findDnsProvider(providerId)
 
   useEffect(() => {
@@ -202,7 +203,7 @@ export const VerifySteps = ({
             description="Pick yours to get the exact field names it uses."
           >
             <div className="mt-2 flex flex-wrap items-center gap-1">
-              <ProviderSelect id={selectId} value={providerId} onValueChange={setProviderId} />
+              <ProviderSelect id={selectId} value={providerId} onValueChange={setChosenProviderId} />
               {provider && (
                 <GhostButton
                   icon={ExternalLinkIcon}
