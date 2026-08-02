@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { challengeRecordName, normalizeDomainInput } from './normalize'
 
 const expectError = (input: string, code: string) => {
@@ -74,6 +74,48 @@ describe('normalizeDomainInput', () => {
 
   it('rejects punctuation-riddled input as invalid instead of calling it a public suffix', () => {
     expectError('mycustomdomain.whateverdomain.,.,.com', 'invalid_hostname')
+  })
+
+  it('quotes the raw input, never a percent-encoded hostname', () => {
+    const result = normalizeDomainInput('not a domain')
+    expect(result.ok).toBe(false)
+    if (!result.ok) {
+      expect(result.error.message).toBe('"not a domain" does not look like a domain name.')
+    }
+  })
+})
+
+describe('normalizeDomainInput with a lenient URL parser', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  const stubPercentEncodingUrl = (encodedHostname: string) => {
+    vi.stubGlobal('URL', function LenientUrl() {
+      return { hostname: encodedHostname }
+    })
+  }
+
+  it('rejects a hostname the parser had to percent-encode instead of echoing it back', () => {
+    stubPercentEncodingUrl('not%20a%20domain')
+
+    const result = normalizeDomainInput('not a domain')
+
+    expect(result.ok).toBe(false)
+    if (!result.ok) {
+      expect(result.error.code).toBe('unparseable')
+      expect(result.error.message).toBe('"not a domain" does not look like a domain name.')
+    }
+  })
+
+  it('agrees with the strict parser so the message cannot change between client and server', () => {
+    stubPercentEncodingUrl('exa%20mple.com')
+
+    const lenient = normalizeDomainInput('exa mple.com')
+    vi.unstubAllGlobals()
+    const strict = normalizeDomainInput('exa mple.com')
+
+    expect(lenient).toStrictEqual(strict)
   })
 })
 

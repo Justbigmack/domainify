@@ -29,6 +29,7 @@ export type NormalizationResult =
 
 const SCHEME_PATTERN = /^[a-z][a-z0-9+.-]*:\/\//i
 const HOSTNAME_LABEL_PATTERN = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/
+const PERCENT_ENCODING_MARKER = '%'
 
 const failure = (code: DomainInputErrorCode, message: string): NormalizationResult => ({
   ok: false,
@@ -38,7 +39,9 @@ const failure = (code: DomainInputErrorCode, message: string): NormalizationResu
 const extractHostname = (input: string): string | null => {
   const candidate = SCHEME_PATTERN.test(input) ? input : `https://${input}`
   try {
-    return new URL(candidate).hostname
+    const { hostname } = new URL(candidate)
+    if (hostname.includes(PERCENT_ENCODING_MARKER)) return null
+    return hostname
   } catch {
     return null
   }
