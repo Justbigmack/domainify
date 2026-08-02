@@ -1,4 +1,4 @@
-# Domainify
+# domainify
 
 Prove you own a domain, and understand every step of the process.
 
@@ -10,6 +10,32 @@ guided path to recovery.
 Every operation works over two surfaces backed by the same service code: the UI, and a
 plain HTTP API you can drive with `curl` (see the [API reference](#api-reference) and
 the `</>` panels inside the app).
+
+## Folder structure
+
+```
+src/
+├─ app/                routes, one folder per URL
+│  ├─ (auth)/          login, signup, password reset, email verification
+│  ├─ (dashboard)/     the domain list, one domain, add flow, settings
+│  ├─ (docs)/          verification, troubleshooting, per-endpoint API reference
+│  └─ api/             domains/*, auth/[...all], cron/revalidate
+├─ components/
+│  ├─ brand/           house components: buttons, headings, sidebar, status tags
+│  └─ ui/              shadcn primitives
+├─ lib/                one folder per concern, each split model / server / client
+│  ├─ domains/         service.ts and the actions, checks and views around it
+│  ├─ dns/             authoritative lookups, DNS-over-HTTPS, agreement rules
+│  ├─ auth/            Better Auth server and client wiring, session helpers
+│  ├─ emails/          React Email templates and their senders
+│  └─ apiSurface/      the endpoint catalogue behind /docs and the app's code panels
+└─ db/                 Drizzle schema and the Neon client
+```
+
+Route folders keep their own `_components/` beside the page that uses them. Feature
+folders under `lib/` split into `model/` (pure rules), `server/` (database and network),
+`client/` (hooks) and `_components/`. Tests sit next to the file they cover as
+`*.test.ts`.
 
 ## How verification works
 
