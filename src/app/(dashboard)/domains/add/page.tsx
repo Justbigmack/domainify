@@ -11,7 +11,12 @@ import {
 import { Heading } from '@/components/brand/Heading'
 import { PageContainer } from '@/components/brand/PageContainer'
 import { Text } from '@/components/brand/Text'
-import { BreadcrumbLink } from '@/components/brand/BreadcrumbLink'
+import {
+  Breadcrumb,
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from '@/components/brand/Breadcrumb'
 
 export const metadata: Metadata = {
   title: 'Add domain',
@@ -21,7 +26,11 @@ const AddDomainPage = () => (
   <PageContainer>
     <header className="flex flex-col gap-1 pr-5 pl-17">
       <div className="flex min-h-9 items-center">
-        <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
+        <Breadcrumb>
+          <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
+          <BreadcrumbSeparator />
+          <BreadcrumbCurrent label="Add domain" />
+        </Breadcrumb>
       </div>
       <Heading as="h1">Add domain</Heading>
       <Text className="leading-6 text-muted-foreground">

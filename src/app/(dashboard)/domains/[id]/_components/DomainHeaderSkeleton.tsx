@@ -1,18 +1,19 @@
 import { GlobeIcon } from 'lucide-react'
-import { BreadcrumbLink } from '@/components/brand/BreadcrumbLink'
-import { Text } from '@/components/brand/Text'
+import {
+  Breadcrumb,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from '@/components/brand/Breadcrumb'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const DomainHeaderSkeleton = () => (
   <header className="flex flex-col px-5">
     <div className="flex min-h-9 items-center justify-between gap-4">
-      <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-1.5">
+      <Breadcrumb>
         <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
-        <Text as="span" className="text-[0.8125rem] text-muted-foreground/60" aria-hidden>
-          /
-        </Text>
+        <BreadcrumbSeparator />
         <Skeleton className="h-3.5 w-40" />
-      </nav>
+      </Breadcrumb>
       <div className="-mr-3.5 flex h-8 shrink-0 items-center px-3">
         <Skeleton className="h-3.5 w-8" />
       </div>

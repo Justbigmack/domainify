@@ -7,7 +7,12 @@ import { ApiViewPanel } from '@/lib/apiSurface/_components/ApiViewPanel'
 import { Heading } from '@/components/brand/Heading'
 import { StatusTag } from '@/components/brand/StatusTag'
 import { Text } from '@/components/brand/Text'
-import { BreadcrumbLink } from '@/components/brand/BreadcrumbLink'
+import {
+  Breadcrumb,
+  BreadcrumbCurrent,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from '@/components/brand/Breadcrumb'
 import { DNS_PROVIDERS } from '@/lib/dns/providers'
 import { formatRelativeTime, formatTimeLeft } from '@/lib/formatTime'
 import { deadlineAtFor } from '@/lib/domains/model/view'
@@ -48,19 +53,11 @@ export const DomainHeader = ({ domain }: DomainHeaderProps) => {
   return (
     <header className="flex flex-col px-5">
       <div className="flex min-h-9 items-center justify-between gap-4">
-        <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-1.5">
+        <Breadcrumb>
           <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
-          <Text as="span" className="text-[0.8125rem] text-muted-foreground/60" aria-hidden>
-            /
-          </Text>
-          <Text
-            as="span"
-            className="min-w-0 truncate text-[0.8125rem] font-medium text-foreground"
-            title={domain.hostname}
-          >
-            {domain.hostname}
-          </Text>
-        </nav>
+          <BreadcrumbSeparator />
+          <BreadcrumbCurrent label={domain.hostname} />
+        </Breadcrumb>
         <div className="-mr-3.5 shrink-0">
           <ApiViewPanel scope="domain" domainId={domain.id} />
         </div>
