@@ -44,6 +44,9 @@
   --info: #1d4ed8;
   --button-primary-surface: radial-gradient(120% 160% at 30% -40%, rgb(255 255 255 / 0.22) 0%, rgb(255 255 255 / 0) 55%), linear-gradient(180deg, #1c1c1f 0%, #0c0c0e 100%);
   --button-primary-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), inset 0 -1px 0 rgb(0 0 0 / 0.5), 0 1px 0 1px rgb(255 255 255 / 0.65), 0 2px 6px rgb(9 9 11 / 0.18);
+  --button-primary-tint: rgb(255 255 255 / 0);
+  --button-primary-tint-hover: rgb(255 255 255 / 0.05);
+  --button-primary-tint-active: rgb(0 0 0 / 0.1);
 }
 
 [data-theme="dark"] {
@@ -84,6 +87,9 @@
   --info: #7dabf8;
   --button-primary-surface: radial-gradient(150% 200% at 30% -50%, rgb(255 255 255 / 0.7) 0%, rgb(255 255 255 / 0.18) 45%, rgb(255 255 255 / 0) 75%), linear-gradient(180deg, #f2f2f7 0%, #e3e3ea 45%, #d2d2dc 78%, #c6c6d1 100%);
   --button-primary-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.25), inset 0 1.5px 0 rgb(255 255 255 / 0.95), inset 0 -2px 3px rgb(0 0 0 / 0.22), 0 1px 2px rgb(0 0 0 / 0.5), 0 2px 8px rgb(0 0 0 / 0.35);
+  --button-primary-tint: rgb(0 0 0 / 0);
+  --button-primary-tint-hover: rgb(0 0 0 / 0.05);
+  --button-primary-tint-active: rgb(0 0 0 / 0.12);
 }
 
 @theme inline {
