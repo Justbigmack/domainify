@@ -1,3 +1,4 @@
+import { Activity } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -15,6 +16,12 @@ vi.mock('@/lib/auth/client', () => ({
 }))
 
 const OWNER_EMAIL = 'new.owner+tag@example.test'
+
+const ActivityHarness = ({ isVisible }: { isVisible: boolean }) => (
+  <Activity mode={isVisible ? 'visible' : 'hidden'}>
+    <SignUpCard />
+  </Activity>
+)
 
 const submitSignUp = async () => {
   const user = userEvent.setup()
@@ -55,5 +62,25 @@ describe('SignUpCard', () => {
 
     expect(pushMock).not.toHaveBeenCalled()
     expect(screen.getByRole('alert')).toHaveTextContent('Password too short')
+  })
+
+  it('comes back idle and empty when the preserved page is shown again', async () => {
+    const { rerender } = render(<ActivityHarness isVisible />)
+
+    const nameInput = screen.getByPlaceholderText('Your name')
+    const emailInput = screen.getByPlaceholderText('Enter your email address')
+    const passwordInput = screen.getByPlaceholderText(/^Password/)
+    const submitButton = screen.getByRole('button', { name: 'Create account' })
+
+    await submitSignUp()
+
+    rerender(<ActivityHarness isVisible={false} />)
+    rerender(<ActivityHarness isVisible />)
+
+    expect(submitButton).not.toHaveAttribute('aria-busy')
+    expect(submitButton).not.toBeDisabled()
+    expect(nameInput).toHaveValue('')
+    expect(emailInput).toHaveValue('')
+    expect(passwordInput).toHaveValue('')
   })
 })

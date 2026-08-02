@@ -18,6 +18,12 @@ vi.mock('@/lib/auth/client', () => ({
 const OWNER_EMAIL = 'owner@example.test'
 const PASSWORD = 'correct-horse'
 
+const ActivityHarness = ({ isVisible }: { isVisible: boolean }) => (
+  <Activity mode={isVisible ? 'visible' : 'hidden'}>
+    <LoginCard />
+  </Activity>
+)
+
 const submitCredentials = async () => {
   const user = userEvent.setup()
   await user.type(screen.getByPlaceholderText('Enter your email address'), OWNER_EMAIL)
@@ -81,5 +87,42 @@ describe('LoginCard', () => {
     )
 
     expect(screen.getByRole('alert')).toHaveTextContent('That link expired.')
+  })
+
+  it('comes back idle and empty when the preserved page is shown again', async () => {
+    const user = userEvent.setup()
+    const { rerender } = render(<ActivityHarness isVisible />)
+
+    const emailInput = screen.getByPlaceholderText('Enter your email address')
+    const passwordInput = screen.getByPlaceholderText('Password')
+    const submitButton = screen.getByRole('button', { name: 'Sign in' })
+
+    await user.type(emailInput, OWNER_EMAIL)
+    await user.type(passwordInput, PASSWORD)
+    await user.click(submitButton)
+
+    expect(pushMock).toHaveBeenCalledWith('/domains')
+
+    rerender(<ActivityHarness isVisible={false} />)
+    rerender(<ActivityHarness isVisible />)
+
+    expect(submitButton).not.toHaveAttribute('aria-busy')
+    expect(submitButton).not.toBeDisabled()
+    expect(emailInput).toHaveValue('')
+    expect(passwordInput).toHaveValue('')
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('keeps a draft the user never submitted', async () => {
+    const user = userEvent.setup()
+    const { rerender } = render(<ActivityHarness isVisible />)
+
+    const emailInput = screen.getByPlaceholderText('Enter your email address')
+    await user.type(emailInput, OWNER_EMAIL)
+
+    rerender(<ActivityHarness isVisible={false} />)
+    rerender(<ActivityHarness isVisible />)
+
+    expect(emailInput).toHaveValue(OWNER_EMAIL)
   })
 })
