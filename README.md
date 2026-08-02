@@ -2,7 +2,7 @@
 
 Prove you own a domain, and understand every step of the process.
 
-Domainify is a take-home project for Resend's product engineer challenge: a full-stack
+domainify is a take-home project for Resend's product engineer challenge: a full-stack
 TypeScript app where you add a domain you own, place one DNS TXT record, and watch
 verification happen live, with clear diagnostics when something goes wrong and a
 guided path to recovery.
@@ -39,10 +39,10 @@ folders under `lib/` split into `model/` (pure rules), `server/` (database and n
 
 ## How verification works
 
-1. Add a domain. Domainify generates a single-purpose 256-bit token bound to your account.
+1. Add a domain. domainify generates a single-purpose 256-bit token bound to your account.
 2. Create a TXT record at `_domainify-challenge.<your-domain>` with the value
    `domainify-domain-verification=<token>`.
-3. Domainify queries your domain's **authoritative nameservers** directly (plus
+3. domainify queries your domain's **authoritative nameservers** directly (plus
    Cloudflare and Google public resolvers for a propagation view), so a freshly added
    record is detected in seconds, with no "wait up to 48 hours".
 
@@ -199,7 +199,7 @@ Each diagnostic path can be exercised deliberately:
 
 - **Auto-appended host**: create the TXT record with the *full* challenge host in a
   provider that auto-appends your domain, producing
-  `_domainify-challenge.example.com.example.com`. Domainify detects exactly this and
+  `_domainify-challenge.example.com.example.com`. domainify detects exactly this and
   tells you to shorten the Host field.
 - **Wrong value**: put a stale token in the record (e.g. after regenerating).
   The diagnosis shows expected vs. found tails.
@@ -341,7 +341,7 @@ one path down the middle, and the same check behind every trigger
 │                              ▼                              │   name and it ended up one     │
 │ ┌────────────────────────────────────────────────────────┐  │   level too deep, so shorten   │
 │ │ 8 · THE DOMAIN'S STATE MOVES                           │  │   the Host field               │
-│ │ Pending becomes verified the moment the record is      │  │ · a Domainify record is there  │
+│ │ Pending becomes verified the moment the record is      │  │ · a domainify record is there  │
 │ │ found. A verified domain whose record disappears drops │  │   but carries an older token,  │
 │ │ into a 72-hour grace period instead of being revoked.  │  │   so remove the stale one      │
 │ │ A window that runs out ends as failed, and only an     │  │ · nothing could be reached at  │
