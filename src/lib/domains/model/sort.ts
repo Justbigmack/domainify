@@ -1,8 +1,11 @@
 import { DOMAIN_STATUSES } from '@/lib/domains/model/status'
 import type { DomainStatus } from '@/lib/domains/model/status'
 
-export type SortColumn = 'domain' | 'status' | 'created' | 'lastChecked'
-export type SortDirection = 'asc' | 'desc'
+export const SORT_COLUMNS = ['domain', 'status', 'created', 'lastChecked'] as const
+export type SortColumn = (typeof SORT_COLUMNS)[number]
+
+export const SORT_DIRECTIONS = ['asc', 'desc'] as const
+export type SortDirection = (typeof SORT_DIRECTIONS)[number]
 
 export const INITIAL_SORT_DIRECTIONS: Record<SortColumn, SortDirection> = {
   domain: 'asc',

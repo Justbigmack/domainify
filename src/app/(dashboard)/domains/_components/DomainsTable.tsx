@@ -33,7 +33,10 @@ import { cn } from '@/lib/utils'
 import { DOMAIN_STATUSES } from '@/lib/domains/model/status'
 import type { DomainStatus } from '@/lib/domains/model/status'
 import { INITIAL_SORT_DIRECTIONS, sortDomainItems } from '@/lib/domains/model/sort'
-import type { SortColumn, SortDirection } from '@/lib/domains/model/sort'
+import type { SortColumn } from '@/lib/domains/model/sort'
+import { ALL_STATUSES_FILTER } from '@/lib/domains/model/tableParams'
+import type { StatusFilter } from '@/lib/domains/model/tableParams'
+import { useDomainsTableParams } from '@/lib/domains/client/useDomainsTableParams'
 import { formatRelativeTime, formatShortDate } from '@/lib/formatTime'
 
 export type DomainListItem = {
@@ -44,8 +47,6 @@ export type DomainListItem = {
   lastCheckedAt: string | null
   graceExpiresAt: string | null
 }
-
-type StatusFilter = DomainStatus | 'all'
 
 const FILTER_LABELS: Record<StatusFilter, string> = {
   all: 'All statuses',
@@ -60,16 +61,22 @@ type DomainsTableProps = {
 }
 
 export const DomainsTable = ({ items }: DomainsTableProps) => {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
-  const [sortColumn, setSortColumn] = useState<SortColumn | null>(null)
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
+  const {
+    searchQuery,
+    statusFilter,
+    sortColumn,
+    sortDirection,
+    setSearchQuery,
+    setStatusFilter,
+    setSort,
+    flushSearchQuery,
+  } = useDomainsTableParams()
   const [nowMs] = useState(() => Date.now())
 
   const normalizedQuery = searchQuery.trim().toLowerCase()
   const filteredItems = items.filter(
     (item) =>
-      (statusFilter === 'all' || item.status === statusFilter) &&
+      (statusFilter === ALL_STATUSES_FILTER || item.status === statusFilter) &&
       item.hostname.includes(normalizedQuery),
   )
   const visibleItems = sortColumn
@@ -86,11 +93,10 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
 
   const handleSort = (column: SortColumn) => {
     if (column === sortColumn) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+      setSort(column, sortDirection === 'asc' ? 'desc' : 'asc')
       return
     }
-    setSortColumn(column)
-    setSortDirection(INITIAL_SORT_DIRECTIONS[column])
+    setSort(column, INITIAL_SORT_DIRECTIONS[column])
   }
 
   return (
@@ -100,8 +106,11 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
           type="search"
           value={searchQuery}
           onChange={handleSearchChange}
+          onBlur={flushSearchQuery}
           placeholder="Search domains…"
           aria-label="Search domains"
+          autoComplete="off"
+          spellCheck={false}
           className="flex-1 bg-card px-5 text-sm"
         />
         <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
@@ -113,7 +122,7 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
           </SelectTrigger>
           <SelectContent className="text-muted-foreground">
             <SelectGroup>
-              <SelectItem value="all">{FILTER_LABELS.all}</SelectItem>
+              <SelectItem value={ALL_STATUSES_FILTER}>{FILTER_LABELS.all}</SelectItem>
               {DOMAIN_STATUSES.map((status) => (
                 <SelectItem key={status} value={status}>
                   {FILTER_LABELS[status]}
@@ -123,7 +132,7 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
           </SelectContent>
         </Select>
       </div>
-      <DomainsMobileList items={filteredItems} nowMs={nowMs} className="md:hidden" />
+      <DomainsMobileList items={visibleItems} nowMs={nowMs} className="md:hidden" />
       <div className="hidden overflow-hidden rounded-xl border border-border/50 bg-card md:block">
         <Table>
           <TableHeader>
@@ -195,7 +204,7 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
                   </TableCell>
                   <TableCell className={TABLE_CELL_CLASS} suppressHydrationWarning>
                     <Text as="span" variant="secondary">
-                      {item.lastCheckedAt ? formatRelativeTime(item.lastCheckedAt, nowMs) : '—'}
+                      {item.lastCheckedAt ? formatRelativeTime(item.lastCheckedAt, nowMs) : 'Never'}
                     </Text>
                   </TableCell>
                   <TableCell className={cn(TABLE_CELL_CLASS, 'relative text-right')}>
