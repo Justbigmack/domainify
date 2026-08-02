@@ -14,6 +14,7 @@ const WWW_PREFIX = 'www.'
 
 export const AddDomainForm = () => {
   const [inputValue, setInputValue] = useState('')
+  const [submittedValue, setSubmittedValue] = useState('')
   const [hasBlurred, setHasBlurred] = useState(false)
   const [state, formAction, isPending] = useActionState(createDomainAction, null)
 
@@ -25,7 +26,14 @@ export const AddDomainForm = () => {
       ? parsedDomain.hostname.slice(WWW_PREFIX.length)
       : null
   const clientError = hasBlurred && hasInput && !normalized.ok ? normalized.error : null
-  const activeError = clientError ?? state?.error ?? null
+  const isServerErrorStale = isPending || submittedValue !== inputValue
+  const serverError = isServerErrorStale ? null : (state?.error ?? null)
+  const activeError = clientError ?? serverError
+
+  const handleSubmit = (formData: FormData) => {
+    setSubmittedValue(inputValue)
+    formAction(formData)
+  }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value)
@@ -41,7 +49,7 @@ export const AddDomainForm = () => {
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
+    <form action={handleSubmit} className="flex flex-col gap-4">
       <Field data-invalid={clientError !== null || undefined}>
         <FieldLabel htmlFor="domain-name" className="px-5">
           Domain name
