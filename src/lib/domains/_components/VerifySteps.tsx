@@ -10,10 +10,10 @@ import {
   OTHER_PROVIDER_ID,
   ProviderSelect,
   findDnsProvider,
-} from '@/app/(dashboard)/domains/_components/ProviderSelect'
-import { MiddleTruncate } from '@/app/(dashboard)/domains/_components/MiddleTruncate'
-import { PollCountdown } from '@/app/(dashboard)/domains/_components/PollCountdown'
-import { TerminalCheck } from '@/app/(dashboard)/domains/_components/TerminalCheck'
+} from '@/lib/domains/_components/ProviderSelect'
+import { MiddleTruncate } from '@/lib/domains/_components/MiddleTruncate'
+import { PollCountdown } from '@/lib/domains/_components/PollCountdown'
+import { TerminalCheck } from '@/lib/domains/_components/TerminalCheck'
 import { CopyButton } from '@/components/brand/CopyButton'
 import { Text } from '@/components/brand/Text'
 import { Spinner } from '@/components/ui/spinner'

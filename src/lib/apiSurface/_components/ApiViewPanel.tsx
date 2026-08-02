@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { CodeIcon } from 'lucide-react'
-import { ApiOperationBlock } from '@/app/(dashboard)/domains/_components/ApiOperationBlock'
+import { ApiOperationBlock } from '@/lib/apiSurface/_components/ApiOperationBlock'
 import { TextLink } from '@/components/brand/TextLink'
 import { Button } from '@/components/ui/button'
 import {

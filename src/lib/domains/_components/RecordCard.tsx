@@ -10,7 +10,7 @@ import {
 import { CopyButton } from '@/components/brand/CopyButton'
 import { StatusTag } from '@/components/brand/StatusTag'
 import { Text } from '@/components/brand/Text'
-import { MiddleTruncate } from '@/app/(dashboard)/domains/_components/MiddleTruncate'
+import { MiddleTruncate } from '@/lib/domains/_components/MiddleTruncate'
 import {
   Table,
   TableBody,

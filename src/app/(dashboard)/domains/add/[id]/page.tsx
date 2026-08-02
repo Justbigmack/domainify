@@ -2,16 +2,16 @@ import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { GlobeIcon } from 'lucide-react'
-import { DiagnosisCard } from '@/app/(dashboard)/domains/_components/DiagnosisCard'
-import { RecordCard } from '@/app/(dashboard)/domains/_components/RecordCard'
+import { DiagnosisCard } from '@/lib/domains/_components/DiagnosisCard'
+import { RecordCard } from '@/lib/domains/_components/RecordCard'
 import {
   Stepper,
   StepperContent,
   StepperHeader,
   StepperStep,
   StepperTitle,
-} from '@/app/(dashboard)/domains/_components/Stepper'
-import { VerifySteps } from '@/app/(dashboard)/domains/_components/VerifySteps'
+} from '@/app/(dashboard)/domains/add/_components/Stepper'
+import { VerifySteps } from '@/lib/domains/_components/VerifySteps'
 import { Heading } from '@/components/brand/Heading'
 import { PageContainer } from '@/components/brand/PageContainer'
 import { Text } from '@/components/brand/Text'

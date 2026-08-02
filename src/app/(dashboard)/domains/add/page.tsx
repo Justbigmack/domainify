@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import { GlobeIcon } from 'lucide-react'
-import { AddDomainForm } from '@/app/(dashboard)/domains/_components/AddDomainForm'
+import { AddDomainForm } from '@/app/(dashboard)/domains/add/_components/AddDomainForm'
 import {
   Stepper,
   StepperContent,
   StepperHeader,
   StepperStep,
   StepperTitle,
-} from '@/app/(dashboard)/domains/_components/Stepper'
+} from '@/app/(dashboard)/domains/add/_components/Stepper'
 import { Heading } from '@/components/brand/Heading'
 import { PageContainer } from '@/components/brand/PageContainer'
 import { Text } from '@/components/brand/Text'

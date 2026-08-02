@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { GlobeIcon } from 'lucide-react'
-import { ApiViewPanel } from '@/app/(dashboard)/domains/_components/ApiViewPanel'
+import { ApiViewPanel } from '@/lib/apiSurface/_components/ApiViewPanel'
 import { Heading } from '@/components/brand/Heading'
 import { StatusTag } from '@/components/brand/StatusTag'
 import { Text } from '@/components/brand/Text'
