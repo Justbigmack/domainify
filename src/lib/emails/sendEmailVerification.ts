@@ -1,17 +1,17 @@
 import { Resend } from 'resend'
 import { EmailVerificationEmail } from './EmailVerificationEmail'
 
-const DEFAULT_FROM_ADDRESS = 'Domainify <onboarding@resend.dev>'
+const DEFAULT_FROM_ADDRESS = 'domainify <onboarding@resend.dev>'
 
 const buildPlainTextBody = (verifyUrl: string): string =>
   [
     'Verify your email address',
     '',
-    'Click the link below to confirm this address and finish creating your Domainify account. This link expires in one hour.',
+    'Click the link below to confirm this address and finish creating your domainify account. This link expires in one hour.',
     '',
     verifyUrl,
     '',
-    'If you did not create a Domainify account, you can safely ignore this email. No account can be used until this address is confirmed.',
+    'If you did not create a domainify account, you can safely ignore this email. No account can be used until this address is confirmed.',
   ].join('\n')
 
 type SendEmailVerificationInput = {

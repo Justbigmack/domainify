@@ -82,7 +82,7 @@ export const deriveDiagnosis = (
       .find((value) => value.startsWith(RECORD_VALUE_PREFIX))
     return {
       verdict: check.verdict,
-      title: 'Found a Domainify record with a different token',
+      title: 'Found a domainify record with a different token',
       body: 'If you regenerated the token, update or remove the old record so only the current one remains.',
       expectedTail: tokenTail(expectedValue),
       foundTail: staleValue ? tokenTail(staleValue) : null,

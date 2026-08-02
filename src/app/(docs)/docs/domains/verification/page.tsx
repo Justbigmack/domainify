@@ -79,11 +79,11 @@ const VerificationPage = () => (
           ],
           [
             <DocsCode key="no_record">no_record</DocsCode>,
-            'The sources answered, but no Domainify record exists at the challenge host yet.',
+            'The sources answered, but no domainify record exists at the challenge host yet.',
           ],
           [
             <DocsCode key="wrong_value">wrong_value</DocsCode>,
-            'A Domainify record exists but carries a different token, usually a stale record from before a restart or regenerate.',
+            'A domainify record exists but carries a different token, usually a stale record from before a restart or regenerate.',
           ],
           [
             <DocsCode key="misplaced">misplaced_record</DocsCode>,

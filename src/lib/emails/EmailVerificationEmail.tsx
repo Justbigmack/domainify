@@ -19,7 +19,7 @@ type EmailVerificationEmailProps = {
 export const EmailVerificationEmail = ({ verifyUrl }: EmailVerificationEmailProps) => (
   <Html>
     <Head />
-    <Preview>Verify your email address for Domainify</Preview>
+    <Preview>Verify your email address for domainify</Preview>
     <Tailwind config={{ presets: [pixelBasedPreset] }}>
       <Body className="bg-white font-sans">
         <Container className="mx-auto max-w-md px-6 py-12">
@@ -27,7 +27,7 @@ export const EmailVerificationEmail = ({ verifyUrl }: EmailVerificationEmailProp
             Verify your email address
           </Heading>
           <Text className="text-sm leading-6 text-neutral-600">
-            Click the button below to confirm this address and finish creating your Domainify
+            Click the button below to confirm this address and finish creating your domainify
             account. This link expires in one hour.
           </Text>
           <Section className="py-4 text-center">
@@ -39,7 +39,7 @@ export const EmailVerificationEmail = ({ verifyUrl }: EmailVerificationEmailProp
             </Button>
           </Section>
           <Text className="text-xs leading-5 text-neutral-400">
-            If you did not create a Domainify account, you can safely ignore this email. No
+            If you did not create a domainify account, you can safely ignore this email. No
             account can be used until this address is confirmed.
           </Text>
         </Container>

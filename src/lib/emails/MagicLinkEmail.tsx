@@ -19,12 +19,12 @@ type MagicLinkEmailProps = {
 export const MagicLinkEmail = ({ magicLinkUrl }: MagicLinkEmailProps) => (
   <Html>
     <Head />
-    <Preview>Your sign-in link for Domainify</Preview>
+    <Preview>Your sign-in link for domainify</Preview>
     <Tailwind config={{ presets: [pixelBasedPreset] }}>
       <Body className="bg-white font-sans">
         <Container className="mx-auto max-w-md px-6 py-12">
           <Heading className="text-xl font-semibold text-neutral-900">
-            Sign in to Domainify
+            Sign in to domainify
           </Heading>
           <Text className="text-sm leading-6 text-neutral-600">
             Click the button below to sign in. This link expires shortly and can only be used

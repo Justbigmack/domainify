@@ -29,7 +29,7 @@ const DOUBLED_DIG_SNIPPET =
 const TroubleshootingPage = () => (
   <DocsArticle
     title="Troubleshooting"
-    lead="Each failure mode Domainify can detect, what causes it, and the shortest path back to verified. The domain page diagnoses these automatically; this page is the long-form version."
+    lead="Each failure mode domainify can detect, what causes it, and the shortest path back to verified. The domain page diagnoses these automatically; this page is the long-form version."
     toc={TOC}
   >
     <DocsSection id="doubled-name" title="The record name got doubled">
@@ -41,7 +41,7 @@ const TroubleshootingPage = () => (
         Most DNS dashboards append your zone to whatever you type in the host field. Pasting the
         full <DocsCode>_domainify-challenge.app.example.com</DocsCode> into such a field creates
         the record at <DocsCode>_domainify-challenge.app.example.com.example.com</DocsCode>{' '}
-        instead. Domainify probes the doubled name specifically so it can tell you this happened
+        instead. domainify probes the doubled name specifically so it can tell you this happened
         rather than reporting a generic miss. You can confirm it yourself:
       </DocsP>
       <CodeBlock code={DOUBLED_DIG_SNIPPET} label="Copy the doubled-name dig command" />
@@ -53,7 +53,7 @@ const TroubleshootingPage = () => (
     </DocsSection>
     <DocsSection id="wrong-token" title="Record found, token differs">
       <DocsP>
-        <DocsStrong>Diagnosis:</DocsStrong> <DocsCode>wrong_value</DocsCode> means a Domainify record
+        <DocsStrong>Diagnosis:</DocsStrong> <DocsCode>wrong_value</DocsCode> means a domainify record
         exists at the right name, but its token is not the current one. The domain page shows the
         tail of both values so you can compare them.
       </DocsP>
@@ -68,7 +68,7 @@ const TroubleshootingPage = () => (
           button.
         </li>
         <li>
-          The record belongs to a different Domainify domain (or another account) claiming the same
+          The record belongs to a different domainify domain (or another account) claiming the same
           hostname. Each claim has its own token.
         </li>
       </DocsUl>
@@ -102,7 +102,7 @@ const TroubleshootingPage = () => (
       <CodeBlock code={COMPARE_DIG_SNIPPET} label="Copy the comparison dig commands" />
       <DocsP>
         If the first TXT query returns the value but the second does not, it is pure caching.
-        Domainify will verify as soon as its authoritative checks agree, independent of public
+        domainify will verify as soon as its authoritative checks agree, independent of public
         resolvers.
       </DocsP>
     </DocsSection>
@@ -115,7 +115,7 @@ const TroubleshootingPage = () => (
       </DocsP>
       <DocsP>
         Errors are deliberately inconclusive: they never fail a pending domain&apos;s check
-        countdown decision and never demote a verified one. Domainify keeps retrying on its normal
+        countdown decision and never demote a verified one. domainify keeps retrying on its normal
         schedule; once the nameservers answer again, the next check produces a real verdict.
       </DocsP>
     </DocsSection>

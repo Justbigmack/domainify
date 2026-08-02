@@ -38,7 +38,7 @@ const GlobalError = ({ error, unstable_retry }: GlobalErrorProps) => {
             )
           }
         >
-          Domainify hit an unexpected error and couldn’t finish loading. Trying again usually fixes
+          domainify hit an unexpected error and couldn’t finish loading. Trying again usually fixes
           it.
         </PageState>
       </body>

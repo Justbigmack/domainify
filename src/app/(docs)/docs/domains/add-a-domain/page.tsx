@@ -81,7 +81,7 @@ const AddADomainPage = () => (
           anything for the record to be noticed.
         </li>
         <li>
-          Domainify looks up the domain&apos;s nameservers and, when it recognizes them,{' '}
+          domainify looks up the domain&apos;s nameservers and, when it recognizes them,{' '}
           <DocsStrong>detects your DNS provider</DocsStrong> so the record instructions use your
           provider&apos;s exact field names.
         </li>
@@ -91,7 +91,7 @@ const AddADomainPage = () => (
       <DocsP>
         The add flow shows your detected provider first, with a link to its dashboard. Every
         provider names the TXT fields differently; this is what the same record is called across
-        the providers Domainify recognizes:
+        the providers domainify recognizes:
       </DocsP>
       <DocsTable
         columns={['Provider', 'Host field', 'Value field']}
@@ -119,7 +119,7 @@ const AddADomainPage = () => (
         <DocsCode>_domainify-challenge.app</DocsCode>, paste exactly that. Pasting the full
         hostname would create{' '}
         <DocsCode>_domainify-challenge.app.example.com.example.com</DocsCode>, the single most
-        common reason verification stalls. Domainify detects this case and calls it out on the
+        common reason verification stalls. domainify detects this case and calls it out on the
         domain page. Over the API the same two forms are{' '}
         <DocsCode>record.name</DocsCode> and <DocsCode>record.host</DocsCode>; send{' '}
         <DocsCode>record.name</DocsCode> to a provider that appends the zone.
@@ -128,7 +128,7 @@ const AddADomainPage = () => (
         Copy the value with the copy button rather than retyping it. The token is long, and a
         single wrong character means the record is found but rejected as{' '}
         <DocsCode>wrong_value</DocsCode>. Other TXT records already living at the same name are
-        fine; Domainify scans all values and only cares about the one with its prefix.
+        fine; domainify scans all values and only cares about the one with its prefix.
       </DocsP>
     </DocsSection>
     <DocsSection id="wait-for-verification" title="4. Wait for verification">
@@ -148,12 +148,12 @@ const AddADomainPage = () => (
       </DocsP>
     </DocsSection>
     <DocsSection id="check-it-yourself" title="Check it yourself">
-      <DocsP>You can see exactly what Domainify sees from any terminal:</DocsP>
+      <DocsP>You can see exactly what domainify sees from any terminal:</DocsP>
       <CodeBlock code={DIG_SNIPPET} label="Copy the dig command" />
       <DocsP>
         If the value shows up here but the domain is still pending, a cached resolver is likely
         serving an old answer. Compare specific resolvers. These are the two public sources
-        Domainify cross-checks:
+        domainify cross-checks:
       </DocsP>
       <CodeBlock code={DIG_RESOLVER_SNIPPET} label="Copy the resolver-specific dig commands" />
     </DocsSection>

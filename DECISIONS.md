@@ -1,6 +1,6 @@
 # Decision Record
 
-Every non-obvious technical choice in Domainify, with the alternatives considered and why
+Every non-obvious technical choice in domainify, with the alternatives considered and why
 they lost. Claims below were verified against primary sources (source code, RFCs, official
 docs, npm registry data) in July 2026; key sources are linked per section.
 
@@ -101,7 +101,7 @@ The parser handles both and is unit-tested against them.
 You cannot compute where a "registrable domain" begins, since `co.uk` vs `example.com` is
 registry policy, not DNS structure. The industry mechanism is the
 [Public Suffix List](https://publicsuffix.org/learn/) (Mozilla-initiated; consumed by
-Firefox, Chromium, curl). Domainify needs it to reject claims on public suffixes
+Firefox, Chromium, curl). domainify needs it to reject claims on public suffixes
 (`co.uk`), reject platform suffixes (`vercel.app`, `github.io`, via the PSL PRIVATE
 section, via `allowPrivateDomains: true`), and compute apex vs subdomain.
 
@@ -211,7 +211,7 @@ across the whole app remains unbuilt (see §10 notes on silent notification fail
 
 Industry pattern (Google Search Console, GitHub Pages, AWS SES): verification is not
 one-shot. Tokens are re-checked periodically and ownership is revoked, with
-notification and a grace period, if the record disappears. Domainify mirrors this:
+notification and a grace period, if the record disappears. domainify mirrors this:
 `pending → verified → temporary_failure (72h grace, only reachable from verified) →
 failed`, with lookup errors never demoting a verified domain (a DNS outage is not
 evidence the record was removed). Scheduling is check-on-read + client polling + a sweep

@@ -19,7 +19,7 @@ type ResetPasswordEmailProps = {
 export const ResetPasswordEmail = ({ resetUrl }: ResetPasswordEmailProps) => (
   <Html>
     <Head />
-    <Preview>Reset your Domainify password</Preview>
+    <Preview>Reset your domainify password</Preview>
     <Tailwind config={{ presets: [pixelBasedPreset] }}>
       <Body className="bg-white font-sans">
         <Container className="mx-auto max-w-md px-6 py-12">

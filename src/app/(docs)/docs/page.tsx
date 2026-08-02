@@ -3,7 +3,7 @@ import { DocsCards } from '@/app/(docs)/docs/_components/DocsCards'
 import { DocsCode, DocsLink, DocsOl, DocsP, DocsStrong } from '@/app/(docs)/docs/_components/Prose'
 
 const TOC = [
-  { id: 'what-domainify-does', title: 'What Domainify does' },
+  { id: 'what-domainify-does', title: 'What domainify does' },
   { id: 'how-it-works', title: 'How it works' },
   { id: 'explore', title: 'Explore the docs' },
 ]
@@ -33,14 +33,14 @@ const EXPLORE_CARDS = [
 
 const DocsHomePage = () => (
   <DocsArticle
-    title="Domainify documentation"
-    lead="Domainify proves you control a domain by asking you to place a single TXT record, then watching DNS until it shows up."
+    title="domainify documentation"
+    lead="domainify proves you control a domain by asking you to place a single TXT record, then watching DNS until it shows up."
     toc={TOC}
   >
-    <DocsSection id="what-domainify-does" title="What Domainify does">
+    <DocsSection id="what-domainify-does" title="What domainify does">
       <DocsP>
         Domain verification answers one question: does the person adding{' '}
-        <DocsCode>app.example.com</DocsCode> actually control its DNS? Domainify answers it the same
+        <DocsCode>app.example.com</DocsCode> actually control its DNS? domainify answers it the same
         way email and hosting providers do, with a challenge record. You add the domain, we hand
         you a unique token, you publish it as a TXT record, and we keep checking until we see it.
       </DocsP>
@@ -54,7 +54,7 @@ const DocsHomePage = () => (
     <DocsSection id="how-it-works" title="How it works">
       <DocsOl>
         <li>
-          <DocsStrong>Add a domain.</DocsStrong> Paste a hostname or a full URL. Domainify
+          <DocsStrong>Add a domain.</DocsStrong> Paste a hostname or a full URL. domainify
           normalizes it, generates a verification token, and opens a 72-hour verification window.
         </li>
         <li>

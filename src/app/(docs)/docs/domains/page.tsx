@@ -33,7 +33,7 @@ const NEXT_STEP_CARDS = [
 const DomainsOverviewPage = () => (
   <DocsArticle
     title="Domains"
-    lead="A domain in Domainify is a hostname you claim, a TXT record that proves the claim, and a status that tracks whether the proof currently holds."
+    lead="A domain in domainify is a hostname you claim, a TXT record that proves the claim, and a status that tracks whether the proof currently holds."
     toc={TOC}
   >
     <DocsSection id="challenge-record" title="The challenge record">
@@ -78,7 +78,7 @@ const DomainsOverviewPage = () => (
           [
             <DocsCode key="verified">verified</DocsCode>,
             'Verified',
-            'The record was found and matched. Domainify re-checks about once a day to confirm it is still there.',
+            'The record was found and matched. domainify re-checks about once a day to confirm it is still there.',
           ],
           [
             <DocsCode key="temporary_failure">temporary_failure</DocsCode>,

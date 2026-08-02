@@ -3,7 +3,7 @@ import { Resend } from 'resend'
 import { DomainVerifiedEmail } from './DomainVerifiedEmail'
 import { GraceWarningEmail } from './GraceWarningEmail'
 
-const DEFAULT_FROM_ADDRESS = 'Domainify <onboarding@resend.dev>'
+const DEFAULT_FROM_ADDRESS = 'domainify <onboarding@resend.dev>'
 const DEFAULT_APP_URL = 'http://localhost:3000'
 
 const appBaseUrl = (): string => process.env.BETTER_AUTH_URL ?? DEFAULT_APP_URL

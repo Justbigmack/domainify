@@ -14,8 +14,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Domainify',
-    template: '%s · Domainify',
+    default: 'domainify',
+    template: '%s · domainify',
   },
   description: 'Prove you own a domain with a single DNS record.',
 }

@@ -83,7 +83,7 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     path: '/api/domains',
     description: [
       'Adds a domain to your account and starts the 72-hour verification window. The input goes through the same normalization as the dashboard form: full URLs are accepted, the hostname is lowercased, and a trailing dot is stripped.',
-      'The response carries the record instructions alongside the domain, so a single call is enough to know what to publish, and the first automatic check is scheduled about a minute out. Domainify also tries to detect your DNS provider from the domain’s nameservers and stores it as dnsProviderId.',
+      'The response carries the record instructions alongside the domain, so a single call is enough to know what to publish, and the first automatic check is scheduled about a minute out. domainify also tries to detect your DNS provider from the domain’s nameservers and stores it as dnsProviderId.',
       'The record object gives the name twice: host is fully qualified (_domainify-challenge.app.example.com) and name is the same record relative to the zone (_domainify-challenge.app). Most providers append the zone to whatever you type, so send name. Sending host to those providers creates the doubled record that stalls verification.',
     ],
     pathParams: [],
@@ -128,7 +128,7 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     path: '/api/domains/:id',
     description: [
       'Returns one domain together with its 20 most recent verification checks and the exact TXT record you should place.',
-      'Reading has a useful side effect: if the domain is checkable (pending, verified, or temporary_failure) and its last check is older than 2 minutes, Domainify runs a fresh DNS check before answering. A domain you look at is never stale by more than the check itself.',
+      'Reading has a useful side effect: if the domain is checkable (pending, verified, or temporary_failure) and its last check is older than 2 minutes, domainify runs a fresh DNS check before answering. A domain you look at is never stale by more than the check itself.',
     ],
     pathParams: [ID_PATH_PARAM],
     bodyParams: [],
@@ -216,7 +216,7 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     path: '/api/domains/:id',
     description: [
       'Removes the domain and its entire check history. This cannot be undone.',
-      'The TXT record at your DNS provider is yours to clean up, since Domainify never touches your zone. You can re-add the same hostname later; it starts over as a new domain with a new token.',
+      'The TXT record at your DNS provider is yours to clean up, since domainify never touches your zone. You can re-add the same hostname later; it starts over as a new domain with a new token.',
     ],
     pathParams: [ID_PATH_PARAM],
     bodyParams: [],

@@ -6,7 +6,7 @@ import { DocsSidebar } from '@/app/(docs)/docs/_components/DocsSidebar'
 export const metadata: Metadata = {
   title: {
     default: 'Documentation',
-    template: '%s · Domainify Docs',
+    template: '%s · domainify Docs',
   },
 }
 

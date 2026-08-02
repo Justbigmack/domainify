@@ -1,11 +1,11 @@
 import { Resend } from 'resend'
 import { MagicLinkEmail } from './MagicLinkEmail'
 
-const DEFAULT_FROM_ADDRESS = 'Domainify <onboarding@resend.dev>'
+const DEFAULT_FROM_ADDRESS = 'domainify <onboarding@resend.dev>'
 
 const buildPlainTextBody = (magicLinkUrl: string): string =>
   [
-    'Sign in to Domainify',
+    'Sign in to domainify',
     '',
     'Click the link below to sign in. This link expires shortly and can only be used once.',
     '',
@@ -27,7 +27,7 @@ export const sendMagicLinkEmail = async ({
   const { error } = await resend.emails.send({
     from: process.env.EMAIL_FROM ?? DEFAULT_FROM_ADDRESS,
     to: recipientEmail,
-    subject: 'Sign in to Domainify',
+    subject: 'Sign in to domainify',
     react: MagicLinkEmail({ magicLinkUrl }),
     text: buildPlainTextBody(magicLinkUrl),
   })

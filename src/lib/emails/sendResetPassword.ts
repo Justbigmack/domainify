@@ -1,11 +1,11 @@
 import { Resend } from 'resend'
 import { ResetPasswordEmail } from './ResetPasswordEmail'
 
-const DEFAULT_FROM_ADDRESS = 'Domainify <onboarding@resend.dev>'
+const DEFAULT_FROM_ADDRESS = 'domainify <onboarding@resend.dev>'
 
 const buildPlainTextBody = (resetUrl: string): string =>
   [
-    'Reset your Domainify password',
+    'Reset your domainify password',
     '',
     'Click the link below to choose a new password. This link expires in one hour and can only be used once.',
     '',
@@ -27,7 +27,7 @@ export const sendResetPasswordEmail = async ({
   const { error } = await resend.emails.send({
     from: process.env.EMAIL_FROM ?? DEFAULT_FROM_ADDRESS,
     to: recipientEmail,
-    subject: 'Reset your Domainify password',
+    subject: 'Reset your domainify password',
     react: ResetPasswordEmail({ resetUrl }),
     text: buildPlainTextBody(resetUrl),
   })
