@@ -7,6 +7,8 @@ type SettingsErrorProps = {
   reset: () => void
 }
 
-const SettingsError = ({ reset }: SettingsErrorProps) => <RouteError onRetry={reset} />
+const SettingsError = ({ reset }: SettingsErrorProps) => (
+  <RouteError onRetry={reset} hasContainer={false} />
+)
 
 export default SettingsError

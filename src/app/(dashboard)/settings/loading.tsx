@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 
 const SettingsLoading = () => (
-  <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-8 lg:px-10" aria-busy>
+  <div className="flex flex-col gap-8" aria-busy>
     <div className="pl-5">
       <Skeleton className="h-7 w-28" />
     </div>

@@ -2,18 +2,20 @@
 
 import Link from 'next/link'
 import { Text } from '@/components/brand/Text'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSelectedLayoutSegment } from 'next/navigation'
 import { useState } from 'react'
 import {
   BookOpenIcon,
   CheckIcon,
   ChevronLeftIcon,
   GlobeIcon,
+  KeyRoundIcon,
   LogOutIcon,
   PanelLeftIcon,
   PlusIcon,
   SettingsIcon,
 } from 'lucide-react'
+import { BackToAppLink } from '@/components/brand/BackToAppLink'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -47,12 +49,19 @@ const AccountRow = ({ account, onSelect }: AccountRowProps) => {
   )
 }
 
+const SETTINGS_LINKS = [
+  { href: '/settings/general', label: 'General', Icon: SettingsIcon },
+  { href: '/settings/api-keys', label: 'API keys', Icon: KeyRoundIcon },
+] as const
+
 export const MobileNav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
+  const activeSegment = useSelectedLayoutSegment()
   const { handleSignOut, handleAddAccount, handleAccountSwitch } = useAccountActions()
-  const { accounts, handleMenuOpen } = useAccountSessions()
+  const { accounts, handleMenuOpen, isLoadingSessions } = useAccountSessions()
 
+  const isSettingsSection = activeSegment === 'settings'
   const isDomainsActive = pathname === '/domains' || pathname.startsWith('/domains/')
   const hasMultipleAccounts = accounts.length > 1
   const handleMenuClose = () => setIsMenuOpen(false)
@@ -89,53 +98,78 @@ export const MobileNav = () => {
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <div className="flex flex-1 flex-col overflow-y-auto">
             <div className="flex h-14 shrink-0 items-center px-6">
-              <SheetClose
-                render={
-                  <button
-                    type="button"
-                    className="-ml-2.5 inline-flex h-8 w-fit touch-manipulation items-center gap-1 rounded-[min(var(--radius-md),10px)] px-2.5 text-[0.8125rem] font-normal text-muted-foreground transition-colors outline-none hover:bg-sidebar-accent/60 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-                  />
-                }
-              >
-                <ChevronLeftIcon aria-hidden strokeWidth={1.5} className="size-3.5 shrink-0" />
-                Back to app
-              </SheetClose>
+              {isSettingsSection ? (
+                <BackToAppLink onNavigate={handleMenuClose} />
+              ) : (
+                <SheetClose
+                  render={
+                    <button
+                      type="button"
+                      className="-ml-2.5 inline-flex h-8 w-fit touch-manipulation items-center gap-1 rounded-[min(var(--radius-md),10px)] px-2.5 text-[0.8125rem] font-normal text-muted-foreground transition-colors outline-none hover:bg-sidebar-accent/60 hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+                    />
+                  }
+                >
+                  <ChevronLeftIcon aria-hidden strokeWidth={1.5} className="size-3.5 shrink-0" />
+                  Back to app
+                </SheetClose>
+              )}
             </div>
-            <nav aria-label="Main" className="flex flex-col gap-0.5 px-3 pt-1">
-              <Link
-                href="/domains"
-                onClick={handleMenuClose}
-                aria-current={isDomainsActive ? 'page' : undefined}
-                className={cn(MENU_ROW_CLASS, {
-                  'bg-sidebar-accent text-sidebar-accent-foreground': isDomainsActive,
+            {isSettingsSection ? (
+              <nav aria-label="Settings" className="flex flex-col gap-0.5 px-3 pt-1">
+                {SETTINGS_LINKS.map(({ href, label, Icon }) => {
+                  const isActive = pathname === href || pathname.startsWith(`${href}/`)
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={handleMenuClose}
+                      aria-current={isActive ? 'page' : undefined}
+                      className={cn(MENU_ROW_CLASS, {
+                        'bg-sidebar-accent text-sidebar-accent-foreground': isActive,
+                      })}
+                    >
+                      <Icon />
+                      {label}
+                    </Link>
+                  )
                 })}
-              >
-                <GlobeIcon />
-                Domains
-              </Link>
-              <Link href="/settings/general" onClick={handleMenuClose} className={MENU_ROW_CLASS}>
-                <SettingsIcon />
-                Settings
-              </Link>
-              <Text variant="caption" className="px-3 pt-5 pb-1.5 font-medium text-muted-foreground/70">
-                Resources
-              </Text>
-              <Link href="/docs" onClick={handleMenuClose} className={MENU_ROW_CLASS}>
-                <BookOpenIcon />
-                Docs
-              </Link>
-            </nav>
+              </nav>
+            ) : (
+              <nav aria-label="Main" className="flex flex-col gap-0.5 px-3 pt-1">
+                <Link
+                  href="/domains"
+                  onClick={handleMenuClose}
+                  aria-current={isDomainsActive ? 'page' : undefined}
+                  className={cn(MENU_ROW_CLASS, {
+                    'bg-sidebar-accent text-sidebar-accent-foreground': isDomainsActive,
+                  })}
+                >
+                  <GlobeIcon />
+                  Domains
+                </Link>
+                <Link href="/settings/general" onClick={handleMenuClose} className={MENU_ROW_CLASS}>
+                  <SettingsIcon />
+                  Settings
+                </Link>
+                <Text variant="caption" className="px-3 pt-5 pb-1.5 font-medium text-muted-foreground/70">
+                  Resources
+                </Text>
+                <Link href="/docs" onClick={handleMenuClose} className={MENU_ROW_CLASS}>
+                  <BookOpenIcon />
+                  Docs
+                </Link>
+              </nav>
+            )}
             <div className="mt-auto flex flex-col gap-0.5 px-3 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               <Text variant="caption" className="px-3 pb-1.5 font-medium text-muted-foreground/70">Accounts</Text>
-              {accounts.length === 0 ? (
+              {accounts.map((account) => (
+                <AccountRow key={account.email} account={account} onSelect={handleAccountSelect} />
+              ))}
+              {isLoadingSessions && (
                 <div aria-busy className="flex h-11 items-center gap-3 px-3">
                   <Skeleton className="size-6 shrink-0 rounded-full" />
                   <Skeleton className="h-4 flex-1" />
                 </div>
-              ) : (
-                accounts.map((account) => (
-                  <AccountRow key={account.email} account={account} onSelect={handleAccountSelect} />
-                ))
               )}
               <button type="button" onClick={handleAddAccountClick} className={MENU_ROW_CLASS}>
                 <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-dashed border-muted-foreground/40">

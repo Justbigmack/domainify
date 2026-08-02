@@ -1,13 +1,11 @@
 import { Suspense } from 'react'
 import type { PropsWithChildren } from 'react'
 import { cookies } from 'next/headers'
-import { BookOpenIcon, GlobeIcon, SettingsIcon } from 'lucide-react'
+import { DashboardSidebarNav } from '@/app/(dashboard)/_components/DashboardSidebarNav'
 import { MobileNav } from '@/components/brand/MobileNav'
 import {
-  NavLink,
   Sidebar,
   SidebarHeader,
-  SidebarNav,
   SidebarProvider,
   SidebarToggle,
   SIDEBAR_COLLAPSED_COOKIE,
@@ -28,17 +26,7 @@ const DashboardLayout = async ({ children }: PropsWithChildren) => {
             </Suspense>
             <SidebarToggle />
           </SidebarHeader>
-          <SidebarNav label="Main" className="pt-4">
-            <NavLink href="/domains" label="Domains">
-              <GlobeIcon />
-            </NavLink>
-            <NavLink href="/settings/general" label="Settings">
-              <SettingsIcon />
-            </NavLink>
-            <NavLink href="/docs" label="Docs">
-              <BookOpenIcon />
-            </NavLink>
-          </SidebarNav>
+          <DashboardSidebarNav />
         </Sidebar>
       </SidebarProvider>
       <MobileNav />

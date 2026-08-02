@@ -15,7 +15,7 @@ import {
   SectionToolbar,
   sectionTableRowClass,
 } from '@/components/brand/Section'
-import { ApiKeyRowActions } from '@/app/settings/_components/ApiKeyRowActions'
+import { ApiKeyRowActions } from '@/app/(dashboard)/settings/_components/ApiKeyRowActions'
 import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/brand/CopyButton'
 import { Text } from '@/components/brand/Text'
