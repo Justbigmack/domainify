@@ -40,7 +40,7 @@ const DomainsPage = async () => {
       <header className="flex items-center justify-between gap-4 pl-5">
         <Heading as="h1">Domains</Heading>
         <div className="flex items-center gap-2">
-          <div className="max-sm:hidden">
+          <div className="max-md:hidden">
             <ApiViewPanel scope="collection" target={apiTarget} />
           </div>
           {items.length > 0 && (

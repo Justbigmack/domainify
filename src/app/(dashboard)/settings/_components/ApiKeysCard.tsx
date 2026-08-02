@@ -61,8 +61,8 @@ export const ApiKeysCard = ({ items }: ApiKeysCardProps) => {
             Create key
           </GhostButton>
         </SectionToolbar>
-        <ApiKeysMobileList items={items} nowMs={nowMs} className="sm:hidden" />
-        <div className="max-sm:hidden">
+        <ApiKeysMobileList items={items} nowMs={nowMs} className="md:hidden" />
+        <div className="max-md:hidden">
           <Table>
             <TableHeader>
               <TableRow className="border-border/40 hover:bg-transparent">

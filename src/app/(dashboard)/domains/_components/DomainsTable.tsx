@@ -123,8 +123,8 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
           </SelectContent>
         </Select>
       </div>
-      <DomainsMobileList items={filteredItems} nowMs={nowMs} className="sm:hidden" />
-      <div className="hidden overflow-hidden rounded-xl border border-border/50 bg-card sm:block">
+      <DomainsMobileList items={filteredItems} nowMs={nowMs} className="md:hidden" />
+      <div className="hidden overflow-hidden rounded-xl border border-border/50 bg-card md:block">
         <Table>
           <TableHeader>
             <TableRow className="border-border/40 hover:bg-transparent">
