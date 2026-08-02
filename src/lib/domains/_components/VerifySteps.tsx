@@ -90,6 +90,7 @@ type VerifyStepsProps = {
   recordValue: string
   recordName: string
   challengeHost: string
+  registrableDomain: string
   detectedProviderId: string | null
 }
 
@@ -98,6 +99,7 @@ export const VerifySteps = ({
   recordValue,
   recordName,
   challengeHost,
+  registrableDomain,
   detectedProviderId,
 }: VerifyStepsProps) => {
   const selectId = useId()
@@ -205,7 +207,7 @@ export const VerifySteps = ({
                 <GhostButton
                   icon={ExternalLinkIcon}
                   iconPosition="trailing"
-                  href={provider.dashboardUrl}
+                  href={provider.buildDashboardUrl(registrableDomain)}
                   isExternal
                 >
                   Open dashboard

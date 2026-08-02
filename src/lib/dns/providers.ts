@@ -2,7 +2,7 @@ export type DnsProvider = {
   id: string
   displayName: string
   nsPatterns: readonly string[]
-  dashboardUrl: string
+  buildDashboardUrl: (registrableDomain: string) => string
   logoDomain: string
   hostFieldName: string
   valueFieldName: string
@@ -14,7 +14,8 @@ export const DNS_PROVIDERS: readonly DnsProvider[] = [
     id: 'cloudflare',
     displayName: 'Cloudflare',
     nsPatterns: ['ns.cloudflare.com'],
-    dashboardUrl: 'https://dash.cloudflare.com',
+    buildDashboardUrl: (registrableDomain) =>
+      `https://dash.cloudflare.com/?to=/:account/${encodeURIComponent(registrableDomain)}/dns`,
     logoDomain: 'cloudflare.com',
     hostFieldName: 'Name',
     valueFieldName: 'Content',
@@ -25,7 +26,7 @@ export const DNS_PROVIDERS: readonly DnsProvider[] = [
     id: 'route53',
     displayName: 'Amazon Route 53',
     nsPatterns: ['awsdns-'],
-    dashboardUrl: 'https://console.aws.amazon.com/route53',
+    buildDashboardUrl: () => 'https://console.aws.amazon.com/route53/v2/hostedzones',
     logoDomain: 'aws.amazon.com',
     hostFieldName: 'Record name',
     valueFieldName: 'Value',
@@ -36,7 +37,8 @@ export const DNS_PROVIDERS: readonly DnsProvider[] = [
     id: 'godaddy',
     displayName: 'GoDaddy',
     nsPatterns: ['domaincontrol.com'],
-    dashboardUrl: 'https://dcc.godaddy.com/manage-dns',
+    buildDashboardUrl: (registrableDomain) =>
+      `https://dcc.godaddy.com/control/${encodeURIComponent(registrableDomain)}/dns`,
     logoDomain: 'godaddy.com',
     hostFieldName: 'Name',
     valueFieldName: 'Value',
@@ -47,7 +49,8 @@ export const DNS_PROVIDERS: readonly DnsProvider[] = [
     id: 'namecheap',
     displayName: 'Namecheap',
     nsPatterns: ['registrar-servers.com'],
-    dashboardUrl: 'https://ap.www.namecheap.com',
+    buildDashboardUrl: (registrableDomain) =>
+      `https://ap.www.namecheap.com/Domains/DomainControlPanel/${encodeURIComponent(registrableDomain)}/advancedns`,
     logoDomain: 'namecheap.com',
     hostFieldName: 'Host',
     valueFieldName: 'Value',
@@ -58,7 +61,8 @@ export const DNS_PROVIDERS: readonly DnsProvider[] = [
     id: 'vercel',
     displayName: 'Vercel DNS',
     nsPatterns: ['vercel-dns.com'],
-    dashboardUrl: 'https://vercel.com/dashboard/domains',
+    buildDashboardUrl: (registrableDomain) =>
+      `https://vercel.com/dashboard/domains?search=${encodeURIComponent(registrableDomain)}`,
     logoDomain: 'vercel.com',
     hostFieldName: 'Name',
     valueFieldName: 'Value',
@@ -69,7 +73,8 @@ export const DNS_PROVIDERS: readonly DnsProvider[] = [
     id: 'porkbun',
     displayName: 'Porkbun',
     nsPatterns: ['porkbun.com'],
-    dashboardUrl: 'https://porkbun.com/account/domainsSpeedy',
+    buildDashboardUrl: (registrableDomain) =>
+      `https://porkbun.com/account/dns/${encodeURIComponent(registrableDomain)}`,
     logoDomain: 'porkbun.com',
     hostFieldName: 'Host',
     valueFieldName: 'Answer',
@@ -80,7 +85,8 @@ export const DNS_PROVIDERS: readonly DnsProvider[] = [
     id: 'digitalocean',
     displayName: 'DigitalOcean',
     nsPatterns: ['digitalocean.com'],
-    dashboardUrl: 'https://cloud.digitalocean.com/networking/domains',
+    buildDashboardUrl: (registrableDomain) =>
+      `https://cloud.digitalocean.com/networking/domains/${encodeURIComponent(registrableDomain)}`,
     logoDomain: 'digitalocean.com',
     hostFieldName: 'Hostname',
     valueFieldName: 'Value',
@@ -91,7 +97,8 @@ export const DNS_PROVIDERS: readonly DnsProvider[] = [
     id: 'squarespace',
     displayName: 'Squarespace',
     nsPatterns: ['squarespacedns.com'],
-    dashboardUrl: 'https://account.squarespace.com/domains',
+    buildDashboardUrl: (registrableDomain) =>
+      `https://account.squarespace.com/domains/managed/${encodeURIComponent(registrableDomain)}/dns/dns-settings`,
     logoDomain: 'squarespace.com',
     hostFieldName: 'Host',
     valueFieldName: 'Data',
@@ -102,7 +109,7 @@ export const DNS_PROVIDERS: readonly DnsProvider[] = [
     id: 'google-cloud-dns',
     displayName: 'Google Cloud DNS',
     nsPatterns: ['googledomains.com'],
-    dashboardUrl: 'https://console.cloud.google.com/net-services/dns',
+    buildDashboardUrl: () => 'https://console.cloud.google.com/net-services/dns/zones',
     logoDomain: 'cloud.google.com',
     hostFieldName: 'DNS name',
     valueFieldName: 'TXT data',

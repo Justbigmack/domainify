@@ -112,6 +112,7 @@ const DomainRecords = async ({ params }: DomainDetailPageProps) => {
         recordValue={record.value}
         recordName={recordName}
         challengeHost={domain.challengeHost}
+        registrableDomain={domain.registrableDomain}
         detectedProviderId={domain.dnsProviderId}
       />
       {diagnosis && <DiagnosisCard diagnosis={diagnosis} />}
