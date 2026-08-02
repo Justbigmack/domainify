@@ -1,4 +1,5 @@
-import type { PropsWithChildren } from 'react'
+import type { PropsWithChildren, ReactElement } from 'react'
+import Link from 'next/link'
 import type { LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -32,6 +33,10 @@ export const GhostButton = ({
 }: GhostButtonProps) => {
   const isDestructive = variant === 'destructive'
   const isLink = href !== undefined
+  let linkElement: ReactElement | undefined
+  if (href !== undefined) {
+    linkElement = isExternal ? <a href={href} target="_blank" rel="noreferrer" /> : <Link href={href} />
+  }
   const LeadingIcon = iconPosition === 'leading' && !loading ? icon : undefined
   const TrailingIcon = iconPosition === 'trailing' && !loading ? icon : undefined
   const showsLeadingSpinner = iconPosition === 'leading' && loading
@@ -44,15 +49,7 @@ export const GhostButton = ({
       onClick={onClick}
       disabled={disabled || loading}
       nativeButton={!isLink}
-      render={
-        isLink ? (
-          <a
-            href={href}
-            target={isExternal ? '_blank' : undefined}
-            rel={isExternal ? 'noreferrer' : undefined}
-          />
-        ) : undefined
-      }
+      render={linkElement}
       className={cn(
         'font-normal',
         {
