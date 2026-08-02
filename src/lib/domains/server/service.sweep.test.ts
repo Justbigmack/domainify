@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { DomainRow } from '@/db/schema'
-import { FIXTURE_NOW, makeDomain } from './domainFixture'
+import { FIXTURE_NOW, makeDomain } from '@/lib/domains/domainFixture'
 
 const mockState = vi.hoisted(() => ({
   dueDomains: [] as DomainRow[],

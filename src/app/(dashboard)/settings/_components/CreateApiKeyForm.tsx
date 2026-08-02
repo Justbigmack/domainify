@@ -12,7 +12,7 @@ import { Section, SectionContent } from '@/components/brand/Section'
 import { Text } from '@/components/brand/Text'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { authClient } from '@/lib/auth/client'
+import { authClient } from '@/lib/auth/client/authClient'
 
 const KEY_NAME_MAX_LENGTH = 32
 

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { revalidateTag } from 'next/cache'
 import { errorResponse } from '@/lib/http/responses'
-import { domainsCacheTag } from '@/lib/domains/cache'
-import { sweepDueDomains } from '@/lib/domains/service'
+import { domainsCacheTag } from '@/lib/domains/server/cache'
+import { sweepDueDomains } from '@/lib/domains/server/service'
 
 const HTTP_UNAUTHORIZED = 401
 

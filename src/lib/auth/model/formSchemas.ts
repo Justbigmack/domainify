@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { PASSWORD_MIN_LENGTH } from '@/lib/auth/policy'
+import { PASSWORD_MIN_LENGTH } from '@/lib/auth/model/policy'
 
 const NAME_MAX_LENGTH = 64
 

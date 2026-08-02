@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { BackToAppLink } from '@/components/brand/BackToAppLink'
 import { SignUpCard } from '@/app/(auth)/signup/_components/SignUpCard'
-import { getSessionUser } from '@/lib/auth/session'
+import { getSessionUser } from '@/lib/auth/server/session'
 
 export const metadata: Metadata = {
   title: 'Create account',

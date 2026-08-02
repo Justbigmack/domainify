@@ -10,9 +10,9 @@ import {
   EMAIL_VERIFICATION_TOKEN_TTL_SECONDS,
   PASSWORD_MIN_LENGTH,
   SESSION_COOKIE_CACHE_MAX_AGE_SECONDS,
-} from '@/lib/auth/policy'
-import { deliverEmailVerification } from '@/lib/auth/emailVerification'
-import { deliverMagicLinkToExistingUser } from '@/lib/auth/magicLinkDelivery'
+} from '@/lib/auth/model/policy'
+import { deliverEmailVerification } from '@/lib/auth/server/emailVerification'
+import { deliverMagicLinkToExistingUser } from '@/lib/auth/server/magicLinkDelivery'
 import { sendResetPasswordEmail } from '@/lib/emails/sendResetPassword'
 
 export const auth = betterAuth({

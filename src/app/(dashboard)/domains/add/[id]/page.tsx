@@ -17,9 +17,9 @@ import { PageContainer } from '@/components/brand/PageContainer'
 import { Text } from '@/components/brand/Text'
 import { BreadcrumbLink } from '@/components/brand/BreadcrumbLink'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getSessionUser } from '@/lib/auth/session'
+import { getSessionUser } from '@/lib/auth/server/session'
 import { challengeRecordName } from '@/lib/dns/normalize'
-import { loadDomainPageData } from '@/lib/domains/pageData'
+import { loadDomainPageData } from '@/lib/domains/server/pageData'
 
 export const metadata: Metadata = {
   title: 'Add domain',

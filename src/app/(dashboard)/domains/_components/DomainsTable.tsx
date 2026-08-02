@@ -30,10 +30,10 @@ import {
   SECTION_TABLE_HEAD_CLASS as TABLE_HEAD_CLASS,
 } from '@/components/brand/Section'
 import { cn } from '@/lib/utils'
-import { DOMAIN_STATUSES } from '@/lib/domains/status'
-import type { DomainStatus } from '@/lib/domains/status'
-import { INITIAL_SORT_DIRECTIONS, sortDomainItems } from '@/lib/domains/sort'
-import type { SortColumn, SortDirection } from '@/lib/domains/sort'
+import { DOMAIN_STATUSES } from '@/lib/domains/model/status'
+import type { DomainStatus } from '@/lib/domains/model/status'
+import { INITIAL_SORT_DIRECTIONS, sortDomainItems } from '@/lib/domains/model/sort'
+import type { SortColumn, SortDirection } from '@/lib/domains/model/sort'
 import { formatRelativeTime, formatShortDate } from '@/lib/formatTime'
 
 export type DomainListItem = {

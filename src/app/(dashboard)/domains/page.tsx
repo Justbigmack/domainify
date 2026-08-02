@@ -11,8 +11,8 @@ import { Heading } from '@/components/brand/Heading'
 import { PageContainer } from '@/components/brand/PageContainer'
 import { PrimaryButton } from '@/components/brand/PrimaryButton'
 import type { DomainRow } from '@/db/schema'
-import { getSessionUser } from '@/lib/auth/session'
-import { getCachedDomains } from '@/lib/domains/cache'
+import { getSessionUser } from '@/lib/auth/server/session'
+import { getCachedDomains } from '@/lib/domains/server/cache'
 
 export const metadata: Metadata = {
   title: 'Domains',

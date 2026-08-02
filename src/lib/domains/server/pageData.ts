@@ -1,12 +1,12 @@
 import { cache } from 'react'
-import type { RecordStatus } from '@/lib/domains/status'
-import { DomainNotFoundError } from './errors'
-import { deriveDiagnosis, deriveSourcePills } from './insights'
-import type { Diagnosis, SourcePillView } from './insights'
+import type { RecordStatus } from '@/lib/domains/model/status'
+import { DomainNotFoundError } from '@/lib/domains/model/errors'
+import { deriveDiagnosis, deriveSourcePills } from '@/lib/domains/model/insights'
+import type { Diagnosis, SourcePillView } from '@/lib/domains/model/insights'
 import { getDomainDetail } from './service'
 import type { RecordInstructions } from './service'
-import { toCheckView, toDomainView } from './view'
-import type { DomainView } from './view'
+import { toCheckView, toDomainView } from '@/lib/domains/model/view'
+import type { DomainView } from '@/lib/domains/model/view'
 
 export type DomainPageData = {
   domain: DomainView

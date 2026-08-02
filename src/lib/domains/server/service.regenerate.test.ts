@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { DomainRow } from '@/db/schema'
-import { FIXTURE_NOW, makeDomain } from './domainFixture'
-import type { DomainStatus } from './status'
+import { FIXTURE_NOW, makeDomain } from '@/lib/domains/domainFixture'
+import type { DomainStatus } from '@/lib/domains/model/status'
 
 const mockState = vi.hoisted(() => ({
   currentDomain: null as DomainRow | null,
@@ -32,7 +32,7 @@ vi.mock('next/server', () => ({
 
 vi.mock('./checks', () => ({ runCheck: vi.fn(() => Promise.resolve(null)) }))
 
-import { PENDING_WINDOW_MS } from './constants'
+import { PENDING_WINDOW_MS } from '@/lib/domains/model/constants'
 import { regenerateToken, restartVerification } from './service'
 
 const HOUR_MS = 60 * 60 * 1000

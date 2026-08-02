@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Text } from '@/components/brand/Text'
-import { authClient } from '@/lib/auth/client'
+import { authClient } from '@/lib/auth/client/authClient'
 
 type RevokeKeyDialogProps = {
   keyId: string

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { SessionUser } from '@/lib/auth/session'
+import type { SessionUser } from '@/lib/auth/server/session'
 
 const mockState = vi.hoisted(() => ({
   sessionUser: null as SessionUser | null,
@@ -16,17 +16,17 @@ const service = vi.hoisted(() => ({
   buildRecordInstructions: vi.fn(),
 }))
 
-vi.mock('@/lib/auth/session', () => ({
+vi.mock('@/lib/auth/server/session', () => ({
   getApiRequestUser: () => Promise.resolve(mockState.sessionUser),
 }))
 
-vi.mock('@/lib/domains/service', () => service)
+vi.mock('@/lib/domains/server/service', () => service)
 
 import {
   DomainNotFoundError,
   DomainStateError,
   VerifyCooldownError,
-} from '@/lib/domains/errors'
+} from '@/lib/domains/model/errors'
 import { DELETE as deleteDomainRoute, GET as getDomainRoute } from './[id]/route'
 import { POST as regenerateTokenRoute } from './[id]/regenerate/route'
 import { POST as restartVerificationRoute } from './[id]/restart/route'

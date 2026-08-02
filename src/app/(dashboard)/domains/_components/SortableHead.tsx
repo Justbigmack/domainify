@@ -3,7 +3,7 @@
 import { ArrowUpIcon, ChevronsUpDownIcon } from 'lucide-react'
 import { TableHead } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
-import type { SortColumn, SortDirection } from '@/lib/domains/sort'
+import type { SortColumn, SortDirection } from '@/lib/domains/model/sort'
 
 type AriaSortValue = 'ascending' | 'descending' | 'none'
 

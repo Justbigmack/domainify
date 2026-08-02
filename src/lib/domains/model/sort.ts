@@ -1,5 +1,5 @@
-import { DOMAIN_STATUSES } from '@/lib/domains/status'
-import type { DomainStatus } from '@/lib/domains/status'
+import { DOMAIN_STATUSES } from '@/lib/domains/model/status'
+import type { DomainStatus } from '@/lib/domains/model/status'
 
 export type SortColumn = 'domain' | 'status' | 'created' | 'lastChecked'
 export type SortDirection = 'asc' | 'desc'

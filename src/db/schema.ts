@@ -1,7 +1,7 @@
 import { index, jsonb, pgEnum, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
-import { CHECK_TRIGGERS, CHECK_VERDICTS } from '../lib/dns/types'
-import type { CheckSourceSnapshot } from '../lib/dns/types'
-import { DOMAIN_STATUSES } from '../lib/domains/status'
+import { CHECK_TRIGGERS, CHECK_VERDICTS } from '@/lib/dns/types'
+import type { CheckSourceSnapshot } from '@/lib/dns/types'
+import { DOMAIN_STATUSES } from '@/lib/domains/model/status'
 import { user } from './authSchema'
 
 export const domainStatusEnum = pgEnum('domain_status', DOMAIN_STATUSES)

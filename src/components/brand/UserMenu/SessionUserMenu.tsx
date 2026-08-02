@@ -1,4 +1,4 @@
-import { getSessionUser } from '@/lib/auth/session'
+import { getSessionUser } from '@/lib/auth/server/session'
 import { UserMenu } from './UserMenu'
 
 export const SessionUserMenu = async () => {

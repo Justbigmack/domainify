@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { authClient } from '@/lib/auth/client'
+import { authClient } from '@/lib/auth/client/authClient'
 
 const ADD_ACCOUNT_PATH = '/login?add=1'
 const LOGIN_PATH = '/login'

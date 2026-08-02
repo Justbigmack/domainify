@@ -29,8 +29,8 @@ vi.mock('next/server', () => ({
 
 vi.mock('./checks', () => ({ runCheck: vi.fn() }))
 
-import { PENDING_WINDOW_MS } from './constants'
-import { DomainInputInvalidError, DuplicateDomainError } from './errors'
+import { PENDING_WINDOW_MS } from '@/lib/domains/model/constants'
+import { DomainInputInvalidError, DuplicateDomainError } from '@/lib/domains/model/errors'
 import { createDomain } from './service'
 
 const USER_ID = 'user-1'

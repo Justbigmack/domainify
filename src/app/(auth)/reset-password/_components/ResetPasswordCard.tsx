@@ -14,8 +14,8 @@ import {
 } from '@/app/(auth)/_components/authControls'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { authClient } from '@/lib/auth/client'
-import { PASSWORD_MIN_LENGTH } from '@/lib/auth/policy'
+import { authClient } from '@/lib/auth/client/authClient'
+import { PASSWORD_MIN_LENGTH } from '@/lib/auth/model/policy'
 import { cn } from '@/lib/utils'
 
 type ResetPasswordCardProps = {

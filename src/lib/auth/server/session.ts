@@ -3,8 +3,8 @@ import { headers } from 'next/headers'
 import { eq } from 'drizzle-orm'
 import { db } from '@/db'
 import { user } from '@/db/authSchema'
-import { auth } from '@/lib/auth/server'
-import { API_KEY_PREFIX } from '@/lib/auth/policy'
+import { auth } from '@/lib/auth/server/auth'
+import { API_KEY_PREFIX } from '@/lib/auth/model/policy'
 
 export type SessionUser = {
   id: string

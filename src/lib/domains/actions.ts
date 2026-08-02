@@ -2,13 +2,13 @@
 
 import { updateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { getSessionUser } from '@/lib/auth/session'
-import { domainsCacheTag } from './cache'
+import { getSessionUser } from '@/lib/auth/server/session'
+import { domainsCacheTag } from '@/lib/domains/server/cache'
 import {
   DomainInputInvalidError,
   DuplicateDomainError,
   toErrorDetail,
-} from './errors'
+} from '@/lib/domains/model/errors'
 import {
   createDomain,
   deleteDomain,
@@ -16,7 +16,7 @@ import {
   regenerateToken,
   restartVerification,
   verifyDomain,
-} from './service'
+} from '@/lib/domains/server/service'
 
 export type ActionError = {
   code: string

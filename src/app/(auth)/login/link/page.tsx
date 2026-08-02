@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { BackToAppLink } from '@/components/brand/BackToAppLink'
 import { MagicLinkCard } from '@/app/(auth)/login/link/_components/MagicLinkCard'
-import { getSessionUser } from '@/lib/auth/session'
+import { getSessionUser } from '@/lib/auth/server/session'
 
 export const metadata: Metadata = {
   title: 'Sign in with email link',

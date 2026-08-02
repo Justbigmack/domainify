@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { toErrorDetail } from '@/lib/domains/errors'
+import { toErrorDetail } from '@/lib/domains/model/errors'
 
 const HTTP_UNAUTHORIZED = 401
 const HTTP_UNPROCESSABLE = 422

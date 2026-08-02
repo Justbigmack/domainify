@@ -17,7 +17,7 @@ import {
 } from '@/app/(auth)/_components/authControls'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { authClient } from '@/lib/auth/client'
+import { authClient } from '@/lib/auth/client/authClient'
 import { cn } from '@/lib/utils'
 
 type SendStatus = 'idle' | 'sending' | 'sent'

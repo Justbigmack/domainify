@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { serviceErrorResponse, unauthorizedResponse } from '@/lib/http/responses'
-import { getApiRequestUser } from '@/lib/auth/session'
-import { deleteDomain, getDomainDetail } from '@/lib/domains/service'
+import { getApiRequestUser } from '@/lib/auth/server/session'
+import { deleteDomain, getDomainDetail } from '@/lib/domains/server/service'
 
 type RouteParams = { params: Promise<{ id: string }> }
 

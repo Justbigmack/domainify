@@ -1,4 +1,4 @@
-import type { CheckVerdict } from '../dns/types'
+import type { CheckVerdict } from '@/lib/dns/types'
 
 export const DOMAIN_STATUSES = ['pending', 'verified', 'temporary_failure', 'failed'] as const
 export type DomainStatus = (typeof DOMAIN_STATUSES)[number]

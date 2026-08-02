@@ -11,7 +11,7 @@ const { signUpEmailMock, pushMock } = vi.hoisted(() => ({
 
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: pushMock }) }))
 
-vi.mock('@/lib/auth/client', () => ({
+vi.mock('@/lib/auth/client/authClient', () => ({
   authClient: { signUp: { email: signUpEmailMock } },
 }))
 

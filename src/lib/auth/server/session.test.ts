@@ -26,7 +26,7 @@ vi.mock('next/headers', () => ({
   headers: () => Promise.resolve(mockState.requestHeaders),
 }))
 
-vi.mock('@/lib/auth/server', () => ({
+vi.mock('@/lib/auth/server/auth', () => ({
   auth: { api: { getSession, verifyApiKey, listDeviceSessions } },
 }))
 
@@ -40,7 +40,7 @@ vi.mock('@/db', () => ({
   },
 }))
 
-import { API_KEY_PREFIX } from './policy'
+import { API_KEY_PREFIX } from '@/lib/auth/model/policy'
 import { getApiRequestUser, getSessionUser, listAccountSessions } from './session'
 
 const VALID_KEY = `${API_KEY_PREFIX}live-key`

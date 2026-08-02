@@ -1,4 +1,4 @@
-import { EMAIL_VERIFIED_CALLBACK_PATH } from '@/lib/auth/policy'
+import { EMAIL_VERIFIED_CALLBACK_PATH } from '@/lib/auth/model/policy'
 import { sendEmailVerificationEmail } from '@/lib/emails/sendEmailVerification'
 
 const CALLBACK_URL_PARAM = 'callbackURL'

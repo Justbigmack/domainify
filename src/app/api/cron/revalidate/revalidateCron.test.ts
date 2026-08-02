@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { SweepResult } from '@/lib/domains/service'
+import type { SweepResult } from '@/lib/domains/server/service'
 
 const revalidateTag = vi.hoisted(() => vi.fn())
 const sweepDueDomains = vi.hoisted(() => vi.fn())
@@ -10,7 +10,7 @@ vi.mock('next/cache', () => ({
   cacheLife: vi.fn(),
 }))
 
-vi.mock('@/lib/domains/service', () => ({ sweepDueDomains }))
+vi.mock('@/lib/domains/server/service', () => ({ sweepDueDomains }))
 
 import { GET as revalidateRoute } from './route'
 

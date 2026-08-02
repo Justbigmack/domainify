@@ -8,8 +8,8 @@ import { ApiKeysCardFallback } from '@/app/(dashboard)/settings/_components/ApiK
 import { ExternalLink } from '@/components/brand/ExternalLink'
 import { Heading } from '@/components/brand/Heading'
 import { Text } from '@/components/brand/Text'
-import { getSessionUser } from '@/lib/auth/session'
-import { auth } from '@/lib/auth/server'
+import { getSessionUser } from '@/lib/auth/server/session'
+import { auth } from '@/lib/auth/server/auth'
 
 export const metadata: Metadata = {
   title: 'API keys · Settings',

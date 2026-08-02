@@ -2,7 +2,7 @@ import { TriangleAlertIcon } from 'lucide-react'
 import { Text } from '@/components/brand/Text'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
-import type { Diagnosis } from '@/lib/domains/insights'
+import type { Diagnosis } from '@/lib/domains/model/insights'
 import type { CheckVerdict } from '@/lib/dns/types'
 
 const TONE_CLASSES: Partial<Record<CheckVerdict, string>> = {

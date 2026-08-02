@@ -15,11 +15,11 @@ import {
 } from '@/app/(auth)/_components/authControls'
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { authClient } from '@/lib/auth/client'
-import { signUpFormSchema, type SignUpFormValues } from '@/lib/auth/formSchemas'
-import { PASSWORD_MIN_LENGTH } from '@/lib/auth/policy'
-import { useFormValidation } from '@/lib/auth/useFormValidation'
-import { useResetOnHide } from '@/lib/auth/useResetOnHide'
+import { authClient } from '@/lib/auth/client/authClient'
+import { signUpFormSchema, type SignUpFormValues } from '@/lib/auth/model/formSchemas'
+import { PASSWORD_MIN_LENGTH } from '@/lib/auth/model/policy'
+import { useFormValidation } from '@/lib/auth/client/useFormValidation'
+import { useResetOnHide } from '@/lib/auth/client/useResetOnHide'
 import { cn } from '@/lib/utils'
 
 type SignUpCardProps = {

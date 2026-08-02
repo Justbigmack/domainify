@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { DomainRow, VerificationCheckRow } from '@/db/schema'
-import { FIXTURE_NOW, makeDomain } from './domainFixture'
+import { FIXTURE_NOW, makeDomain } from '@/lib/domains/domainFixture'
 
 const mockState = vi.hoisted(() => ({
   ownedDomains: [] as DomainRow[],
@@ -64,8 +64,8 @@ import {
   MANUAL_CHECK_COOLDOWN_MS,
   POLL_CHECK_COOLDOWN_MS,
   STALE_CHECK_THRESHOLD_MS,
-} from './constants'
-import { DomainNotFoundError, VerifyCooldownError } from './errors'
+} from '@/lib/domains/model/constants'
+import { DomainNotFoundError, VerifyCooldownError } from '@/lib/domains/model/errors'
 import {
   deleteDomain,
   getDomainDetail,

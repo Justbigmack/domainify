@@ -18,7 +18,7 @@ import { CopyButton } from '@/components/brand/CopyButton'
 import { Text } from '@/components/brand/Text'
 import { Spinner } from '@/components/ui/spinner'
 import { pollDomainAction, verifyDomainAction } from '@/lib/domains/actions'
-import { pollDelaySeconds } from '@/lib/domains/schedule'
+import { pollDelaySeconds } from '@/lib/domains/model/schedule'
 import { cn } from '@/lib/utils'
 
 const SECOND_MS = 1000

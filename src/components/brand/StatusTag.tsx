@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import type { DomainStatus, RecordStatus } from '@/lib/domains/status'
+import type { DomainStatus, RecordStatus } from '@/lib/domains/model/status'
 
 type StatusTagStatus = DomainStatus | RecordStatus
 

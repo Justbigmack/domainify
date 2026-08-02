@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { loadAccountSessions } from '@/lib/account/sessionActions'
-import type { AccountSession } from '@/lib/auth/session'
+import type { AccountSession } from '@/lib/auth/server/session'
 
 export const useAccountSessions = (userEmail?: string) => {
   const [loadedAccounts, setLoadedAccounts] = useState<AccountSession[] | null>(null)

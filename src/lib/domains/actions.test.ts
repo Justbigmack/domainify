@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { SessionUser } from '@/lib/auth/session'
+import type { SessionUser } from '@/lib/auth/server/session'
 
 const REDIRECT_MESSAGE = 'NEXT_REDIRECT'
 
@@ -25,15 +25,15 @@ const service = vi.hoisted(() => ({
 
 vi.mock('next/cache', () => ({ updateTag }))
 vi.mock('next/navigation', () => ({ redirect }))
-vi.mock('@/lib/auth/session', () => ({ getSessionUser: () => Promise.resolve(mockState.sessionUser) }))
-vi.mock('./service', () => service)
+vi.mock('@/lib/auth/server/session', () => ({ getSessionUser: () => Promise.resolve(mockState.sessionUser) }))
+vi.mock('@/lib/domains/server/service', () => service)
 
 import {
   DomainInputInvalidError,
   DomainNotFoundError,
   DuplicateDomainError,
   VerifyCooldownError,
-} from './errors'
+} from '@/lib/domains/model/errors'
 import {
   createDomainAction,
   deleteDomainAction,

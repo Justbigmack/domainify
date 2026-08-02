@@ -4,7 +4,7 @@ const sendEmailVerificationEmail = vi.hoisted(() => vi.fn(() => Promise.resolve(
 
 vi.mock('@/lib/emails/sendEmailVerification', () => ({ sendEmailVerificationEmail }))
 
-import { EMAIL_VERIFIED_CALLBACK_PATH } from './policy'
+import { EMAIL_VERIFIED_CALLBACK_PATH } from '@/lib/auth/model/policy'
 import { buildVerificationUrl, deliverEmailVerification } from './emailVerification'
 
 const BASE_URL = 'https://domainify.test/api/auth/verify-email'

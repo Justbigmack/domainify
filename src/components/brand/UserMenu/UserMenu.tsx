@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { AccountSession } from '@/lib/auth/session'
+import type { AccountSession } from '@/lib/auth/server/session'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useSidebar } from '@/components/brand/Sidebar'

@@ -11,7 +11,7 @@ import { BreadcrumbLink } from '@/components/brand/BreadcrumbLink'
 import { DNS_PROVIDERS } from '@/lib/dns/providers'
 import { formatRelativeTime, formatTimeLeft } from '@/lib/formatTime'
 import type { DnsProvider } from '@/lib/dns/providers'
-import type { DomainView } from '@/lib/domains/view'
+import type { DomainView } from '@/lib/domains/model/view'
 
 const FAVICON_FETCH_SIZE = 64
 const TILE_ICON_RENDER_SIZE = 24

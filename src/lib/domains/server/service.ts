@@ -15,7 +15,7 @@ import {
   PENDING_WINDOW_MS,
   POLL_CHECK_COOLDOWN_MS,
   STALE_CHECK_THRESHOLD_MS,
-} from './constants'
+} from '@/lib/domains/model/constants'
 import {
   DomainInputInvalidError,
   DomainNotFoundError,
@@ -23,8 +23,8 @@ import {
   DuplicateDomainError,
   VerifyCooldownError,
   isUniqueViolation,
-} from './errors'
-import { cooldownRemainingMs } from './schedule'
+} from '@/lib/domains/model/errors'
+import { cooldownRemainingMs } from '@/lib/domains/model/schedule'
 import { generateVerificationToken } from './token'
 
 const RECENT_CHECKS_LIMIT = 20

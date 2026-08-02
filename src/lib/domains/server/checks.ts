@@ -9,9 +9,9 @@ import type { DomainCheckSources } from '@/lib/dns/check'
 import type { NormalizedDomain } from '@/lib/dns/normalize'
 import type { CheckSourceSnapshot, CheckTrigger, TxtLookup, TxtLookupSource } from '@/lib/dns/types'
 import { sendDomainVerifiedEmail, sendGraceWarningEmail } from '@/lib/emails/sendDomainEmail'
-import { GRACE_WINDOW_MS } from './constants'
-import { computeNextCheckAt } from './schedule'
-import { transitionDomainStatus, verdictToSignal } from './status'
+import { GRACE_WINDOW_MS } from '@/lib/domains/model/constants'
+import { computeNextCheckAt } from '@/lib/domains/model/schedule'
+import { transitionDomainStatus, verdictToSignal } from '@/lib/domains/model/status'
 
 export type CheckRunResult = {
   domain: DomainRow

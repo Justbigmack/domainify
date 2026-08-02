@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { AccountSession } from '@/lib/auth/session'
+import type { AccountSession } from '@/lib/auth/server/session'
 import { useAccountSessions } from './useAccountSessions'
 
 const { loadAccountSessionsMock } = vi.hoisted(() => ({

@@ -25,7 +25,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
-import type { RecordStatus } from '@/lib/domains/status'
+import type { RecordStatus } from '@/lib/domains/model/status'
 
 const FieldLabel = ({ children }: PropsWithChildren) => (
   <Text as="span" variant="caption" className="font-medium text-muted-foreground/80">

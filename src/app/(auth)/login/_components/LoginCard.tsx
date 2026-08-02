@@ -15,13 +15,13 @@ import {
   AUTH_FORM_CLASSES,
   AUTH_SEPARATOR_CLASSES,
 } from '@/app/(auth)/_components/authControls'
-import type { VerificationNotice } from '@/app/(auth)/login/_components/verificationNotice'
+import type { VerificationNotice } from '@/lib/auth/model/verificationNotice'
 import { Field, FieldLabel, FieldSeparator } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { authClient } from '@/lib/auth/client'
-import { loginFormSchema, type LoginFormValues } from '@/lib/auth/formSchemas'
-import { useFormValidation } from '@/lib/auth/useFormValidation'
-import { useResetOnHide } from '@/lib/auth/useResetOnHide'
+import { authClient } from '@/lib/auth/client/authClient'
+import { loginFormSchema, type LoginFormValues } from '@/lib/auth/model/formSchemas'
+import { useFormValidation } from '@/lib/auth/client/useFormValidation'
+import { useResetOnHide } from '@/lib/auth/client/useResetOnHide'
 import { cn } from '@/lib/utils'
 
 const UNVERIFIED_EMAIL_CODE = 'EMAIL_NOT_VERIFIED'
