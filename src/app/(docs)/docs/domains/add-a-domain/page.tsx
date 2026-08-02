@@ -6,7 +6,7 @@ import { DocsCards } from '@/app/(docs)/docs/_components/DocsCards'
 import { DocsTable } from '@/app/(docs)/docs/_components/DocsTable'
 import { DocsCode, DocsLink, DocsP, DocsStrong, DocsUl } from '@/app/(docs)/docs/_components/Prose'
 import { DNS_PROVIDERS } from '@/lib/dns/providers'
-import { DOCS_API_ORIGIN } from '@/app/(docs)/docs/_lib/constants'
+import { DOCS_API_ORIGIN } from '@/lib/apiSurface/constants'
 
 export const metadata: Metadata = {
   title: 'Add a domain',

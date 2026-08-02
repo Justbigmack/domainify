@@ -5,9 +5,9 @@ import { useState } from 'react'
 import { CopyButton } from '@/components/brand/CopyButton'
 import { TextLink } from '@/components/brand/TextLink'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { buildCollectionOperations } from '@/lib/domains/apiSnippets'
-import type { ApiSnippetKind } from '@/lib/domains/apiSnippets'
-import { DOCS_API_ORIGIN } from '@/app/(docs)/docs/_lib/constants'
+import { buildOperationsByKey } from '@/lib/apiSurface/operations'
+import type { ApiSnippetKind, OperationKey } from '@/lib/apiSurface/operations'
+import { DOCS_API_ORIGIN } from '@/lib/apiSurface/constants'
 
 const SNIPPET_KIND_LABELS: Record<ApiSnippetKind, string> = {
   curl: 'cURL',
@@ -15,16 +15,13 @@ const SNIPPET_KIND_LABELS: Record<ApiSnippetKind, string> = {
 }
 
 type EndpointSnippetsProps = {
-  operationKey: string
+  operationKey: OperationKey
 }
 
 export const EndpointSnippets = ({ operationKey }: EndpointSnippetsProps) => {
   const [snippetKind, setSnippetKind] = useState<ApiSnippetKind>('curl')
 
-  const operation = buildCollectionOperations(DOCS_API_ORIGIN).find(
-    (candidate) => candidate.key === operationKey,
-  )
-  if (!operation) return null
+  const operation = buildOperationsByKey(DOCS_API_ORIGIN)[operationKey]
   const snippet = operation.snippets[snippetKind]
 
   const handleSnippetKindChange = (groupValue: string[]) => {

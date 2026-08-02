@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 import { Text } from '@/components/brand/Text'
-import type { EndpointField } from '@/app/(docs)/docs/_lib/apiReference'
+import type { EndpointField } from '@/lib/apiSurface/endpoints'
 
 type ParamListProps = {
   fields: EndpointField[]

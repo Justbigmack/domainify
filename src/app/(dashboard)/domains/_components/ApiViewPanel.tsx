@@ -14,8 +14,8 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { buildCollectionOperations, buildDomainOperations } from '@/lib/domains/apiSnippets'
-import type { ApiSnippetKind } from '@/lib/domains/apiSnippets'
+import { buildCollectionOperations, buildDomainOperations } from '@/lib/apiSurface/operations'
+import type { ApiSnippetKind } from '@/lib/apiSurface/operations'
 
 const SNIPPET_KIND_LABELS: Record<ApiSnippetKind, string> = {
   curl: 'cURL',

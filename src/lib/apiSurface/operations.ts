@@ -2,8 +2,20 @@ export type ApiMethod = 'GET' | 'POST' | 'DELETE'
 
 export type ApiSnippetKind = 'curl' | 'fetch'
 
+export const OPERATION_KEYS = [
+  'list',
+  'create',
+  'get',
+  'verify',
+  'restart',
+  'regenerate',
+  'delete',
+] as const
+
+export type OperationKey = (typeof OPERATION_KEYS)[number]
+
 export type ApiOperation = {
-  key: string
+  key: OperationKey
   method: ApiMethod
   path: string
   summary: string
@@ -81,7 +93,7 @@ const buildFetch = ({ origin, method, path, body }: SnippetInput): string => {
 }
 
 type OperationInput = SnippetInput & {
-  key: string
+  key: OperationKey
   summary: string
 }
 
@@ -163,3 +175,17 @@ export const buildCollectionOperations = (origin: string): ApiOperation[] => {
 
 export const buildDomainOperations = (origin: string, domainId: string): ApiOperation[] =>
   domainOperationInputs(origin, domainId).map(buildOperation)
+
+export const buildOperationsByKey = (origin: string): Record<OperationKey, ApiOperation> => {
+  const operations = buildCollectionOperations(origin)
+  const byKey = Object.fromEntries(
+    operations.map((operation) => [operation.key, operation]),
+  ) as Record<OperationKey, ApiOperation>
+
+  const missingKeys = OPERATION_KEYS.filter((key) => byKey[key] === undefined)
+  if (missingKeys.length > 0) {
+    throw new Error(`apiSurface is missing operations: ${missingKeys.join(', ')}`)
+  }
+
+  return byKey
+}

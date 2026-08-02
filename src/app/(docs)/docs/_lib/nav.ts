@@ -1,4 +1,4 @@
-import type { ApiMethod } from '@/lib/domains/apiSnippets'
+import type { ApiMethod } from '@/lib/apiSurface/operations'
 
 export type DocsNavItem = {
   title: string

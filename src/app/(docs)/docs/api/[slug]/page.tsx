@@ -7,7 +7,7 @@ import { EndpointSnippets } from '@/app/(docs)/docs/_components/EndpointSnippets
 import { MethodBadge } from '@/components/brand/MethodLabel'
 import { ParamList } from '@/app/(docs)/docs/_components/ParamList'
 import { DocsCode, DocsP } from '@/app/(docs)/docs/_components/Prose'
-import { ENDPOINT_DOCS, findEndpointDoc } from '@/app/(docs)/docs/_lib/apiReference'
+import { ENDPOINT_DOCS, findEndpointDoc } from '@/lib/apiSurface/endpoints'
 
 type EndpointPageParams = {
   params: Promise<{ slug: string }>

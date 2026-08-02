@@ -6,9 +6,9 @@ import { DocsArticle, DocsSection } from '@/app/(docs)/docs/_components/DocsArti
 import { DocsTable } from '@/app/(docs)/docs/_components/DocsTable'
 import { MethodLabel } from '@/components/brand/MethodLabel'
 import { DocsCode, DocsLink, DocsP, DocsStrong } from '@/app/(docs)/docs/_components/Prose'
-import { ENDPOINT_DOCS } from '@/app/(docs)/docs/_lib/apiReference'
-import { COOLDOWN_ERROR_EXAMPLE, ERROR_SHAPE_EXAMPLE } from '@/app/(docs)/docs/_lib/apiExamples'
-import { DOCS_API_ORIGIN } from '@/app/(docs)/docs/_lib/constants'
+import { ENDPOINT_DOCS } from '@/lib/apiSurface/endpoints'
+import { COOLDOWN_ERROR_EXAMPLE, ERROR_SHAPE_EXAMPLE } from '@/lib/apiSurface/examples'
+import { DOCS_API_ORIGIN } from '@/lib/apiSurface/constants'
 import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = {

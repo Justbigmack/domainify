@@ -1,6 +1,6 @@
 import { MethodBadge } from '@/components/brand/MethodLabel'
 import { CopyButton } from '@/components/brand/CopyButton'
-import type { ApiOperation, ApiSnippetKind } from '@/lib/domains/apiSnippets'
+import type { ApiOperation, ApiSnippetKind } from '@/lib/apiSurface/operations'
 
 type ApiOperationBlockProps = {
   operation: ApiOperation

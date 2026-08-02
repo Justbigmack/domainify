@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { revalidateTag } from 'next/cache'
-import { errorResponse } from '@/lib/http/responses'
+import { errorResponse } from '@/lib/apiSurface/responses'
 import { domainsCacheTag } from '@/lib/domains/server/cache'
 import { sweepDueDomains } from '@/lib/domains/server/service'
 

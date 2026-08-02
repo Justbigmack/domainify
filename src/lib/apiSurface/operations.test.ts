@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildCollectionOperations, buildDomainOperations } from './apiSnippets'
+import { buildCollectionOperations, buildDomainOperations } from './operations'
 
 const DOMAIN_ID = 'dom_123'
 const HTTPS_ORIGIN = 'https://domainify.example'

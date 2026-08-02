@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { serviceErrorResponse, unauthorizedResponse } from '@/lib/http/responses'
+import { serviceErrorResponse, unauthorizedResponse } from '@/lib/apiSurface/responses'
 import { getApiRequestUser } from '@/lib/auth/server/session'
 import { buildRecordInstructions, regenerateToken } from '@/lib/domains/server/service'
 

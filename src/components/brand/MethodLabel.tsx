@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import type { ApiMethod } from '@/lib/domains/apiSnippets'
+import type { ApiMethod } from '@/lib/apiSurface/operations'
 
 export const METHOD_BADGE_CLASSES: Record<ApiMethod, string> = {
   GET: 'bg-info/10 text-info',

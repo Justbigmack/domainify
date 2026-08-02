@@ -1,4 +1,4 @@
-import type { ApiMethod } from '@/lib/domains/apiSnippets'
+import type { ApiMethod, OperationKey } from './operations'
 import {
   CREATE_DOMAIN_EXAMPLE,
   GET_DOMAIN_EXAMPLE,
@@ -6,7 +6,7 @@ import {
   REGENERATE_DOMAIN_EXAMPLE,
   RESTART_DOMAIN_EXAMPLE,
   VERIFY_DOMAIN_EXAMPLE,
-} from './apiExamples'
+} from './examples'
 
 export type EndpointField = {
   name: string
@@ -23,7 +23,7 @@ export type EndpointError = {
 
 export type EndpointDoc = {
   slug: string
-  operationKey: string
+  operationKey: OperationKey
   title: string
   method: ApiMethod
   path: string
