@@ -10,6 +10,7 @@ import { Text } from '@/components/brand/Text'
 import { BreadcrumbLink } from '@/components/brand/BreadcrumbLink'
 import { DNS_PROVIDERS } from '@/lib/dns/providers'
 import { formatRelativeTime, formatTimeLeft } from '@/lib/formatTime'
+import { deadlineAtFor } from '@/lib/domains/model/view'
 import type { DnsProvider } from '@/lib/dns/providers'
 import type { DomainView } from '@/lib/domains/model/view'
 
@@ -18,16 +19,6 @@ const TILE_ICON_RENDER_SIZE = 24
 
 type DomainHeaderProps = {
   domain: DomainView
-}
-
-const deadlineFor = (domain: DomainView, nowMs: number): string | null => {
-  if (domain.status === 'pending') {
-    return formatTimeLeft(domain.pendingExpiresAt, nowMs)
-  }
-  if (domain.status === 'temporary_failure' && domain.graceExpiresAt) {
-    return formatTimeLeft(domain.graceExpiresAt, nowMs)
-  }
-  return null
 }
 
 const faviconUrl = (provider: DnsProvider): string =>
@@ -51,8 +42,9 @@ const ProviderTile = ({ provider }: { provider: DnsProvider | null }) => (
 
 export const DomainHeader = ({ domain }: DomainHeaderProps) => {
   const [nowMs] = useState(() => Date.now())
+  const deadlineAt = deadlineAtFor(domain)
   const provider = DNS_PROVIDERS.find((entry) => entry.id === domain.dnsProviderId) ?? null
-  const deadline = deadlineFor(domain, nowMs)
+  const deadline = deadlineAt === null ? null : formatTimeLeft(deadlineAt, nowMs)
   return (
     <header className="flex flex-col px-5">
       <div className="flex min-h-9 items-center justify-between gap-4">

@@ -36,7 +36,7 @@ vi.mock('./checks', () => ({ runCheck: vi.fn() }))
 import { PROVIDER_DETECTION_TIMEOUT_MS } from '@/lib/dns/constants'
 import { PENDING_WINDOW_MS } from '@/lib/domains/model/constants'
 import { DomainInputInvalidError, DuplicateDomainError } from '@/lib/domains/model/errors'
-import { createDomain } from './service'
+import { buildRecordInstructions, createDomain } from './service'
 
 const USER_ID = 'user-1'
 
@@ -146,5 +146,24 @@ describe('createDomain', () => {
     mockState.insertError = new Error('connection terminated')
 
     await expect(createDomain(USER_ID, 'example.com')).rejects.toThrow('connection terminated')
+  })
+})
+
+describe('buildRecordInstructions', () => {
+  it('offers the record name zone-relative as well as fully qualified', async () => {
+    const created = (await createDomain(USER_ID, 'app.example.com')) as DomainRow
+
+    expect(buildRecordInstructions(created)).toEqual({
+      type: 'TXT',
+      host: '_domainify-challenge.app.example.com',
+      name: '_domainify-challenge.app',
+      value: `domainify-domain-verification=${created.verificationToken}`,
+    })
+  })
+
+  it('keeps the bare challenge label as the name for an apex domain', async () => {
+    const created = (await createDomain(USER_ID, 'example.com')) as DomainRow
+
+    expect(buildRecordInstructions(created).name).toBe('_domainify-challenge')
   })
 })
