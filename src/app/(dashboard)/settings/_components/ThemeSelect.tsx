@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { ThemePreference } from '@/lib/theme'
+import type { ThemePreference } from '@/components/brand/ThemeProvider'
 
 const THEME_OPTIONS = [
   { value: 'system', label: 'System', Icon: MonitorIcon },

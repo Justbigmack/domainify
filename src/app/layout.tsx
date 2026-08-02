@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/brand/ThemeProvider'
 import { SIDEBAR_COLLAPSED_SCRIPT } from '@/components/brand/Sidebar/sidebarCookie'
-import { THEME_STORAGE_KEY } from '@/lib/theme'
+import { THEME_STORAGE_KEY } from '@/components/brand/ThemeProvider'
 import './globals.css'
 
 const inter = Inter({
