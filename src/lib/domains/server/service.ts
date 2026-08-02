@@ -5,9 +5,10 @@ import { db } from '@/db'
 import { domains, verificationChecks } from '@/db/schema'
 import type { DomainRow, VerificationCheckRow } from '@/db/schema'
 import { buildExpectedRecordValue } from '@/lib/dns/check'
+import { PROVIDER_DETECTION_TIMEOUT_MS } from '@/lib/dns/constants'
 import { normalizeDomainInput } from '@/lib/dns/normalize'
 import { detectDnsProvider } from '@/lib/dns/providers'
-import { resolveAuthoritativeNameservers } from '@/lib/dns/resolver'
+import { resolveNameserverHostnames } from '@/lib/dns/resolver'
 import { runCheck } from './checks'
 import type { CheckRunResult } from './checks'
 import {
@@ -51,11 +52,19 @@ export const buildRecordInstructions = (domain: DomainRow): RecordInstructions =
   value: buildExpectedRecordValue(domain.verificationToken),
 })
 
-const applyDetectedProvider = async (domain: DomainRow): Promise<void> => {
-  const nameservers = await resolveAuthoritativeNameservers(domain.registrableDomain)
-  const provider = detectDnsProvider((nameservers ?? []).map((entry) => entry.hostname))
-  if (!provider) return
-  await db.update(domains).set({ dnsProviderId: provider.id }).where(eq(domains.id, domain.id))
+const detectProviderId = async (registrableDomain: string): Promise<string | null> => {
+  let deadlineTimer: ReturnType<typeof setTimeout> | undefined
+  const deadline = new Promise<null>((resolve) => {
+    deadlineTimer = setTimeout(() => resolve(null), PROVIDER_DETECTION_TIMEOUT_MS)
+  })
+  const detection = resolveNameserverHostnames(registrableDomain).then(
+    (hostnames) => detectDnsProvider(hostnames)?.id ?? null,
+  )
+  try {
+    return await Promise.race([detection, deadline])
+  } finally {
+    clearTimeout(deadlineTimer)
+  }
 }
 
 const getOwnedDomain = cache(async (userId: string, domainId: string): Promise<DomainRow> => {
@@ -77,6 +86,7 @@ export const createDomain = async (userId: string, rawInput: string): Promise<Do
   const normalized = normalizeDomainInput(rawInput)
   if (!normalized.ok) throw new DomainInputInvalidError(normalized.error)
   const now = new Date()
+  const dnsProviderId = await detectProviderId(normalized.domain.registrableDomain)
   try {
     const [created] = await db
       .insert(domains)
@@ -89,9 +99,9 @@ export const createDomain = async (userId: string, rawInput: string): Promise<Do
         tokenGeneratedAt: now,
         pendingExpiresAt: new Date(now.getTime() + PENDING_WINDOW_MS),
         nextCheckAt: now,
+        dnsProviderId,
       })
       .returning()
-    after(() => applyDetectedProvider(created).catch(() => undefined))
     return created
   } catch (error) {
     if (isUniqueViolation(error)) throw new DuplicateDomainError(normalized.domain.hostname)

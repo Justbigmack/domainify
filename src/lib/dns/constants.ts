@@ -2,6 +2,7 @@ export const CHALLENGE_LABEL = '_domainify-challenge'
 export const RECORD_VALUE_PREFIX = 'domainify-domain-verification='
 export const MAX_HOSTNAME_LENGTH = 253
 export const DNS_TIMEOUT_MS = 5000
+export const PROVIDER_DETECTION_TIMEOUT_MS = 3000
 export const DNS_RETRY_COUNT = 2
 export const MAX_CNAME_CHAIN_LENGTH = 8
 export const AUTHORITATIVE_AGREEMENT_COUNT = 2

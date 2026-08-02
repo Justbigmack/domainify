@@ -4,7 +4,8 @@ import type { DomainRow } from '@/db/schema'
 const mockState = vi.hoisted(() => ({
   insertedValues: null as Record<string, unknown> | null,
   insertError: null as Error | null,
-  scheduledTasks: [] as (() => unknown)[],
+  nameserverHostnames: [] as string[],
+  hangsOnNameservers: false,
 }))
 
 vi.mock('@/db', () => ({
@@ -21,14 +22,18 @@ vi.mock('@/db', () => ({
   },
 }))
 
-vi.mock('next/server', () => ({
-  after: (task: () => unknown) => {
-    mockState.scheduledTasks.push(task)
-  },
+vi.mock('next/server', () => ({ after: vi.fn() }))
+
+const neverSettles = (): Promise<string[]> => new Promise(() => {})
+
+vi.mock('@/lib/dns/resolver', () => ({
+  resolveNameserverHostnames: () =>
+    mockState.hangsOnNameservers ? neverSettles() : Promise.resolve(mockState.nameserverHostnames),
 }))
 
 vi.mock('./checks', () => ({ runCheck: vi.fn() }))
 
+import { PROVIDER_DETECTION_TIMEOUT_MS } from '@/lib/dns/constants'
 import { PENDING_WINDOW_MS } from '@/lib/domains/model/constants'
 import { DomainInputInvalidError, DuplicateDomainError } from '@/lib/domains/model/errors'
 import { createDomain } from './service'
@@ -39,9 +44,11 @@ const uniqueViolation = (): Error =>
   Object.assign(new Error('duplicate key value violates unique constraint'), { code: '23505' })
 
 beforeEach(() => {
+  vi.useRealTimers()
   mockState.insertedValues = null
   mockState.insertError = null
-  mockState.scheduledTasks = []
+  mockState.nameserverHostnames = []
+  mockState.hangsOnNameservers = false
 })
 
 describe('createDomain', () => {
@@ -79,10 +86,30 @@ describe('createDomain', () => {
     expect(first.verificationToken.length).toBeGreaterThan(0)
   })
 
-  it('detects the DNS provider after answering the caller', async () => {
-    await createDomain(USER_ID, 'example.com')
+  it('stores the DNS provider detected from the nameservers', async () => {
+    mockState.nameserverHostnames = ['kim.ns.cloudflare.com', 'walt.ns.cloudflare.com']
 
-    expect(mockState.scheduledTasks).toHaveLength(1)
+    const created = (await createDomain(USER_ID, 'example.com')) as DomainRow
+
+    expect(created.dnsProviderId).toBe('cloudflare')
+  })
+
+  it('stops waiting on nameservers that never answer', async () => {
+    vi.useFakeTimers()
+    mockState.hangsOnNameservers = true
+
+    const creation = createDomain(USER_ID, 'example.com')
+    await vi.advanceTimersByTimeAsync(PROVIDER_DETECTION_TIMEOUT_MS)
+
+    expect(((await creation) as DomainRow).dnsProviderId).toBeNull()
+  })
+
+  it('leaves the DNS provider unset when the nameservers match none', async () => {
+    mockState.nameserverHostnames = ['ns1.unknown-registrar.test']
+
+    const created = (await createDomain(USER_ID, 'example.com')) as DomainRow
+
+    expect(created.dnsProviderId).toBeNull()
   })
 
   it.each([

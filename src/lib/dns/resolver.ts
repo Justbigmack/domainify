@@ -47,12 +47,20 @@ export const lookupTxt = async (name: string, servers?: string[]): Promise<TxtLo
   }
 }
 
+export const resolveNameserverHostnames = async (registrableDomain: string): Promise<string[]> => {
+  try {
+    return await createResolver().resolveNs(registrableDomain)
+  } catch {
+    return []
+  }
+}
+
 export const resolveAuthoritativeNameservers = async (
   registrableDomain: string,
 ): Promise<AuthoritativeNameserver[] | null> => {
   try {
     const resolver = createResolver()
-    const hostnames = await resolver.resolveNs(registrableDomain)
+    const hostnames = await resolveNameserverHostnames(registrableDomain)
     const nameservers = await Promise.all(
       hostnames.map(async (hostname) => {
         try {
