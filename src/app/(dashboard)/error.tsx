@@ -4,9 +4,11 @@ import { RouteError } from '@/components/brand/RouteError'
 
 type DashboardErrorProps = {
   error: Error & { digest?: string }
-  reset: () => void
+  unstable_retry: () => void
 }
 
-const DashboardError = ({ reset }: DashboardErrorProps) => <RouteError onRetry={reset} />
+const DashboardError = ({ error, unstable_retry }: DashboardErrorProps) => (
+  <RouteError onRetry={unstable_retry} digest={error.digest} />
+)
 
 export default DashboardError

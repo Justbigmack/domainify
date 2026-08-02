@@ -1,22 +1,50 @@
 'use client'
 
+import { useTransition } from 'react'
+import { RotateCwIcon, TriangleAlertIcon } from 'lucide-react'
+import { PageState } from '@/components/brand/PageState'
+import { Text } from '@/components/brand/Text'
+import { Button } from '@/components/ui/button'
+import './globals.css'
+
 type GlobalErrorProps = {
   error: Error & { digest?: string }
-  reset: () => void
+  unstable_retry: () => void
 }
 
-const GlobalError = ({ reset }: GlobalErrorProps) => (
-  <html lang="en">
-    <body>
-      <main>
-        <h1>Something went wrong</h1>
-        <p>An unexpected error occurred. Try again, or reload the page.</p>
-        <button type="button" onClick={reset}>
-          Try again
-        </button>
-      </main>
-    </body>
-  </html>
-)
+const GlobalError = ({ error, unstable_retry }: GlobalErrorProps) => {
+  const [isRetrying, startRetry] = useTransition()
+
+  const handleRetry = () => startRetry(() => unstable_retry())
+
+  return (
+    <html lang="en" className="h-full antialiased">
+      <body className="min-h-dvh">
+        <PageState
+          height="viewport"
+          icon={TriangleAlertIcon}
+          tone="destructive"
+          title="Something went wrong"
+          action={
+            <Button onClick={handleRetry} loading={isRetrying}>
+              <RotateCwIcon data-icon="inline-start" />
+              Try again
+            </Button>
+          }
+          footer={
+            error.digest && (
+              <Text as="span" variant="micro" className="font-mono tabular-nums">
+                Error {error.digest}
+              </Text>
+            )
+          }
+        >
+          Domainify hit an unexpected error and couldn’t finish loading. Trying again usually fixes
+          it.
+        </PageState>
+      </body>
+    </html>
+  )
+}
 
 export default GlobalError

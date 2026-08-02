@@ -1,26 +1,41 @@
 'use client'
 
-import { TriangleAlertIcon } from 'lucide-react'
-import { AlertBanner, AlertBannerAction } from '@/components/brand/AlertBanner'
-import { PageContainer } from '@/components/brand/PageContainer'
+import { useTransition } from 'react'
+import { RotateCwIcon, TriangleAlertIcon } from 'lucide-react'
+import { PageState } from '@/components/brand/PageState'
+import { Text } from '@/components/brand/Text'
+import { Button } from '@/components/ui/button'
 
 type RouteErrorProps = {
   onRetry: () => void
-  hasContainer?: boolean
+  digest?: string
 }
 
-export const RouteError = ({ onRetry, hasContainer = true }: RouteErrorProps) => {
-  const banner = (
-    <AlertBanner
-      tone="destructive"
+export const RouteError = ({ onRetry, digest }: RouteErrorProps) => {
+  const [isRetrying, startRetry] = useTransition()
+
+  const handleRetry = () => startRetry(() => onRetry())
+
+  return (
+    <PageState
       icon={TriangleAlertIcon}
-      action={<AlertBannerAction onClick={onRetry}>Try again</AlertBannerAction>}
+      tone="destructive"
+      title="This page didn’t load"
+      action={
+        <Button onClick={handleRetry} loading={isRetrying}>
+          <RotateCwIcon data-icon="inline-start" />
+          Try again
+        </Button>
+      }
+      footer={
+        digest && (
+          <Text as="span" variant="micro" className="font-mono tabular-nums">
+            Error {digest}
+          </Text>
+        )
+      }
     >
-      Something went wrong loading this page. Trying again usually fixes it.
-    </AlertBanner>
+      The request failed before the page could finish rendering. Trying again usually fixes it.
+    </PageState>
   )
-
-  if (!hasContainer) return banner
-
-  return <PageContainer gap="none">{banner}</PageContainer>
 }

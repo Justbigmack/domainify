@@ -1,18 +1,20 @@
+import Link from 'next/link'
 import { SearchXIcon } from 'lucide-react'
-import { AlertBanner } from '@/components/brand/AlertBanner'
-import { GhostButton } from '@/components/brand/GhostButton'
-import { PageContainer } from '@/components/brand/PageContainer'
+import { PageState } from '@/components/brand/PageState'
+import { Button } from '@/components/ui/button'
 
 const DomainNotFound = () => (
-  <PageContainer gap="none">
-    <AlertBanner
-      tone="info"
-      icon={SearchXIcon}
-      action={<GhostButton href="/domains">Back to domains</GhostButton>}
-    >
-      That domain doesn&apos;t exist, or it belongs to a different account.
-    </AlertBanner>
-  </PageContainer>
+  <PageState
+    icon={SearchXIcon}
+    title="Domain not found"
+    action={
+      <Button nativeButton={false} render={<Link href="/domains" />}>
+        Back to domains
+      </Button>
+    }
+  >
+    That domain doesn’t exist, or it belongs to a different account.
+  </PageState>
 )
 
 export default DomainNotFound
