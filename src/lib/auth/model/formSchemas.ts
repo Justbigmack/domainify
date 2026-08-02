@@ -30,6 +30,14 @@ export const magicLinkFormSchema = z.object({
   email: emailFieldSchema,
 })
 
+export const forgotPasswordFormSchema = z.object({
+  email: emailFieldSchema,
+})
+
+export const resetPasswordFormSchema = z.object({
+  newPassword: newPasswordFieldSchema,
+})
+
 export const signUpFormSchema = z.object({
   name: nameFieldSchema,
   email: emailFieldSchema,
@@ -38,4 +46,6 @@ export const signUpFormSchema = z.object({
 
 export type LoginFormValues = z.infer<typeof loginFormSchema>
 export type MagicLinkFormValues = z.infer<typeof magicLinkFormSchema>
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordFormSchema>
 export type SignUpFormValues = z.infer<typeof signUpFormSchema>
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordFormSchema>

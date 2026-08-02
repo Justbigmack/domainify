@@ -18,6 +18,8 @@ import {
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { authClient } from '@/lib/auth/client/authClient'
+import { forgotPasswordFormSchema } from '@/lib/auth/model/formSchemas'
+import { useFormValidation } from '@/lib/auth/client/useFormValidation'
 import { cn } from '@/lib/utils'
 
 type SendStatus = 'idle' | 'sending' | 'sent'
@@ -26,12 +28,18 @@ export const ForgotPasswordCard = () => {
   const [email, setEmail] = useState('')
   const [sendStatus, setSendStatus] = useState<SendStatus>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { parsed, errorFor, revealErrors, resetErrors } = useFormValidation(
+    forgotPasswordFormSchema,
+    { email },
+  )
 
-  const requestReset = async () => {
+  const emailError = errorFor('email')
+
+  const requestReset = async (emailAddress: string) => {
     setSendStatus('sending')
     setErrorMessage(null)
     const { error } = await authClient.requestPasswordReset({
-      email,
+      email: emailAddress,
       redirectTo: `${window.location.origin}/reset-password`,
     })
     if (error) {
@@ -44,16 +52,23 @@ export const ForgotPasswordCard = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    void requestReset()
+    if (!parsed.success) {
+      revealErrors()
+      return
+    }
+    setEmail(parsed.data.email)
+    void requestReset(parsed.data.email)
   }
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value)
+    setErrorMessage(null)
   }
 
   const handleUseDifferentEmail = () => {
     setSendStatus('idle')
     setErrorMessage(null)
+    resetErrors()
   }
 
   if (sendStatus === 'sent') {
@@ -88,22 +103,24 @@ export const ForgotPasswordCard = () => {
         title="Reset your password"
         description="Enter your account email and we’ll send you a reset link."
       />
-      <form onSubmit={handleSubmit} className={AUTH_FORM_CLASSES}>
-        <Field>
+      <form onSubmit={handleSubmit} noValidate className={AUTH_FORM_CLASSES}>
+        <Field data-invalid={emailError !== null || undefined}>
           <FieldLabel htmlFor="email" className="sr-only">
             Email address
           </FieldLabel>
           <Input
             id="email"
             type="email"
-            required
             autoFocus
             autoComplete="email"
             placeholder="Enter your email address"
             value={email}
             onChange={handleEmailChange}
+            aria-invalid={emailError !== null || undefined}
+            aria-describedby={emailError === null ? undefined : 'email-error'}
             className={AUTH_CONTROL_CLASSES}
           />
+          <FormError id="email-error" message={emailError} />
         </Field>
         <FormError message={errorMessage} />
         <PrimaryButton

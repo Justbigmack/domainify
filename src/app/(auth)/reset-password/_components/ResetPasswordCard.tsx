@@ -15,6 +15,8 @@ import {
 import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { authClient } from '@/lib/auth/client/authClient'
+import { resetPasswordFormSchema } from '@/lib/auth/model/formSchemas'
+import { useFormValidation } from '@/lib/auth/client/useFormValidation'
 import { PASSWORD_MIN_LENGTH } from '@/lib/auth/model/policy'
 import { cn } from '@/lib/utils'
 
@@ -27,12 +29,17 @@ export const ResetPasswordCard = ({ token }: ResetPasswordCardProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasReset, setHasReset] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { parsed, errorFor, revealErrors } = useFormValidation(resetPasswordFormSchema, {
+    newPassword,
+  })
 
-  const resetPassword = async () => {
+  const newPasswordError = errorFor('newPassword')
+
+  const resetPassword = async (password: string) => {
     if (token === null) return
     setIsSubmitting(true)
     setErrorMessage(null)
-    const { error } = await authClient.resetPassword({ newPassword, token })
+    const { error } = await authClient.resetPassword({ newPassword: password, token })
     if (error) {
       setIsSubmitting(false)
       setErrorMessage(error.message ?? 'Could not reset your password. Please try again.')
@@ -43,11 +50,16 @@ export const ResetPasswordCard = ({ token }: ResetPasswordCardProps) => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    void resetPassword()
+    if (!parsed.success) {
+      revealErrors()
+      return
+    }
+    void resetPassword(parsed.data.newPassword)
   }
 
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewPassword(event.target.value)
+    setErrorMessage(null)
   }
 
   if (token === null) {
@@ -91,23 +103,24 @@ export const ResetPasswordCard = ({ token }: ResetPasswordCardProps) => {
         title="Choose a new password"
         description="You’ll use it the next time you sign in."
       />
-      <form onSubmit={handleSubmit} className={AUTH_FORM_CLASSES}>
-        <Field>
+      <form onSubmit={handleSubmit} noValidate className={AUTH_FORM_CLASSES}>
+        <Field data-invalid={newPasswordError !== null || undefined}>
           <FieldLabel htmlFor="new-password" className="sr-only">
             New password
           </FieldLabel>
           <Input
             id="new-password"
             type="password"
-            required
             autoFocus
             autoComplete="new-password"
-            minLength={PASSWORD_MIN_LENGTH}
             placeholder={`New password — at least ${PASSWORD_MIN_LENGTH} characters`}
             value={newPassword}
             onChange={handlePasswordChange}
+            aria-invalid={newPasswordError !== null || undefined}
+            aria-describedby={newPasswordError === null ? undefined : 'new-password-error'}
             className={AUTH_CONTROL_CLASSES}
           />
+          <FormError id="new-password-error" message={newPasswordError} />
         </Field>
         <FormError message={errorMessage} />
         <PrimaryButton

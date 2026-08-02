@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { VerifyEmailCard } from '@/app/(auth)/verify-email/_components/VerifyEmailCard'
+import { emailFieldSchema } from '@/lib/auth/model/formSchemas'
 
 export const metadata: Metadata = {
   title: 'Verify your email',
@@ -12,9 +13,10 @@ type VerifyEmailPageProps = {
 
 const VerifyEmailPage = async ({ searchParams }: VerifyEmailPageProps) => {
   const { email, resent } = await searchParams
-  if (email === undefined) redirect('/login')
+  const parsedEmail = emailFieldSchema.safeParse(email)
+  if (!parsedEmail.success) redirect('/login')
 
-  return <VerifyEmailCard email={email} hasResent={resent !== undefined} />
+  return <VerifyEmailCard email={parsedEmail.data} hasResent={resent !== undefined} />
 }
 
 export default VerifyEmailPage
