@@ -41,7 +41,7 @@ const DocsHomePage = () => (
       <DocsP>
         Domain verification answers one question: does the person adding{' '}
         <DocsCode>app.example.com</DocsCode> actually control its DNS? Domainify answers it the same
-        way email and hosting providers do — with a challenge record. You add the domain, we hand
+        way email and hosting providers do, with a challenge record. You add the domain, we hand
         you a unique token, you publish it as a TXT record, and we keep checking until we see it.
       </DocsP>
       <DocsP>
@@ -65,7 +65,7 @@ const DocsHomePage = () => (
         <li>
           <DocsStrong>We spot it.</DocsStrong> Checks run automatically against your authoritative
           nameservers and two public resolvers. The moment they agree the record is there, the
-          domain flips to verified — and we keep re-checking automatically to make sure it stays
+          domain flips to verified, and we keep re-checking automatically to make sure it stays
           true.
         </li>
       </DocsOl>

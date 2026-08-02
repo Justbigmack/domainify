@@ -113,7 +113,7 @@ export const ResetPasswordCard = ({ token }: ResetPasswordCardProps) => {
             type="password"
             autoFocus
             autoComplete="new-password"
-            placeholder={`New password — at least ${PASSWORD_MIN_LENGTH} characters`}
+            placeholder={`New password (at least ${PASSWORD_MIN_LENGTH} characters)`}
             value={newPassword}
             onChange={handlePasswordChange}
             aria-invalid={newPasswordError !== null || undefined}

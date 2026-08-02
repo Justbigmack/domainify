@@ -52,12 +52,12 @@ const NEXT_STEP_CARDS = [
 const AddADomainPage = () => (
   <DocsArticle
     title="Add a domain"
-    lead="From pasting a hostname to seeing it verified — usually a few minutes, at most 72 hours."
+    lead="From pasting a hostname to seeing it verified, usually a few minutes and at most 72 hours."
     toc={TOC}
   >
     <DocsSection id="before-you-start" title="Before you start">
       <DocsP>
-        You need access to the DNS settings of the domain you are claiming — the dashboard of
+        You need access to the DNS settings of the domain you are claiming, meaning the dashboard of
         whoever runs its nameservers (Cloudflare, Route 53, your registrar, …). Apex domains and
         subdomains both work: claiming <DocsCode>status.example.com</DocsCode> only requires adding
         one TXT record inside the <DocsCode>example.com</DocsCode> zone, nothing else changes.
@@ -66,7 +66,7 @@ const AddADomainPage = () => (
     <DocsSection id="add-the-domain" title="1. Add the domain">
       <DocsP>
         In the dashboard, press <DocsStrong>Add domain</DocsStrong> and paste the hostname. A full
-        URL is fine — <DocsCode>https://app.example.com/some/path</DocsCode> normalizes to{' '}
+        URL is fine: <DocsCode>https://app.example.com/some/path</DocsCode> normalizes to{' '}
         <DocsCode>app.example.com</DocsCode>. Or do the same over the API:
       </DocsP>
       <CodeBlock code={CREATE_CURL_SNIPPET} label="Copy the create-domain curl example" />
@@ -102,21 +102,21 @@ const AddADomainPage = () => (
         ])}
       />
       <DocsP>
-        If your provider is not in the list, any DNS host that can create TXT records works — the
+        If your provider is not in the list, any DNS host that can create TXT records works, because the
         record itself is completely standard.
       </DocsP>
     </DocsSection>
     <DocsSection id="create-the-record" title="3. Create the TXT record">
       <DocsP>
         Create a <DocsCode>TXT</DocsCode> record with the host and value shown in the app, and any
-        TTL (Auto is fine — a low TTL just means faster detection after edits). For{' '}
+        TTL (Auto is fine, and a low TTL just means faster detection after edits). For{' '}
         <DocsCode>app.example.com</DocsCode> the full record name is{' '}
         <DocsCode>_domainify-challenge.app.example.com</DocsCode> and the value is{' '}
         <DocsCode>domainify-domain-verification=&lt;token&gt;</DocsCode>.
       </DocsP>
       <Callout tone="info">
         Most providers append your zone to the host field automatically. If the app shows{' '}
-        <DocsCode>_domainify-challenge.app</DocsCode>, paste exactly that — pasting the full
+        <DocsCode>_domainify-challenge.app</DocsCode>, paste exactly that. Pasting the full
         hostname would create{' '}
         <DocsCode>_domainify-challenge.app.example.com.example.com</DocsCode>, the single most
         common reason verification stalls. Domainify detects this case and calls it out on the
@@ -125,7 +125,7 @@ const AddADomainPage = () => (
         <DocsCode>record.name</DocsCode> to a provider that appends the zone.
       </Callout>
       <DocsP>
-        Copy the value with the copy button rather than retyping it — the token is long, and a
+        Copy the value with the copy button rather than retyping it. The token is long, and a
         single wrong character means the record is found but rejected as{' '}
         <DocsCode>wrong_value</DocsCode>. Other TXT records already living at the same name are
         fine; Domainify scans all values and only cares about the one with its prefix.
@@ -133,7 +133,7 @@ const AddADomainPage = () => (
     </DocsSection>
     <DocsSection id="wait-for-verification" title="4. Wait for verification">
       <DocsP>
-        Leave the domain page open — it polls every 30 seconds and flips to{' '}
+        Leave the domain page open: it polls every 30 seconds and flips to{' '}
         <DocsStrong>verified</DocsStrong> on its own. Or press{' '}
         <DocsStrong>Check now</DocsStrong> for an immediate check (one per 5 seconds). In the
         background, checks continue on their own schedule regardless of whether anyone is
@@ -141,7 +141,7 @@ const AddADomainPage = () => (
       </DocsP>
       <DocsP>
         Most records are spotted within a couple of minutes. DNS propagation can occasionally take
-        longer — public resolvers cache answers up to the record&apos;s TTL — which is why the
+        longer, because public resolvers cache answers up to the record&apos;s TTL, which is why the
         verification window is a generous 72 hours. If the window closes without the record being
         found, the domain fails and can be{' '}
         <DocsLink href="/docs/api/restart-verification">restarted</DocsLink> with a fresh token.
@@ -152,7 +152,7 @@ const AddADomainPage = () => (
       <CodeBlock code={DIG_SNIPPET} label="Copy the dig command" />
       <DocsP>
         If the value shows up here but the domain is still pending, a cached resolver is likely
-        serving an old answer. Compare specific resolvers — these are the two public sources
+        serving an old answer. Compare specific resolvers. These are the two public sources
         Domainify cross-checks:
       </DocsP>
       <CodeBlock code={DIG_RESOLVER_SNIPPET} label="Copy the resolver-specific dig commands" />

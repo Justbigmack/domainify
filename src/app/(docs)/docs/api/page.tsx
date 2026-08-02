@@ -37,14 +37,14 @@ const ApiIntroPage = () => (
     <DocsSection id="base-url" title="Base URL and format">
       <DocsP>
         All endpoints live under <DocsCode>{DOCS_API_ORIGIN}/api</DocsCode>. Requests and
-        responses are JSON; timestamps are ISO 8601 strings in UTC. There is no versioning prefix —
+        responses are JSON; timestamps are ISO 8601 strings in UTC. There is no versioning prefix, because
         the API and the UI ship together.
       </DocsP>
     </DocsSection>
     <DocsSection id="authentication" title="Authentication">
       <DocsP>
         The API authenticates with <DocsStrong>API keys</DocsStrong>. Create one under{' '}
-        <DocsLink href="/settings/api-keys">Settings → API keys</DocsLink> — keys start with{' '}
+        <DocsLink href="/settings/api-keys">Settings → API keys</DocsLink>. Keys start with{' '}
         <DocsCode>domainify_</DocsCode> and are shown only once, at creation. Store yours like any
         other secret and pass it in the <DocsCode>Authorization</DocsCode> header:
       </DocsP>
@@ -60,7 +60,7 @@ const ApiIntroPage = () => (
       </Callout>
     </DocsSection>
     <DocsSection id="errors" title="Errors">
-      <DocsP>Every error has the same shape — a machine-readable code and a human-readable message:</DocsP>
+      <DocsP>Every error has the same shape: a machine-readable code and a human-readable message:</DocsP>
       <CodeBlock code={ERROR_SHAPE_EXAMPLE} label="Copy the error shape example" />
       <DocsTable
         columns={['Status', 'Code', 'When']}

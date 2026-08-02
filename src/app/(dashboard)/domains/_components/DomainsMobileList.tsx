@@ -68,7 +68,7 @@ const DomainMobileItem = ({ item, nowMs, isFirst }: DomainMobileItemProps) => {
           <MetaRow label="Created" value={formatShortDate(item.createdAt)} />
           <MetaRow
             label="Last checked"
-            value={item.lastCheckedAt ? formatRelativeTime(item.lastCheckedAt, nowMs) : '—'}
+            value={item.lastCheckedAt ? formatRelativeTime(item.lastCheckedAt, nowMs) : 'Never'}
           />
           <div className="-mr-2.5 mt-1 flex items-center justify-end gap-1">
             <Button

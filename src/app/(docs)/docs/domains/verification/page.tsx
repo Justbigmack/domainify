@@ -30,7 +30,7 @@ const VerificationPage = () => (
         rows={[
           [
             <DocsCode key="auth">authoritative</DocsCode>,
-            'Your domain’s own nameservers, resolved live for the registrable domain and queried directly. This is the source of truth — no caches in between.',
+            'Your domain’s own nameservers, resolved live for the registrable domain and queried directly. This is the source of truth, with no caches in between.',
           ],
           [
             <DocsCode key="cf">doh_cloudflare</DocsCode>,
@@ -52,13 +52,13 @@ const VerificationPage = () => (
       <DocsP>The record counts as found when either of these holds:</DocsP>
       <DocsUl>
         <li>
-          <DocsStrong>Authoritative agreement</DocsStrong> — every authoritative nameserver that
+          <DocsStrong>Authoritative agreement.</DocsStrong> Every authoritative nameserver that
           answered returned the expected value. Disagreement between your own nameservers (for
           example, mid-propagation after a zone change) keeps the domain unverified until they
           converge.
         </li>
         <li>
-          <DocsStrong>Public agreement</DocsStrong> — both Cloudflare and Google independently
+          <DocsStrong>Public agreement.</DocsStrong> Both Cloudflare and Google independently
           returned the expected value. This covers setups where authoritative servers are
           unreachable from our checker.
         </li>
@@ -83,23 +83,23 @@ const VerificationPage = () => (
           ],
           [
             <DocsCode key="wrong_value">wrong_value</DocsCode>,
-            'A Domainify record exists but carries a different token — usually a stale record from before a restart or regenerate.',
+            'A Domainify record exists but carries a different token, usually a stale record from before a restart or regenerate.',
           ],
           [
             <DocsCode key="misplaced">misplaced_record</DocsCode>,
-            'The record was found at a doubled name like _domainify-challenge.app.example.com.example.com — the DNS provider appended the zone to an already-full host. The checker probes for this case explicitly.',
+            'The record was found at a doubled name like _domainify-challenge.app.example.com.example.com, because the DNS provider appended the zone to an already-full host. The checker probes for this case explicitly.',
           ],
           [
             <DocsCode key="dns_error">dns_error</DocsCode>,
-            'Every source errored out — nameservers unreachable, timeouts, or lookup failures. The check is inconclusive.',
+            'Every source errored out: nameservers unreachable, timeouts, or lookup failures. The check is inconclusive.',
           ],
         ]}
       />
     </DocsSection>
     <DocsSection id="state-machine" title="The status state machine">
       <DocsP>
-        Verdicts reduce to three signals — <DocsStrong>found</DocsStrong>,{' '}
-        <DocsStrong>missing</DocsStrong>, and <DocsStrong>error</DocsStrong> — which drive all
+        Verdicts reduce to three signals, <DocsStrong>found</DocsStrong>,{' '}
+        <DocsStrong>missing</DocsStrong>, and <DocsStrong>error</DocsStrong>, which drive all
         status transitions:
       </DocsP>
       <DocsTable
@@ -139,7 +139,7 @@ const VerificationPage = () => (
       />
       <Callout tone="info">
         An <DocsCode>error</DocsCode> signal never moves a domain anywhere. A registrar outage or a
-        timeout at a public resolver cannot demote a verified domain — only a definitive
+        timeout at a public resolver cannot demote a verified domain. Only a definitive
         &ldquo;the record is not there&rdquo; can.
       </Callout>
     </DocsSection>

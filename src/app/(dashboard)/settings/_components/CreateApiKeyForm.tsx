@@ -85,7 +85,7 @@ export const CreateApiKeyForm = () => {
           {createdKey}
         </Text>
         <Text as="span" variant="secondary" className="block pt-1 text-inherit">
-          Copy this key now — it is shown only once.
+          Copy this key now. It is shown only once.
         </Text>
       </AlertBanner>
     )

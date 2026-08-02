@@ -76,7 +76,7 @@ const ApiKeyMobileItem = ({ item, nowMs, isFirst }: ApiKeyMobileItemProps) => {
           <MetaRow label="Created" value={formatShortDate(item.createdAt)} />
           <MetaRow
             label="Last used"
-            value={item.lastRequest ? formatRelativeTime(item.lastRequest, nowMs) : '—'}
+            value={item.lastRequest ? formatRelativeTime(item.lastRequest, nowMs) : 'Never'}
           />
           <div className="-mr-2.5 mt-1 flex items-center justify-end">
             <Button

@@ -141,7 +141,7 @@ export const SignUpCard = ({ isAddingAccount = false }: SignUpCardProps) => {
             id="password"
             type="password"
             autoComplete="new-password"
-            placeholder={`Password — at least ${PASSWORD_MIN_LENGTH} characters`}
+            placeholder={`Password (at least ${PASSWORD_MIN_LENGTH} characters)`}
             value={password}
             onChange={handlePasswordChange}
             aria-invalid={passwordError !== null || undefined}

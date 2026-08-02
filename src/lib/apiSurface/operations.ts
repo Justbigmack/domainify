@@ -115,7 +115,7 @@ const domainOperationInputs = (origin: string, domainId: string): OperationInput
     path: `/api/domains/${domainId}`,
     origin,
     summary:
-      'Domain, record instructions, and the latest checks. Reading a stale domain also re-checks it. Record instructions carry both host (fully qualified) and name (zone-relative — what most providers want).',
+      'Domain, record instructions, and the latest checks. Reading a stale domain also re-checks it. Record instructions carry both host (fully qualified) and name (zone-relative, which is what most providers want).',
   },
   {
     key: 'verify',

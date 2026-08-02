@@ -55,14 +55,14 @@ const DomainsOverviewPage = () => (
       />
       <DocsP>
         The host is always the <DocsCode>_domainify-challenge</DocsCode> label in front of the
-        hostname you claimed — subdomains included, so claiming a subdomain never requires access
+        hostname you claimed, subdomains included, so claiming a subdomain never requires access
         to the apex zone. The token is 32 random bytes, unique per domain, and minted fresh every
         time verification starts or restarts. Most DNS dashboards only want the zone-relative part
         of the host (for example <DocsCode>_domainify-challenge.app</DocsCode> when your zone is{' '}
         <DocsCode>example.com</DocsCode>); the app shows the right form for your provider.
       </DocsP>
       <Callout tone="info">
-        The record has to stay in place. Verification is continuous — if the record disappears
+        The record has to stay in place. Verification is continuous: if the record disappears
         later, the domain enters a 72-hour grace period and eventually fails.
       </Callout>
     </DocsSection>
@@ -96,7 +96,7 @@ const DomainsOverviewPage = () => (
         Transitions are deliberately conservative. A domain only moves when a check produces a
         definitive answer: <DocsStrong>found</DocsStrong> promotes, a definitive{' '}
         <DocsStrong>missing</DocsStrong> starts or continues the countdown, and a DNS{' '}
-        <DocsStrong>error</DocsStrong> never demotes anyone — an outage at your registrar cannot
+        <DocsStrong>error</DocsStrong> never demotes anyone, so an outage at your registrar cannot
         fail your domain. The full state machine is on the{' '}
         <DocsLink href="/docs/domains/verification">verification page</DocsLink>.
       </DocsP>
@@ -132,7 +132,7 @@ const DomainsOverviewPage = () => (
         ]}
       />
       <DocsP>
-        Each hostname can exist once per account — adding it again returns a{' '}
+        Each hostname can exist once per account. Adding it again returns a{' '}
         <DocsCode>duplicate</DocsCode> error. The exact error codes the API returns are listed in
         the <DocsLink href="/docs/api">API reference</DocsLink>.
       </DocsP>
@@ -156,7 +156,7 @@ const DomainsOverviewPage = () => (
         ]}
       />
       <DocsP>
-        Failed domains are never checked automatically —{' '}
+        Failed domains are never checked automatically.{' '}
         <DocsLink href="/docs/api/restart-verification">restarting verification</DocsLink> is what
         puts them back on the schedule.
       </DocsP>

@@ -219,7 +219,7 @@ export const VerifySteps = ({
           <Step
             number={2}
             title="Add this TXT record"
-            description="Most providers append your domain automatically — paste just the prefix."
+            description="Most providers append your domain automatically, so paste just the prefix."
           >
             <div className="mt-2 flex flex-col gap-1.5 rounded-lg border border-border/50 bg-muted/40 px-3.5 py-3">
               <RecordLine label={provider?.hostFieldName ?? 'Host'} value={recordName} />

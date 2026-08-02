@@ -95,7 +95,7 @@ export const ApiKeysCard = ({ items }: ApiKeysCardProps) => {
                   </TableCell>
                   <TableCell className={SECTION_TABLE_CELL_CLASS} suppressHydrationWarning>
                     <Text as="span" variant="secondary">
-                      {item.lastRequest ? formatRelativeTime(item.lastRequest, nowMs) : '—'}
+                      {item.lastRequest ? formatRelativeTime(item.lastRequest, nowMs) : 'Never'}
                     </Text>
                   </TableCell>
                   <TableCell className={cn(SECTION_TABLE_CELL_CLASS, 'text-right')}>
