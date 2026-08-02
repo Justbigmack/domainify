@@ -81,16 +81,23 @@ describe('POST /api/domains', () => {
     expect(service.createDomain).not.toHaveBeenCalled()
   })
 
-  it('creates a domain and answers 201', async () => {
-    service.createDomain.mockResolvedValue({ id: DOMAIN_ID, hostname: 'example.com' })
+  it('creates a domain and answers 201 with the record to publish', async () => {
+    const domain = { id: DOMAIN_ID, hostname: 'example.com' }
+    const record = {
+      type: 'TXT',
+      host: '_domainify-challenge.example.com',
+      name: '_domainify-challenge',
+      value: 'domainify-domain-verification=token',
+    }
+    service.createDomain.mockResolvedValue(domain)
+    service.buildRecordInstructions.mockReturnValue(record)
 
     const response = await createDomainRoute(jsonRequest({ name: 'example.com' }))
 
     expect(service.createDomain).toHaveBeenCalledWith(SESSION_USER.id, 'example.com')
+    expect(service.buildRecordInstructions).toHaveBeenCalledWith(domain)
     expect(response.status).toBe(201)
-    await expect(response.json()).resolves.toEqual({
-      domain: { id: DOMAIN_ID, hostname: 'example.com' },
-    })
+    await expect(response.json()).resolves.toEqual({ domain, record })
   })
 
   it.each([

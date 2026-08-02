@@ -83,7 +83,8 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     path: '/api/domains',
     description: [
       'Adds a domain to your account and starts the 72-hour verification window. The input goes through the same normalization as the dashboard form: full URLs are accepted, the hostname is lowercased, and a trailing dot is stripped.',
-      'The response includes the challenge host and verification token you need to build the TXT record, and the first automatic check is scheduled about a minute out. Domainify also tries to detect your DNS provider from the domain’s nameservers and stores it as dnsProviderId.',
+      'The response carries the record instructions alongside the domain, so a single call is enough to know what to publish, and the first automatic check is scheduled about a minute out. Domainify also tries to detect your DNS provider from the domain’s nameservers and stores it as dnsProviderId.',
+      'The record object gives the name twice: host is fully qualified (_domainify-challenge.app.example.com) and name is the same record relative to the zone (_domainify-challenge.app). Most providers append the zone to whatever you type, so send name — sending host to those providers creates the doubled record that stalls verification.',
     ],
     pathParams: [],
     bodyParams: [
@@ -95,7 +96,8 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
           'The domain to claim, as a bare hostname (app.example.com) or a full URL (https://app.example.com/path works too). Apex domains and subdomains are both fine; IP addresses, public suffixes, and hosting-platform subdomains are rejected.',
       },
     ],
-    responseDescription: 'Status 201 with the new domain in pending status.',
+    responseDescription:
+      'Status 201 with the new domain in pending status and the TXT record to publish.',
     responseExample: CREATE_DOMAIN_EXAMPLE,
     errors: [
       UNAUTHORIZED_ERROR,
@@ -131,7 +133,7 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     pathParams: [ID_PATH_PARAM],
     bodyParams: [],
     responseDescription:
-      'The domain, its recent checks (newest first, up to 20), and the record instructions with the current token.',
+      'The domain, its recent checks (newest first, up to 20), and the record instructions with the current token — host fully qualified, name relative to the zone.',
     responseExample: GET_DOMAIN_EXAMPLE,
     errors: [UNAUTHORIZED_ERROR, NOT_FOUND_ERROR],
   },
@@ -199,7 +201,8 @@ export const ENDPOINT_DOCS: readonly EndpointDoc[] = [
     ],
     pathParams: [ID_PATH_PARAM],
     bodyParams: [],
-    responseDescription: 'The domain with its new token, plus record instructions containing the new value.',
+    responseDescription:
+      'The domain with its new token, plus record instructions containing the new value — host fully qualified, name relative to the zone.',
     responseExample: REGENERATE_DOMAIN_EXAMPLE,
     errors: [UNAUTHORIZED_ERROR, NOT_FOUND_ERROR],
   },

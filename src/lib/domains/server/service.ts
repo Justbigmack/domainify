@@ -6,7 +6,7 @@ import { domains, verificationChecks } from '@/db/schema'
 import type { DomainRow, VerificationCheckRow } from '@/db/schema'
 import { buildExpectedRecordValue } from '@/lib/dns/check'
 import { PROVIDER_DETECTION_TIMEOUT_MS } from '@/lib/dns/constants'
-import { normalizeDomainInput } from '@/lib/dns/normalize'
+import { challengeRecordName, normalizeDomainInput } from '@/lib/dns/normalize'
 import { detectDnsProvider } from '@/lib/dns/providers'
 import { resolveNameserverHostnames } from '@/lib/dns/resolver'
 import { runCheck } from './checks'
@@ -37,6 +37,7 @@ const CHECKABLE_STATUSES = ['pending', 'verified', 'temporary_failure'] as const
 export type RecordInstructions = {
   type: 'TXT'
   host: string
+  name: string
   value: string
 }
 
@@ -49,6 +50,7 @@ export type DomainDetail = {
 export const buildRecordInstructions = (domain: DomainRow): RecordInstructions => ({
   type: 'TXT',
   host: domain.challengeHost,
+  name: challengeRecordName(domain.challengeHost, domain.registrableDomain),
   value: buildExpectedRecordValue(domain.verificationToken),
 })
 

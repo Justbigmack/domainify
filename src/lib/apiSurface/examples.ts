@@ -31,6 +31,7 @@ const EXAMPLE_VERIFIED_DOMAIN = {
 const EXAMPLE_RECORD = {
   type: 'TXT',
   host: '_domainify-challenge.app.example.com',
+  name: '_domainify-challenge.app',
   value: EXAMPLE_RECORD_VALUE,
 }
 
@@ -75,7 +76,10 @@ export const LIST_DOMAINS_EXAMPLE = toJson({
   domains: [EXAMPLE_VERIFIED_DOMAIN],
 })
 
-export const CREATE_DOMAIN_EXAMPLE = toJson({ domain: EXAMPLE_PENDING_DOMAIN })
+export const CREATE_DOMAIN_EXAMPLE = toJson({
+  domain: EXAMPLE_PENDING_DOMAIN,
+  record: EXAMPLE_RECORD,
+})
 
 export const GET_DOMAIN_EXAMPLE = toJson({
   domain: EXAMPLE_VERIFIED_DOMAIN,

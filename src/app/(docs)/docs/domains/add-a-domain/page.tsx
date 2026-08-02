@@ -120,7 +120,9 @@ const AddADomainPage = () => (
         hostname would create{' '}
         <DocsCode>_domainify-challenge.app.example.com.example.com</DocsCode>, the single most
         common reason verification stalls. Domainify detects this case and calls it out on the
-        domain page.
+        domain page. Over the API the same two forms are{' '}
+        <DocsCode>record.name</DocsCode> and <DocsCode>record.host</DocsCode>; send{' '}
+        <DocsCode>record.name</DocsCode> to a provider that appends the zone.
       </Callout>
       <DocsP>
         Copy the value with the copy button rather than retyping it — the token is long, and a

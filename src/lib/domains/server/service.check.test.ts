@@ -183,6 +183,7 @@ describe('getDomainDetail', () => {
     expect(detail.record).toEqual({
       type: 'TXT',
       host: domain.challengeHost,
+      name: '_domainify-challenge',
       value: 'domainify-domain-verification=token-abc',
     })
   })

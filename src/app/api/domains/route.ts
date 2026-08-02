@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { invalidBodyResponse, serviceErrorResponse, unauthorizedResponse } from '@/lib/apiSurface/responses'
 import { getApiRequestUser } from '@/lib/auth/server/session'
-import { createDomain, listDomains } from '@/lib/domains/server/service'
+import { buildRecordInstructions, createDomain, listDomains } from '@/lib/domains/server/service'
 
 const createDomainBodySchema = z.object({ name: z.string() })
 
@@ -25,7 +25,10 @@ export const POST = async (request: Request) => {
   }
   try {
     const domain = await createDomain(sessionUser.id, parsedBody.data.name)
-    return NextResponse.json({ domain }, { status: HTTP_CREATED })
+    return NextResponse.json(
+      { domain, record: buildRecordInstructions(domain) },
+      { status: HTTP_CREATED },
+    )
   } catch (error) {
     return serviceErrorResponse(error)
   }

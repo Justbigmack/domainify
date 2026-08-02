@@ -115,7 +115,7 @@ const domainOperationInputs = (origin: string, domainId: string): OperationInput
     path: `/api/domains/${domainId}`,
     origin,
     summary:
-      'Domain, record instructions, and the latest checks. Reading a stale domain also re-checks it.',
+      'Domain, record instructions, and the latest checks. Reading a stale domain also re-checks it. Record instructions carry both host (fully qualified) and name (zone-relative — what most providers want).',
   },
   {
     key: 'verify',
@@ -166,7 +166,7 @@ export const buildCollectionOperations = (origin: string): ApiOperation[] => {
       origin,
       body: { name: PLACEHOLDER_HOSTNAME },
       summary:
-        'Same normalization as the form: a full URL works, and validation errors come back as {error: {code, message}}.',
+        'Same normalization as the form: a full URL works, and validation errors come back as {error: {code, message}}. Returns the domain and the TXT record to publish.',
     },
     ...domainOperationInputs(origin, PLACEHOLDER_DOMAIN_ID),
   ]
