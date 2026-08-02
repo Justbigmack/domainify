@@ -11,14 +11,18 @@ export const useAccountSessions = (userEmail?: string) => {
     : []
   const [accounts, setAccounts] = useState<AccountSession[]>(initialAccounts)
   const [hasRequested, setHasRequested] = useState(false)
+  const [isLoadingSessions, setIsLoadingSessions] = useState(false)
 
   const handleMenuOpen = () => {
     if (hasRequested) return
     setHasRequested(true)
-    void loadAccountSessions().then((sessions) => {
-      if (sessions.length > 0) setAccounts(sessions)
-    })
+    setIsLoadingSessions(true)
+    void loadAccountSessions()
+      .then((sessions) => {
+        if (sessions.length > 0) setAccounts(sessions)
+      })
+      .finally(() => setIsLoadingSessions(false))
   }
 
-  return { accounts, handleMenuOpen }
+  return { accounts, handleMenuOpen, isLoadingSessions }
 }

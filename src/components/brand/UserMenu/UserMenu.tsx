@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import type { AccountSession } from '@/lib/auth/session'
 import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useSidebar } from '@/components/brand/Sidebar'
 import { useAccountActions } from '@/lib/account/useAccountActions'
 import { useAccountSessions } from '@/lib/account/useAccountSessions'
@@ -25,6 +26,14 @@ type AccountItemProps = {
   account: AccountSession
   onSelect: (account: AccountSession) => void
 }
+
+const AccountItemSkeleton = () => (
+  <div aria-busy className="flex items-center gap-2 px-2 py-1.5">
+    <Skeleton className="size-6 shrink-0 rounded-full" />
+    <Skeleton className="h-4 flex-1" />
+    <div aria-hidden className="size-4 shrink-0" />
+  </div>
+)
 
 const AccountItem = ({ account, onSelect }: AccountItemProps) => {
   const handleClick = () => onSelect(account)
@@ -46,7 +55,7 @@ const AccountItem = ({ account, onSelect }: AccountItemProps) => {
 export const UserMenu = ({ userEmail }: UserMenuProps) => {
   const { isCollapsed } = useSidebar()
   const { handleSignOut, handleAddAccount, handleAccountSwitch } = useAccountActions()
-  const { accounts, handleMenuOpen } = useAccountSessions(userEmail)
+  const { accounts, handleMenuOpen, isLoadingSessions } = useAccountSessions(userEmail)
 
   const hasMultipleAccounts = accounts.length > 1
 
@@ -94,6 +103,7 @@ export const UserMenu = ({ userEmail }: UserMenuProps) => {
           {accounts.map((account) => (
             <AccountItem key={account.email} account={account} onSelect={handleAccountSelect} />
           ))}
+          {isLoadingSessions && <AccountItemSkeleton />}
           <DropdownMenuItem onClick={handleAddAccount}>
             <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-dashed border-muted-foreground/40 text-muted-foreground">
               <PlusIcon className="size-3.5" />
