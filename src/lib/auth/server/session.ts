@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm'
 import { db } from '@/db'
 import { user } from '@/db/authSchema'
 import { auth } from '@/lib/auth/server/auth'
+import { isSameOriginRequest } from '@/lib/auth/server/requestOrigin'
 import { API_KEY_PREFIX } from '@/lib/auth/model/policy'
 
 export type SessionUser = {
@@ -35,8 +36,10 @@ export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
 })
 
 export const getApiRequestUser = cache(async (): Promise<SessionUser | null> => {
-  const apiKeyUser = await getApiKeyUser(await headers())
+  const requestHeaders = await headers()
+  const apiKeyUser = await getApiKeyUser(requestHeaders)
   if (apiKeyUser) return apiKeyUser
+  if (!isSameOriginRequest(requestHeaders)) return null
   return getSessionUser()
 })
 
