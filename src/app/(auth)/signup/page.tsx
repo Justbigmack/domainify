@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { BackToAppLink } from '@/components/brand/BackToAppLink'
-import { SignUpCard } from '@/app/(auth)/_components/SignUpCard'
+import { SignUpCard } from '@/app/(auth)/signup/_components/SignUpCard'
 import { getSessionUser } from '@/lib/auth/session'
 
 export const metadata: Metadata = {

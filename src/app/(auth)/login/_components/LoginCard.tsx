@@ -15,7 +15,7 @@ import {
   AUTH_FORM_CLASSES,
   AUTH_SEPARATOR_CLASSES,
 } from '@/app/(auth)/_components/authControls'
-import type { VerificationNotice } from '@/app/(auth)/_components/verificationNotice'
+import type { VerificationNotice } from '@/app/(auth)/login/_components/verificationNotice'
 import { Field, FieldLabel, FieldSeparator } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { authClient } from '@/lib/auth/client'

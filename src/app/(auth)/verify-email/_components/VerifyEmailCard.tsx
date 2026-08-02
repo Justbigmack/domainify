@@ -8,11 +8,11 @@ import { Text } from '@/components/brand/Text'
 import { FormError } from '@/app/(auth)/_components/FormError'
 import { AuthNotice } from '@/app/(auth)/_components/AuthNotice'
 import { AUTH_CONTROL_CLASSES } from '@/app/(auth)/_components/authControls'
+import { authClient } from '@/lib/auth/client'
 import {
   RESEND_COOLDOWN_SECONDS,
   useResendCooldown,
-} from '@/app/(auth)/_components/useResendCooldown'
-import { authClient } from '@/lib/auth/client'
+} from '@/lib/auth/useResendCooldown'
 import { cn } from '@/lib/utils'
 
 type VerifyEmailCardProps = {

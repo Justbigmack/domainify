@@ -15,12 +15,12 @@ import {
   AUTH_FORM_CLASSES,
   AUTH_SEPARATOR_CLASSES,
 } from '@/app/(auth)/_components/authControls'
-import { useResendCooldown } from '@/app/(auth)/_components/useResendCooldown'
 import { Field, FieldLabel, FieldSeparator } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { authClient } from '@/lib/auth/client'
 import { magicLinkFormSchema } from '@/lib/auth/formSchemas'
 import { useFormValidation } from '@/lib/auth/useFormValidation'
+import { useResendCooldown } from '@/lib/auth/useResendCooldown'
 import { cn } from '@/lib/utils'
 
 type SendStatus = 'idle' | 'sending' | 'sent'

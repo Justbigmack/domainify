@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { VerifyEmailCard } from './VerifyEmailCard'
-import { RESEND_COOLDOWN_SECONDS } from './useResendCooldown'
+import { RESEND_COOLDOWN_SECONDS } from '@/lib/auth/useResendCooldown'
 
 const { sendVerificationEmailMock } = vi.hoisted(() => ({
   sendVerificationEmailMock: vi.fn<() => Promise<{ error: { message: string } | null }>>(),

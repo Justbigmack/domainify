@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { VerifyEmailCard } from '@/app/(auth)/_components/VerifyEmailCard'
+import { VerifyEmailCard } from '@/app/(auth)/verify-email/_components/VerifyEmailCard'
 
 export const metadata: Metadata = {
   title: 'Verify your email',

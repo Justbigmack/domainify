@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { ForgotPasswordCard } from '@/app/(auth)/_components/ForgotPasswordCard'
+import { ForgotPasswordCard } from '@/app/(auth)/forgot-password/_components/ForgotPasswordCard'
 import { getSessionUser } from '@/lib/auth/session'
 
 export const metadata: Metadata = {

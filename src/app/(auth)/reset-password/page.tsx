@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { ResetPasswordCard } from '@/app/(auth)/_components/ResetPasswordCard'
+import { ResetPasswordCard } from '@/app/(auth)/reset-password/_components/ResetPasswordCard'
 
 export const metadata: Metadata = {
   title: 'Reset password',
