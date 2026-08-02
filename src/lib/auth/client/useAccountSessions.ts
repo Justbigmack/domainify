@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { loadAccountSessions } from '@/lib/account/sessionActions'
+import { loadAccountSessions } from '@/lib/auth/actions'
 import type { AccountSession } from '@/lib/auth/server/session'
 
 export const useAccountSessions = (userEmail?: string) => {

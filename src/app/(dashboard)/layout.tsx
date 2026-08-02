@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react'
 import { DashboardSidebarNav } from '@/app/(dashboard)/_components/DashboardSidebarNav'
 import { MobileNav } from '@/components/brand/MobileNav'
 import { Sidebar, SidebarHeader, SidebarProvider, SidebarToggle } from '@/components/brand/Sidebar'
-import { SessionUserMenu, UserMenuSkeleton } from '@/components/brand/UserMenu'
+import { SessionUserMenu, UserMenuSkeleton } from '@/lib/auth/_components/UserMenu'
 import { Skeleton } from '@/components/ui/skeleton'
 
 const SIDEBAR_NAV_SKELETON_ROWS = 3

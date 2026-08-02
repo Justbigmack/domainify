@@ -15,8 +15,8 @@ import type { AccountSession } from '@/lib/auth/server/session'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useSidebar } from '@/components/brand/Sidebar'
-import { useAccountActions } from '@/lib/account/useAccountActions'
-import { useAccountSessions } from '@/lib/account/useAccountSessions'
+import { useAccountActions } from '@/lib/auth/client/useAccountActions'
+import { useAccountSessions } from '@/lib/auth/client/useAccountSessions'
 
 type UserMenuProps = {
   userEmail: string

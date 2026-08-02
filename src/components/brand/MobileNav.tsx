@@ -21,8 +21,8 @@ import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/com
 import { Skeleton } from '@/components/ui/skeleton'
 import type { AccountSession } from '@/lib/auth/server/session'
 import { cn } from '@/lib/utils'
-import { useAccountActions } from '@/lib/account/useAccountActions'
-import { useAccountSessions } from '@/lib/account/useAccountSessions'
+import { useAccountActions } from '@/lib/auth/client/useAccountActions'
+import { useAccountSessions } from '@/lib/auth/client/useAccountSessions'
 
 const SETTINGS_PATH_PREFIX = '/settings'
 
