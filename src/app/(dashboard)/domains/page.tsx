@@ -7,6 +7,7 @@ import { DomainsTable } from '@/app/(dashboard)/domains/_components/DomainsTable
 import type { DomainListItem } from '@/app/(dashboard)/domains/_components/DomainsTable'
 import { EmptyState } from '@/app/(dashboard)/domains/_components/EmptyState'
 import { Heading } from '@/components/brand/Heading'
+import { PageContainer } from '@/components/brand/PageContainer'
 import { Button } from '@/components/ui/button'
 import type { DomainRow } from '@/db/schema'
 import { getSessionUser } from '@/lib/auth/session'
@@ -35,7 +36,7 @@ const DomainsPage = async () => {
   const apiTarget = firstItem ? { id: firstItem.id, hostname: firstItem.hostname } : null
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8 lg:px-10">
+    <PageContainer>
       <header className="flex items-center justify-between gap-4 pl-5">
         <Heading as="h1">Domains</Heading>
         <div className="flex items-center gap-2">
@@ -51,7 +52,7 @@ const DomainsPage = async () => {
         </div>
       </header>
       {items.length === 0 ? <EmptyState /> : <DomainsTable items={items} />}
-    </div>
+    </PageContainer>
   )
 }
 

@@ -12,6 +12,7 @@ import {
 } from '@/app/(dashboard)/domains/_components/Stepper'
 import { VerifySteps } from '@/app/(dashboard)/domains/_components/VerifySteps'
 import { Heading } from '@/components/brand/Heading'
+import { PageContainer } from '@/components/brand/PageContainer'
 import { Text } from '@/components/brand/Text'
 import { BreadcrumbLink } from '@/components/brand/BreadcrumbLink'
 import { getSessionUser } from '@/lib/auth/session'
@@ -39,7 +40,7 @@ const AddDomainRecordPage = async ({ params }: AddDomainRecordPageProps) => {
   const isVerified = domain.status === 'verified'
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8 lg:px-10">
+    <PageContainer>
       <header className="flex flex-col gap-1 pr-5 pl-17">
         <div>
           <BreadcrumbLink href="/domains" label="Domains" icon={GlobeIcon} />
@@ -84,7 +85,7 @@ const AddDomainRecordPage = async ({ params }: AddDomainRecordPageProps) => {
           </StepperContent>
         </StepperStep>
       </Stepper>
-    </div>
+    </PageContainer>
   )
 }
 

@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components/brand/PageContainer'
 import { Skeleton } from '@/components/ui/skeleton'
 
 const SectionSkeleton = ({ cardHeightClass }: { cardHeightClass: string }) => (
@@ -11,7 +12,7 @@ const SectionSkeleton = ({ cardHeightClass }: { cardHeightClass: string }) => (
 )
 
 const DomainDetailLoading = () => (
-  <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-8 lg:px-10" aria-busy>
+  <PageContainer gap="lg" aria-busy>
     <div className="flex flex-col px-5">
       <div className="flex h-8 items-center">
         <Skeleton className="h-4 w-40" />
@@ -24,7 +25,7 @@ const DomainDetailLoading = () => (
     <SectionSkeleton cardHeightClass="h-28" />
     <SectionSkeleton cardHeightClass="h-32" />
     <p className="text-center text-sm text-muted-foreground">Running a fresh ownership check…</p>
-  </div>
+  </PageContainer>
 )
 
 export default DomainDetailLoading

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { CircleCheckIcon, TriangleAlertIcon } from 'lucide-react'
 import { AlertBanner } from '@/components/brand/AlertBanner'
+import { PageContainer } from '@/components/brand/PageContainer'
 import { Text } from '@/components/brand/Text'
 import {
   Section,
@@ -60,7 +61,7 @@ const DomainDetailPage = async ({ params }: DomainDetailPageProps) => {
   const isSettled = isFailed || isVerified
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-8 lg:px-10">
+    <PageContainer gap="lg">
       <DomainHeader domain={domain} />
       {isVerified && (
         <AlertBanner tone="success" icon={CircleCheckIcon}>
@@ -121,7 +122,7 @@ const DomainDetailPage = async ({ params }: DomainDetailPageProps) => {
         </SectionHeader>
         <DangerZone domainId={domain.id} hostname={domain.hostname} status={domain.status} />
       </Section>
-    </div>
+    </PageContainer>
   )
 }
 

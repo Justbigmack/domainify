@@ -1,9 +1,10 @@
+import { PageContainer } from '@/components/brand/PageContainer'
 import { Skeleton } from '@/components/ui/skeleton'
 
 const SKELETON_ROW_COUNT = 5
 
 const DomainsLoading = () => (
-  <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8 lg:px-10" aria-busy>
+  <PageContainer aria-busy>
     <div className="flex items-center justify-between gap-4 pl-5">
       <Skeleton className="h-7 w-32" />
       <div className="flex items-center gap-2">
@@ -27,7 +28,7 @@ const DomainsLoading = () => (
         </div>
       ))}
     </div>
-  </div>
+  </PageContainer>
 )
 
 export default DomainsLoading
