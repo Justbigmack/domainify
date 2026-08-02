@@ -7,6 +7,7 @@ import { DomainRowActions } from '@/app/(dashboard)/domains/_components/DomainRo
 import { DomainsMobileList } from '@/app/(dashboard)/domains/_components/DomainsMobileList'
 import { SortableHead } from '@/app/(dashboard)/domains/_components/SortableHead'
 import { StatusTag } from '@/components/brand/StatusTag'
+import { Text } from '@/components/brand/Text'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -165,8 +166,10 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
           <TableBody>
             {visibleItems.length === 0 ? (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={5} className="px-5 py-10 text-center text-muted-foreground">
-                  No domains match your filters.
+                <TableCell colSpan={5} className="px-5 py-10 text-center">
+                  <Text as="span" className="text-muted-foreground">
+                    No domains match your filters.
+                  </Text>
                 </TableCell>
               </TableRow>
             ) : (
@@ -175,25 +178,25 @@ export const DomainsTable = ({ items }: DomainsTableProps) => {
                   <TableCell className={TABLE_CELL_CLASS}>
                     <Link
                       href={`/domains/${item.id}`}
-                      className="font-medium outline-none after:absolute after:inset-0 focus-visible:ring-3 focus-visible:ring-ring/50"
+                      className="outline-none after:absolute after:inset-0 focus-visible:ring-3 focus-visible:ring-ring/50"
                     >
-                      {item.hostname}
+                      <Text as="span" className="font-medium">
+                        {item.hostname}
+                      </Text>
                     </Link>
                   </TableCell>
                   <TableCell className={TABLE_CELL_CLASS}>
                     <StatusTag status={item.status} />
                   </TableCell>
-                  <TableCell
-                    className={cn(TABLE_CELL_CLASS, 'text-[0.8125rem] text-muted-foreground')}
-                    suppressHydrationWarning
-                  >
-                    {formatShortDate(item.createdAt)}
+                  <TableCell className={TABLE_CELL_CLASS} suppressHydrationWarning>
+                    <Text as="span" variant="secondary">
+                      {formatShortDate(item.createdAt)}
+                    </Text>
                   </TableCell>
-                  <TableCell
-                    className={cn(TABLE_CELL_CLASS, 'text-[0.8125rem] text-muted-foreground')}
-                    suppressHydrationWarning
-                  >
-                    {item.lastCheckedAt ? formatRelativeTime(item.lastCheckedAt, nowMs) : '—'}
+                  <TableCell className={TABLE_CELL_CLASS} suppressHydrationWarning>
+                    <Text as="span" variant="secondary">
+                      {item.lastCheckedAt ? formatRelativeTime(item.lastCheckedAt, nowMs) : '—'}
+                    </Text>
                   </TableCell>
                   <TableCell className={cn(TABLE_CELL_CLASS, 'relative text-right')}>
                     <DomainRowActions domainId={item.id} hostname={item.hostname} />

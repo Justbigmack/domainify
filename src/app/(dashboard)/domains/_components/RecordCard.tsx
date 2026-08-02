@@ -1,3 +1,4 @@
+import type { PropsWithChildren } from 'react'
 import { CheckIcon, ChevronDownIcon } from 'lucide-react'
 import {
   SECTION_TABLE_CELL_CLASS,
@@ -8,6 +9,7 @@ import {
 } from '@/components/brand/Section'
 import { CopyButton } from '@/components/brand/CopyButton'
 import { StatusTag } from '@/components/brand/StatusTag'
+import { Text } from '@/components/brand/Text'
 import { MiddleTruncate } from '@/app/(dashboard)/domains/_components/MiddleTruncate'
 import {
   Table,
@@ -25,8 +27,11 @@ import {
 import { cn } from '@/lib/utils'
 import type { RecordStatus } from '@/lib/domains/status'
 
-const VALUE_CELL_CLASS = cn(SECTION_TABLE_CELL_CLASS, 'font-medium')
-const FIELD_LABEL_CLASS = 'text-xs font-medium text-muted-foreground/80'
+const FieldLabel = ({ children }: PropsWithChildren) => (
+  <Text as="span" variant="caption" className="font-medium text-muted-foreground/80">
+    {children}
+  </Text>
+)
 
 type RecordFieldProps = {
   label: string
@@ -36,11 +41,11 @@ type RecordFieldProps = {
 
 const RecordField = ({ label, value, copyLabel }: RecordFieldProps) => (
   <div className="flex flex-col gap-1.5">
-    <span className={FIELD_LABEL_CLASS}>{label}</span>
-    <div className="flex h-9 items-center gap-1 rounded-lg border border-input pr-1 pl-2.5 text-sm font-medium shadow-xs dark:bg-input/30">
-      <span className="flex min-w-0 flex-1">
+    <FieldLabel>{label}</FieldLabel>
+    <div className="flex h-9 items-center gap-1 rounded-lg border border-input pr-1 pl-2.5 shadow-xs dark:bg-input/30">
+      <Text as="span" className="flex min-w-0 flex-1 font-medium">
         <MiddleTruncate value={value} />
-      </span>
+      </Text>
       <CopyButton value={value} label={copyLabel} className="text-muted-foreground" />
     </div>
   </div>
@@ -59,10 +64,10 @@ export const RecordCard = ({ recordValue, recordName, recordStatus = null }: Rec
     <Collapsible defaultOpen={!isVerified} className="flex flex-col">
       {isVerified && (
         <CollapsibleTrigger className="group flex cursor-pointer items-center justify-between gap-2 rounded-t-xl px-5 py-3.5 text-sm text-muted-foreground transition-colors outline-none not-data-panel-open:rounded-b-xl hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:ring-inset">
-          <span className="flex items-center gap-2">
+          <Text as="span" className="flex items-center gap-2 text-inherit">
             <CheckIcon className="size-4 shrink-0 text-success" />
             DNS records are verified. Expand to view them.
-          </span>
+          </Text>
           <ChevronDownIcon className="size-4 shrink-0 transition-transform duration-200 ease-out group-data-panel-open:rotate-180 motion-reduce:transition-none" />
         </CollapsibleTrigger>
       )}
@@ -73,7 +78,7 @@ export const RecordCard = ({ recordValue, recordName, recordStatus = null }: Rec
           <RecordField label="Value" value={recordValue} copyLabel="Copy record value" />
           {recordStatus !== null && (
             <div className="flex flex-col gap-1.5">
-              <span className={FIELD_LABEL_CLASS}>Status</span>
+              <FieldLabel>Status</FieldLabel>
               <StatusTag status={recordStatus} className="ml-0 self-start" />
             </div>
           )}
@@ -109,14 +114,16 @@ export const RecordCard = ({ recordValue, recordName, recordStatus = null }: Rec
             </TableHeader>
             <TableBody>
               <TableRow className={sectionTableRowClass(true)}>
-                <TableCell className={cn(SECTION_TABLE_CELL_CLASS, 'text-muted-foreground/80')}>
-                  TXT
+                <TableCell className={SECTION_TABLE_CELL_CLASS}>
+                  <Text as="span" className="text-muted-foreground/80">
+                    TXT
+                  </Text>
                 </TableCell>
-                <TableCell className={VALUE_CELL_CLASS}>
+                <TableCell className={SECTION_TABLE_CELL_CLASS}>
                   <span className="flex items-center gap-1.5">
-                    <span className="min-w-0 truncate" title={recordName}>
+                    <Text as="span" className="min-w-0 truncate font-medium" title={recordName}>
                       {recordName}
-                    </span>
+                    </Text>
                     <CopyButton
                       value={recordName}
                       label="Copy record host"
@@ -124,11 +131,11 @@ export const RecordCard = ({ recordValue, recordName, recordStatus = null }: Rec
                     />
                   </span>
                 </TableCell>
-                <TableCell className={VALUE_CELL_CLASS}>
+                <TableCell className={SECTION_TABLE_CELL_CLASS}>
                   <span className="flex items-center gap-1.5">
-                    <span className="flex min-w-0">
+                    <Text as="span" className="flex min-w-0 font-medium">
                       <MiddleTruncate value={recordValue} />
-                    </span>
+                    </Text>
                     <CopyButton
                       value={recordValue}
                       label="Copy record value"
@@ -136,8 +143,10 @@ export const RecordCard = ({ recordValue, recordName, recordStatus = null }: Rec
                     />
                   </span>
                 </TableCell>
-                <TableCell className={cn(SECTION_TABLE_CELL_CLASS, 'text-muted-foreground')}>
-                  Auto
+                <TableCell className={SECTION_TABLE_CELL_CLASS}>
+                  <Text as="span" className="text-muted-foreground">
+                    Auto
+                  </Text>
                 </TableCell>
                 {recordStatus !== null && (
                   <TableCell className={SECTION_TABLE_CELL_CLASS}>
